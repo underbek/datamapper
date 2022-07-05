@@ -1,8 +1,0 @@
-package {{.packageName}}
-
-func convert{{.fromName}}To{{.toName}}(from {{.fromName}}) {{.toName}} {
-  return {{.toName}}{ {{range $field := .fields}}
-      {{$field.ToName}}: {{$field.Conversion}},
-    {{end}}
-  }
-}

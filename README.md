@@ -12,11 +12,6 @@ type Model struct {
 	Name string `dto:"name" dao:"name"`
 }
 
-type DAO struct {
-	ID   string `db:"id"`
-	Name string `db:"name"`
-}
-
 type DTO struct {
 	ID   string `json:"id"`
 	Name string `json:"name"`
@@ -28,15 +23,19 @@ type DTO struct {
 * [x] Parse and filter tag
 * [x] Generate empty convertor
 * [x] Map similar types
-* [ ] Simple convertor test
-* [ ] Create conversion functions
-* [ ] Use conversion functions in convertor
+* [x] Simple convertor test
+* [x] Create conversion functions
+* [x] Use conversion functions in convertor
+* [ ] Combination of simple types
+* [ ] Parse conversion functions from sources
+* [ ] Use other conversion functions in convertor
 * [ ] Parse user struct in struct
 * [ ] Use generated conversion functions in convertor
 * [ ] Parse embed struct
 * [ ] Map filed without tag
 * [ ] Parse other package
 * [ ] Warning or error politics if tags is not equals
+* [ ] Fill some conversion functions
 
 
 ### With comment ???

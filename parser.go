@@ -5,16 +5,18 @@ import (
 	"go/parser"
 	"go/token"
 	"strings"
+
+	"github.com/underbek/datamapper/models"
 )
 
-func parseStructs(source string) (map[string]Struct, error) {
+func parseStructs(source string) (map[string]models.Struct, error) {
 	fset := token.NewFileSet()
 	node, err := parser.ParseFile(fset, source, nil, parser.ParseComments)
 	if err != nil {
 		return nil, err
 	}
 
-	structs := make(map[string]Struct)
+	structs := make(map[string]models.Struct)
 
 	for _, f := range node.Decls {
 		genD, ok := f.(*ast.GenDecl)
@@ -36,7 +38,7 @@ func parseStructs(source string) (map[string]Struct, error) {
 				continue
 			}
 
-			fields := make([]Field, 0, len(currStruct.Fields.List))
+			fields := make([]models.Field, 0, len(currStruct.Fields.List))
 			for _, field := range currStruct.Fields.List {
 				fieldType, ok := field.Type.(*ast.Ident)
 				if !ok {
@@ -47,14 +49,14 @@ func parseStructs(source string) (map[string]Struct, error) {
 					continue
 				}
 
-				fields = append(fields, Field{
+				fields = append(fields, models.Field{
 					Name: field.Names[0].Name,
 					Type: fieldType.Name,
 					Tags: parseTag(field.Tag),
 				})
 			}
 
-			structs[currType.Name.Name] = Struct{
+			structs[currType.Name.Name] = models.Struct{
 				Name:   currType.Name.Name,
 				Fields: fields,
 			}
@@ -63,7 +65,7 @@ func parseStructs(source string) (map[string]Struct, error) {
 	return structs, nil
 }
 
-func parseTag(tag *ast.BasicLit) []Tag {
+func parseTag(tag *ast.BasicLit) []models.Tag {
 	if tag == nil {
 		return nil
 	}
@@ -71,14 +73,14 @@ func parseTag(tag *ast.BasicLit) []Tag {
 	value := strings.Trim(tag.Value, "`")
 	textTags := strings.Split(value, " ")
 
-	tags := make([]Tag, 0, len(textTags))
+	tags := make([]models.Tag, 0, len(textTags))
 	for _, textTag := range textTags {
 		sepIndex := strings.Index(textTag, ":")
 		if sepIndex == -1 {
 			continue
 		}
 
-		tags = append(tags, Tag{
+		tags = append(tags, models.Tag{
 			Name:  textTag[:sepIndex],
 			Value: strings.Trim(textTag[sepIndex+1:], "\""),
 		})
