@@ -2,10 +2,6 @@ package converts
 
 import "fmt"
 
-type typeKey struct {
-	fromType, ToType string
-}
-
 type ConvertorType = string
 type ImportType = string
 

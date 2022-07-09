@@ -2,10 +2,12 @@ package main
 
 import (
 	"fmt"
+
+	"github.com/underbek/datamapper/parser"
 )
 
 func mapModels(opts Options) error {
-	structs, err := parseStructs(opts.Source)
+	structs, err := parser.ParseStructs(opts.Source)
 	if err != nil {
 		return fmt.Errorf("parse error: %w", err)
 	}

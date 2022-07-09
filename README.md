@@ -3,10 +3,11 @@
 ### Usage
 
 ### go generate
-```go
-package test
 
-//go:generate datamapper --from Model --from-tag dto --to DTO --to-tag json -s models.go -d model_dto_converter.go -p test  
+```go
+package models
+
+//go:generate datamapper --from Model --from-tag dto --to DTO --to-tag json -s models.go -d model_dto_converter.go -p models  
 type Model struct {
 	ID   int    `dto:"id" dao:"id"`
 	Name string `dto:"name" dao:"name"`
@@ -18,6 +19,38 @@ type DTO struct {
 }
 ```
 
+### Conversion functions
+
+1. By types
+
+```go
+package conversion
+
+func ConvertStringToStringPtr(from string) *string {
+	return &from
+}
+```
+
+2. By comments. Could use generic
+
+```go
+package conversion
+
+import "fmt"
+
+func ConvertAnyToString[T int | uint | float32](from T) string {
+	return fmt.Sprint(from)
+}
+
+func ConvertStringToMany[T int | uint | float32](from int) T {
+	return T(from)
+}
+
+func ConvertAnyToMany[T,V int | uint | float32](from T) V {
+	return V(from)
+}
+```
+
 ### Future
 
 * [x] Parse and filter tag
@@ -26,8 +59,11 @@ type DTO struct {
 * [x] Simple convertor test
 * [x] Create conversion functions
 * [x] Use conversion functions in convertor
-* [ ] Combination of simple types
-* [ ] Parse conversion functions from sources
+* [x] Parse conversion functions from sources
+* [x] Parse generic types from other package (constrains.Float)
+* [x] Parse conversion functions with generic from
+* [x] Parse conversion functions with generic to
+* [x] Parse conversion functions with generic from and to
 * [ ] Use other conversion functions in convertor
 * [ ] Parse user struct in struct
 * [ ] Use generated conversion functions in convertor
@@ -36,7 +72,6 @@ type DTO struct {
 * [ ] Parse other package
 * [ ] Warning or error politics if tags is not equals
 * [ ] Fill some conversion functions
-
 
 ### With comment ???
 

@@ -1,4 +1,4 @@
-package main
+package parser
 
 import (
 	"go/ast"
@@ -9,7 +9,7 @@ import (
 	"github.com/underbek/datamapper/models"
 )
 
-func parseStructs(source string) (map[string]models.Struct, error) {
+func ParseStructs(source string) (map[string]models.Struct, error) {
 	fset := token.NewFileSet()
 	node, err := parser.ParseFile(fset, source, nil, parser.ParseComments)
 	if err != nil {

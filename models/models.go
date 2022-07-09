@@ -15,3 +15,11 @@ type Tag struct {
 	Name  string
 	Value string
 }
+
+type ConversionFunctionKey struct {
+	FromType, ToType string
+}
+
+type ConversionFunction struct {
+	Name string
+}
