@@ -1,29 +1,40 @@
 package parser
 
 import (
-	"fmt"
 	"go/ast"
 	"go/parser"
 	"go/token"
 
 	"github.com/underbek/datamapper/models"
+	"golang.org/x/exp/maps"
 	"golang.org/x/tools/go/packages"
 )
 
+type Functions = map[models.ConversionFunctionKey]models.ConversionFunction
+type Packages = map[string]*packages.Package
+
 type context struct {
-	packages map[string]*packages.Package
+	packages   Packages
+	currentPkg *packages.Package
+	fset       *token.FileSet
 }
 
-func ParseConversionFunctions(source string) (map[models.ConversionFunctionKey]models.ConversionFunction, error) {
-	fset := token.NewFileSet()
-	node, err := parser.ParseFile(fset, source, nil, parser.ParseComments)
+func ParseConversionFunctions(source string) (Functions, error) {
+	ctx := context{}
+
+	ctx.fset = token.NewFileSet()
+
+	node, err := parser.ParseFile(ctx.fset, source, nil, parser.ParseComments)
 	if err != nil {
 		return nil, err
 	}
 
-	funcs := make(map[models.ConversionFunctionKey]models.ConversionFunction)
+	funcs := make(Functions)
 
-	ctx := context{}
+	ctx.currentPkg, err = loadCurrentPackage(source)
+	if err != nil {
+		return nil, err
+	}
 
 	ctx.packages, err = loadPackagesByImports(node.Imports)
 	if err != nil {
@@ -31,73 +42,17 @@ func ParseConversionFunctions(source string) (map[models.ConversionFunctionKey]m
 	}
 
 	for _, f := range node.Decls {
-		funcD, ok := f.(*ast.FuncDecl) //ast.GenDecl
+		funcD, ok := f.(*ast.FuncDecl)
 		if !ok {
 			continue
 		}
 
-		if funcD.Type.Params.NumFields() != 1 {
-			continue
-		}
-
-		if funcD.Type.Results.NumFields() != 1 {
-			continue
-		}
-
-		if funcD.Type.Params.List[0].Type == nil {
-			continue
-		}
-
-		fromType, ok := funcD.Type.Params.List[0].Type.(*ast.Ident)
-		if !ok {
-			continue
-		}
-
-		if funcD.Type.Results.List[0].Type == nil {
-			continue
-		}
-
-		toType, ok := funcD.Type.Results.List[0].Type.(*ast.Ident)
-		if !ok {
-			continue
-		}
-
-		if funcD.Type.TypeParams.NumFields() == 0 {
-			funcs[models.ConversionFunctionKey{
-				FromType: fromType.Name,
-				ToType:   toType.Name,
-			}] = models.ConversionFunction{
-				Name: funcD.Name.Name,
-			}
-
-			continue
-		}
-
-		typeParams, err := parseTypeParams(ctx, funcD.Type.TypeParams.List)
+		currentFuncs, err := parseFunction(ctx, funcD)
 		if err != nil {
-			return nil, fmt.Errorf("parse func %s failed: %w", funcD.Name.Name, err)
+			return nil, err
 		}
 
-		fromTypes, ok := typeParams[fromType.Name]
-		if !ok {
-			fromTypes = []string{fromType.Name}
-		}
-
-		toTypes, ok := typeParams[toType.Name]
-		if !ok {
-			toTypes = []string{toType.Name}
-		}
-
-		for _, fromType := range fromTypes {
-			for _, toType := range toTypes {
-				funcs[models.ConversionFunctionKey{
-					FromType: fromType,
-					ToType:   toType,
-				}] = models.ConversionFunction{
-					Name: funcD.Name.Name,
-				}
-			}
-		}
+		maps.Copy(funcs, currentFuncs)
 	}
 
 	return funcs, nil

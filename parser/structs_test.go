@@ -42,8 +42,11 @@ func Test_ParseEmptyFile(t *testing.T) {
 func Test_ParseModels(t *testing.T) {
 	res, err := ParseStructs(testPath + "models.go")
 	assert.NoError(t, err)
-	assert.Len(t, res, 2)
+	assert.Len(t, res, 3)
 	expected := map[string]models.Struct{
+		"Model": {Name: "Model", Fields: []models.Field{
+			{Name: "ID", Type: "string"},
+		}},
 		"TestModel": {Name: "TestModel", Fields: []models.Field{
 			{Name: "ID", Type: "int", Tags: []models.Tag{
 				{Name: "json", Value: "id"},

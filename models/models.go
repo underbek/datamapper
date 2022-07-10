@@ -16,8 +16,13 @@ type Tag struct {
 	Value string
 }
 
+type Type struct {
+	Name    string
+	Package string
+}
+
 type ConversionFunctionKey struct {
-	FromType, ToType string
+	FromType, ToType Type
 }
 
 type ConversionFunction struct {

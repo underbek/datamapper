@@ -11,6 +11,10 @@ type TestModelTo struct {
 	Name string `db:"name" map:"name"`
 }
 
+type Model struct {
+	ID string
+}
+
 func (t *TestModelTo) foo() {
 	panic("test")
 }

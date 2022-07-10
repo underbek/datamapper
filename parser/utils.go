@@ -6,10 +6,80 @@ import (
 	"go/types"
 	"strings"
 
+	"github.com/underbek/datamapper/models"
 	"golang.org/x/tools/go/packages"
 )
 
-func loadPackagesByImports(imports []*ast.ImportSpec) (map[string]*packages.Package, error) {
+func parseFunction(ctx context, funcD *ast.FuncDecl) (Functions, error) {
+	if funcD.Type.Params.NumFields() != 1 {
+		return nil, nil
+	}
+
+	if funcD.Type.Results.NumFields() != 1 {
+		return nil, nil
+	}
+
+	if funcD.Type.Params.List[0].Type == nil {
+		return nil, nil
+	}
+
+	fromTypes, err := parseFiledTypes(ctx, funcD.Type.Params.List[0].Type)
+	if err != nil {
+		return nil, err
+	}
+
+	if funcD.Type.Results.List[0].Type == nil {
+		return nil, nil
+	}
+
+	toTypes, err := parseFiledTypes(ctx, funcD.Type.Results.List[0].Type)
+	if err != nil {
+		return nil, err
+	}
+
+	funcs := make(Functions)
+
+	for _, fromType := range fromTypes {
+		for _, toType := range toTypes {
+			funcs[models.ConversionFunctionKey{
+				FromType: models.Type{
+					Name:    fromType.Name,
+					Package: fromType.Package,
+				},
+				ToType: models.Type{
+					Name:    toType.Name,
+					Package: toType.Package,
+				},
+			}] = models.ConversionFunction{
+				Name: funcD.Name.Name,
+			}
+		}
+	}
+
+	return funcs, nil
+}
+
+func loadCurrentPackage(source string) (*packages.Package, error) {
+	cfg := &packages.Config{
+		Mode: packages.NeedName | packages.NeedTypes,
+	}
+
+	index := strings.LastIndex(source, "/")
+	if index == -1 {
+		source = ""
+	} else {
+		source = source[:index]
+	}
+
+	pkgs, err := packages.Load(cfg, source)
+	if err != nil {
+		return nil, err
+	}
+
+	return pkgs[0], nil
+}
+
+func loadPackagesByImports(imports []*ast.ImportSpec) (Packages, error) {
 	paths := make([]string, 0, len(imports))
 	for _, spec := range imports {
 		pkgPath := strings.Trim(spec.Path.Value, "\"")
@@ -17,7 +87,7 @@ func loadPackagesByImports(imports []*ast.ImportSpec) (map[string]*packages.Pack
 	}
 
 	cfg := &packages.Config{
-		Mode: packages.NeedTypes,
+		Mode: packages.NeedName | packages.NeedTypes,
 	}
 
 	pkgs, err := packages.Load(cfg, paths...)
@@ -25,7 +95,7 @@ func loadPackagesByImports(imports []*ast.ImportSpec) (map[string]*packages.Pack
 		return nil, err
 	}
 
-	result := make(map[string]*packages.Package)
+	result := make(Packages)
 
 	for _, pkg := range pkgs {
 		result[pkg.Types.Name()] = pkg
@@ -34,40 +104,33 @@ func loadPackagesByImports(imports []*ast.ImportSpec) (map[string]*packages.Pack
 	return result, nil
 }
 
-func parseTypeParams(ctx context, fields []*ast.Field) (map[string][]string, error) {
-	typeParams := make(map[string][]string)
-	for _, field := range fields {
-		if field.Type == nil {
-			continue
-		}
-
-		fieldTypes, err := parseFiledType(ctx, field.Type)
-		if err != nil {
-			return nil, err
-		}
-
-		if len(fieldTypes) == 0 {
-			continue
-		}
-
-		for _, name := range field.Names {
-			typeParams[name.Name] = append(typeParams[name.Name], fieldTypes...)
-		}
-	}
-
-	return typeParams, nil
-}
-
-func parseFiledType(ctx context, field ast.Expr) ([]string, error) {
+func parseFiledTypes(ctx context, field ast.Expr) ([]models.Type, error) {
 	switch t := field.(type) {
 	case *ast.Ident:
-		return []string{t.Name}, nil
+		info := types.Info{
+			Types: make(map[ast.Expr]types.TypeAndValue),
+		}
+
+		err := types.CheckExpr(ctx.currentPkg.Fset, ctx.currentPkg.Types, t.Pos(), t, &info)
+		if err != nil {
+			if strings.Contains(err.Error(), "undeclared name:") {
+				return parseGeneric(ctx, t)
+			}
+			return nil, err
+		}
+
+		tt, ok := info.Types[t]
+		if !ok {
+			return nil, fmt.Errorf("not found type %s from package %s", t.Name, ctx.currentPkg.Types.Name())
+		}
+
+		return parseTypeFromPackage(tt.Type)
 	case *ast.BinaryExpr:
-		x, err := parseFiledType(ctx, t.X)
+		x, err := parseFiledTypes(ctx, t.X)
 		if err != nil {
 			return nil, err
 		}
-		y, err := parseFiledType(ctx, t.Y)
+		y, err := parseFiledTypes(ctx, t.Y)
 		if err != nil {
 			return nil, err
 		}
@@ -85,7 +148,7 @@ func parseFiledType(ctx context, field ast.Expr) ([]string, error) {
 	return nil, nil
 }
 
-func getOriginalTypes(ctx context, packageName, typeName string) ([]string, error) {
+func getOriginalTypes(ctx context, packageName, typeName string) ([]models.Type, error) {
 	pkg, ok := ctx.packages[packageName]
 	if !ok {
 		return nil, fmt.Errorf("package %s not found", packageName)
@@ -104,13 +167,23 @@ func getOriginalTypes(ctx context, packageName, typeName string) ([]string, erro
 	return parseTypeFromPackage(obj.Type())
 }
 
-func parseTypeFromPackage(t types.Type) ([]string, error) {
+func parseTypeFromPackage(t types.Type) ([]models.Type, error) {
 	switch t := t.(type) {
 	case *types.Named:
+		und := t.Underlying()
+		if _, ok := und.(*types.Struct); ok {
+			return []models.Type{{
+				Name:    t.Obj().Name(),
+				Package: t.Obj().Pkg().Name(),
+			}}, nil
+		}
 		return parseTypeFromPackage(t.Underlying())
 	case *types.Interface:
+		if t.String() == "any" {
+			return []models.Type{{Name: "any"}}, nil
+		}
 		n := t.NumEmbeddeds()
-		res := make([]string, 0, n)
+		res := make([]models.Type, 0, n)
 		for i := 0; i < n; i++ {
 			names, err := parseTypeFromPackage(t.EmbeddedType(i))
 			if err != nil {
@@ -123,7 +196,7 @@ func parseTypeFromPackage(t types.Type) ([]string, error) {
 
 	case *types.Union:
 		n := t.Len()
-		res := make([]string, 0, n)
+		res := make([]models.Type, 0, n)
 		for i := 0; i < n; i++ {
 			names, err := parseTypeFromPackage(t.Term(i).Type())
 			if err != nil {
@@ -134,9 +207,26 @@ func parseTypeFromPackage(t types.Type) ([]string, error) {
 		}
 		return res, nil
 	case *types.Basic, *types.Struct:
-		return []string{t.String()}, nil
-
+		return []models.Type{{Name: t.String()}}, nil
 	default:
 		return nil, fmt.Errorf("undefined type %s", t.String())
 	}
+}
+
+// I don't know how it parse (((
+func parseGeneric(ctx context, idn *ast.Ident) ([]models.Type, error) {
+	if idn.Obj == nil {
+		return []models.Type{{Name: idn.Name}}, nil
+	}
+
+	if idn.Obj.Decl == nil {
+		return []models.Type{{Name: idn.Name}}, nil
+	}
+
+	field, ok := idn.Obj.Decl.(*ast.Field)
+	if !ok {
+		return []models.Type{{Name: idn.Name}}, nil
+	}
+
+	return parseFiledTypes(ctx, field.Type)
 }

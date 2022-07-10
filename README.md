@@ -64,6 +64,8 @@ func ConvertAnyToMany[T,V int | uint | float32](from T) V {
 * [x] Parse conversion functions with generic from
 * [x] Parse conversion functions with generic to
 * [x] Parse conversion functions with generic from and to
+* [x] Parse conversion functions with generic struct
+* [x] Parse conversion functions with struct
 * [ ] Use other conversion functions in convertor
 * [ ] Parse user struct in struct
 * [ ] Use generated conversion functions in convertor
