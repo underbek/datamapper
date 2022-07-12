@@ -11,11 +11,13 @@ func Test_Convert(t *testing.T) {
 		ID:    123,
 		Name:  "test_name",
 		Empty: "empty",
+		Age:   12.58,
 	}
 
 	expected := DAO{
 		UUID: "123",
 		Name: "test_name",
+		Age:  12,
 	}
 
 	actual := convertModelToDAO(model)

@@ -49,9 +49,10 @@ func ParseStructs(source string) (map[string]models.Struct, error) {
 					continue
 				}
 
+				// TODO: add package into field type
 				fields = append(fields, models.Field{
 					Name: field.Names[0].Name,
-					Type: fieldType.Name,
+					Type: models.Type{Name: fieldType.Name},
 					Tags: parseTag(field.Tag),
 				})
 			}

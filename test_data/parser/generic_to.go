@@ -4,18 +4,18 @@ import (
 	"golang.org/x/exp/constraints"
 )
 
-func ConvertStringToAny[T any](string) T {
-	return *new(T)
+func ConvertStringToAny[A any](string) A {
+	return *new(A)
 }
 
-func ConvertStringToIntUint[T int | uint](string) T {
-	return T(25)
+func ConvertStringToIntUint[B int | uint](string) B {
+	return B(25)
 }
 
-func ConvertStringToIntegers[T int8 | int16 | int32](string) T {
-	return T(25)
+func ConvertStringToIntegers[C int8 | int16 | int32](string) C {
+	return C(25)
 }
 
-func ConvertStringToXFloat[T constraints.Float](string) T {
-	return T(25)
+func ConvertStringToXFloat[D constraints.Float](string) D {
+	return D(25)
 }

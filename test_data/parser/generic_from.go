@@ -6,18 +6,18 @@ import (
 	"golang.org/x/exp/constraints"
 )
 
-func ConvertAnyToString[T any](from T) string {
+func ConvertAnyToString[A any](from A) string {
 	return fmt.Sprint(from)
 }
 
-func ConvertIntUintToString[T int | uint](from T) string {
+func ConvertIntUintToString[B int | uint](from B) string {
 	return fmt.Sprint(from)
 }
 
-func ConvertIntegersToString[T int8 | int16 | int32](from T) string {
+func ConvertIntegersToString[C int8 | int16 | int32](from C) string {
 	return fmt.Sprint(from)
 }
 
-func ConvertXFloatToString[T constraints.Float](from T) string {
+func ConvertXFloatToString[D constraints.Float](from D) string {
 	return fmt.Sprint(from)
 }

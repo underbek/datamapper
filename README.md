@@ -66,14 +66,23 @@ func ConvertAnyToMany[T,V int | uint | float32](from T) V {
 * [x] Parse conversion functions with generic from and to
 * [x] Parse conversion functions with generic struct
 * [x] Parse conversion functions with struct
+* [x] Create base conversation source
+* [ ] Generate convertors by other package models
+* [ ] Generate convertors by other package fields in models
+* [ ] Generate convertors by same package conversion functions
 * [ ] Use other conversion functions in convertor
+* [ ] Fix tests
+* [ ] First generator tests
+* [ ] Add CI with tests and linters
 * [ ] Parse user struct in struct
-* [ ] Use generated conversion functions in convertor
+* [ ] Use generated convertors in convertor like conversion function
 * [ ] Parse embed struct
 * [ ] Map filed without tag
 * [ ] Parse other package
 * [ ] Warning or error politics if tags is not equals
 * [ ] Fill some conversion functions
+* [ ] Copy using conversion functions from datamapper to target service if flag filled
+* [ ] Use conversion functions with error -> convertor with error
 
 ### With comment ???
 

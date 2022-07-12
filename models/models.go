@@ -7,7 +7,7 @@ type Struct struct {
 
 type Field struct {
 	Name string
-	Type string
+	Type Type
 	Tags []Tag
 }
 
@@ -19,12 +19,4 @@ type Tag struct {
 type Type struct {
 	Name    string
 	Package string
-}
-
-type ConversionFunctionKey struct {
-	FromType, ToType Type
-}
-
-type ConversionFunction struct {
-	Name string
 }

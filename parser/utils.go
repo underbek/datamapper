@@ -10,7 +10,12 @@ import (
 	"golang.org/x/tools/go/packages"
 )
 
-func parseFunction(ctx context, funcD *ast.FuncDecl) (Functions, error) {
+type Type struct {
+	models.Type
+	GenericName string
+}
+
+func parseFunction(ctx context, funcD *ast.FuncDecl) (models.Functions, error) {
 	if funcD.Type.Params.NumFields() != 1 {
 		return nil, nil
 	}
@@ -37,11 +42,11 @@ func parseFunction(ctx context, funcD *ast.FuncDecl) (Functions, error) {
 		return nil, err
 	}
 
-	funcs := make(Functions)
+	funcs := make(models.Functions)
 
 	for _, fromType := range fromTypes {
 		for _, toType := range toTypes {
-			funcs[models.ConversionFunctionKey{
+			key := models.ConversionFunctionKey{
 				FromType: models.Type{
 					Name:    fromType.Name,
 					Package: fromType.Package,
@@ -50,9 +55,16 @@ func parseFunction(ctx context, funcD *ast.FuncDecl) (Functions, error) {
 					Name:    toType.Name,
 					Package: toType.Package,
 				},
-			}] = models.ConversionFunction{
-				Name: funcD.Name.Name,
 			}
+
+			cv := models.ConversionFunction{
+				Name:        funcD.Name.Name,
+				PackageName: ctx.currentPkg.Name,
+				Import:      ctx.currentPkg.PkgPath,
+				TypeParam:   getTypeParam(fromType.GenericName, toType.GenericName),
+			}
+
+			funcs[key] = cv
 		}
 	}
 
@@ -104,7 +116,7 @@ func loadPackagesByImports(imports []*ast.ImportSpec) (Packages, error) {
 	return result, nil
 }
 
-func parseFiledTypes(ctx context, field ast.Expr) ([]models.Type, error) {
+func parseFiledTypes(ctx context, field ast.Expr) ([]Type, error) {
 	switch t := field.(type) {
 	case *ast.Ident:
 		info := types.Info{
@@ -148,7 +160,7 @@ func parseFiledTypes(ctx context, field ast.Expr) ([]models.Type, error) {
 	return nil, nil
 }
 
-func getOriginalTypes(ctx context, packageName, typeName string) ([]models.Type, error) {
+func getOriginalTypes(ctx context, packageName, typeName string) ([]Type, error) {
 	pkg, ok := ctx.packages[packageName]
 	if !ok {
 		return nil, fmt.Errorf("package %s not found", packageName)
@@ -167,23 +179,23 @@ func getOriginalTypes(ctx context, packageName, typeName string) ([]models.Type,
 	return parseTypeFromPackage(obj.Type())
 }
 
-func parseTypeFromPackage(t types.Type) ([]models.Type, error) {
+func parseTypeFromPackage(t types.Type) ([]Type, error) {
 	switch t := t.(type) {
 	case *types.Named:
 		und := t.Underlying()
 		if _, ok := und.(*types.Struct); ok {
-			return []models.Type{{
+			return []Type{{Type: models.Type{
 				Name:    t.Obj().Name(),
 				Package: t.Obj().Pkg().Name(),
-			}}, nil
+			}}}, nil
 		}
 		return parseTypeFromPackage(t.Underlying())
 	case *types.Interface:
 		if t.String() == "any" {
-			return []models.Type{{Name: "any"}}, nil
+			return []Type{{Type: models.Type{Name: "any"}}}, nil
 		}
 		n := t.NumEmbeddeds()
-		res := make([]models.Type, 0, n)
+		res := make([]Type, 0, n)
 		for i := 0; i < n; i++ {
 			names, err := parseTypeFromPackage(t.EmbeddedType(i))
 			if err != nil {
@@ -196,7 +208,7 @@ func parseTypeFromPackage(t types.Type) ([]models.Type, error) {
 
 	case *types.Union:
 		n := t.Len()
-		res := make([]models.Type, 0, n)
+		res := make([]Type, 0, n)
 		for i := 0; i < n; i++ {
 			names, err := parseTypeFromPackage(t.Term(i).Type())
 			if err != nil {
@@ -207,26 +219,51 @@ func parseTypeFromPackage(t types.Type) ([]models.Type, error) {
 		}
 		return res, nil
 	case *types.Basic, *types.Struct:
-		return []models.Type{{Name: t.String()}}, nil
+		return []Type{{Type: models.Type{Name: t.String()}}}, nil
 	default:
 		return nil, fmt.Errorf("undefined type %s", t.String())
 	}
 }
 
 // I don't know how it parse (((
-func parseGeneric(ctx context, idn *ast.Ident) ([]models.Type, error) {
+func parseGeneric(ctx context, idn *ast.Ident) ([]Type, error) {
 	if idn.Obj == nil {
-		return []models.Type{{Name: idn.Name}}, nil
+		return []Type{{Type: models.Type{Name: idn.Name}}}, nil
 	}
 
 	if idn.Obj.Decl == nil {
-		return []models.Type{{Name: idn.Name}}, nil
+		return []Type{{Type: models.Type{Name: idn.Name}}}, nil
 	}
 
 	field, ok := idn.Obj.Decl.(*ast.Field)
 	if !ok {
-		return []models.Type{{Name: idn.Name}}, nil
+		return []Type{{Type: models.Type{Name: idn.Name}}}, nil
 	}
 
-	return parseFiledTypes(ctx, field.Type)
+	fields, err := parseFiledTypes(ctx, field.Type)
+	if err != nil {
+		return nil, err
+	}
+
+	for i := range fields {
+		fields[i].GenericName = idn.Name
+	}
+
+	return fields, nil
+}
+
+func getTypeParam(fromGenericName, toGenericName string) models.TypeParamType {
+	if fromGenericName != "" && toGenericName != "" {
+		return models.FromToTypeParam
+	}
+
+	if fromGenericName != "" {
+		return models.FromTypeParam
+	}
+
+	if toGenericName != "" {
+		return models.ToTypeParam
+	}
+
+	return models.NoTypeParam
 }

@@ -10,7 +10,6 @@ import (
 	"golang.org/x/tools/go/packages"
 )
 
-type Functions = map[models.ConversionFunctionKey]models.ConversionFunction
 type Packages = map[string]*packages.Package
 
 type context struct {
@@ -19,7 +18,7 @@ type context struct {
 	fset       *token.FileSet
 }
 
-func ParseConversionFunctions(source string) (Functions, error) {
+func ParseConversionFunctions(source string) (models.Functions, error) {
 	ctx := context{}
 
 	ctx.fset = token.NewFileSet()
@@ -29,7 +28,7 @@ func ParseConversionFunctions(source string) (Functions, error) {
 		return nil, err
 	}
 
-	funcs := make(Functions)
+	funcs := make(models.Functions)
 
 	ctx.currentPkg, err = loadCurrentPackage(source)
 	if err != nil {

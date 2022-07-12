@@ -45,25 +45,25 @@ func Test_ParseModels(t *testing.T) {
 	assert.Len(t, res, 3)
 	expected := map[string]models.Struct{
 		"Model": {Name: "Model", Fields: []models.Field{
-			{Name: "ID", Type: "string"},
+			{Name: "ID", Type: models.Type{Name: "string"}},
 		}},
 		"TestModel": {Name: "TestModel", Fields: []models.Field{
-			{Name: "ID", Type: "int", Tags: []models.Tag{
+			{Name: "ID", Type: models.Type{Name: "int"}, Tags: []models.Tag{
 				{Name: "json", Value: "id"},
 				{Name: "map", Value: "id"},
 			}},
-			{Name: "Name", Type: "string", Tags: []models.Tag{
+			{Name: "Name", Type: models.Type{Name: "string"}, Tags: []models.Tag{
 				{Name: "json", Value: "name"},
 				{Name: "map", Value: "name"},
 			}},
-			{Name: "Empty", Type: "string"},
+			{Name: "Empty", Type: models.Type{Name: "string"}},
 		}},
 		"TestModelTo": {Name: "TestModelTo", Fields: []models.Field{
-			{Name: "UUID", Type: "string", Tags: []models.Tag{
+			{Name: "UUID", Type: models.Type{Name: "string"}, Tags: []models.Tag{
 				{Name: "db", Value: "uuid"},
 				{Name: "map", Value: "id"},
 			}},
-			{Name: "Name", Type: "string", Tags: []models.Tag{
+			{Name: "Name", Type: models.Type{Name: "string"}, Tags: []models.Tag{
 				{Name: "db", Value: "name"},
 				{Name: "map", Value: "name"},
 			}},

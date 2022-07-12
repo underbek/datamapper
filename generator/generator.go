@@ -8,10 +8,12 @@ import (
 	"html/template"
 	"os"
 
-	"github.com/underbek/datamapper/converts"
 	"github.com/underbek/datamapper/models"
 	"golang.org/x/exp/maps"
 )
+
+type ConvertorType = string
+type ImportType = string
 
 type FieldsPair struct {
 	FromName   string
@@ -32,12 +34,12 @@ const convertorFilePath = "templates/convertor.temp"
 var templates embed.FS
 
 type Generator struct {
-	convertorFactory *converts.Factory
+	functions models.Functions
 }
 
-func New(convertorFactory *converts.Factory) *Generator {
+func New(functions models.Functions) *Generator {
 	return &Generator{
-		convertorFactory: convertorFactory,
+		functions: functions,
 	}
 }
 
@@ -108,14 +110,9 @@ func (g *Generator) createModelsPair(from, to models.Struct) (result, error) {
 			continue
 		}
 
-		conversion, pack := g.convertorFactory.GetConvertorFunctions(fromField.Type, toField.Type, fromField.Name)
-		if conversion == "" {
-			return result{}, fmt.Errorf(
-				"not found convertor function for types %s -> %s by %s field",
-				fromField.Type,
-				toField.Type,
-				fromField.Name,
-			)
+		conversion, pack, err := g.getConvertorFunctions(fromField.Type, toField.Type, fromField.Name)
+		if err != nil {
+			return result{}, err
 		}
 
 		if pack != "" {
@@ -124,9 +121,9 @@ func (g *Generator) createModelsPair(from, to models.Struct) (result, error) {
 
 		fields = append(fields, FieldsPair{
 			FromName:   fromField.Name,
-			FromType:   fromField.Type,
+			FromType:   fromField.Type.Name,
 			ToName:     toField.Name,
-			ToType:     toField.Type,
+			ToType:     toField.Type.Name,
 			Conversion: conversion,
 		})
 	}
@@ -135,4 +132,42 @@ func (g *Generator) createModelsPair(from, to models.Struct) (result, error) {
 		fields:  fields,
 		imports: maps.Keys(imports),
 	}, nil
+}
+
+func (g *Generator) getConvertorFunctions(fromType, toType models.Type, fromFieldName string) (ConvertorType, ImportType, error) {
+	// TODO: check package
+	if fromType.Name == toType.Name {
+		return fmt.Sprintf("from.%s", fromFieldName), "", nil
+	}
+
+	cf, ok := g.functions[models.ConversionFunctionKey{
+		FromType: fromType,
+		ToType:   toType,
+	}]
+
+	if !ok {
+		return "", "", fmt.Errorf(
+			"not found convertor function for types %s -> %s by %s field",
+			fromType,
+			toType,
+			fromFieldName,
+		)
+	}
+
+	typeParams := getTypeParams(cf, fromType, toType)
+	conversion := fmt.Sprintf("%s.%s%s(from.%s)", cf.PackageName, cf.Name, typeParams, fromFieldName)
+
+	return conversion, cf.Import, nil
+}
+
+func getTypeParams(cf models.ConversionFunction, fromType, toType models.Type) string {
+	// TODO: add packages to type params
+	switch cf.TypeParam {
+	case models.ToTypeParam:
+		return fmt.Sprintf("[%s]", toType.Name)
+	case models.FromToTypeParam:
+		return fmt.Sprintf("[%s,%s]", fromType.Name, toType.Name)
+	default:
+		return ""
+	}
 }
