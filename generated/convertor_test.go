@@ -20,7 +20,7 @@ func Test_Convert(t *testing.T) {
 		Age:  12,
 	}
 
-	actual := convertModelToDAO(model)
+	actual := ConvertModelToDAO(model)
 
 	assert.Equal(t, expected, actual)
 }

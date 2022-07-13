@@ -60,7 +60,7 @@ func parseFunction(ctx context, funcD *ast.FuncDecl) (models.Functions, error) {
 			cv := models.ConversionFunction{
 				Name:        funcD.Name.Name,
 				PackageName: ctx.currentPkg.Name,
-				Import:      ctx.currentPkg.PkgPath,
+				PackagePath: ctx.currentPkg.PkgPath,
 				TypeParam:   getTypeParam(fromType.GenericName, toType.GenericName),
 			}
 
@@ -69,26 +69,6 @@ func parseFunction(ctx context, funcD *ast.FuncDecl) (models.Functions, error) {
 	}
 
 	return funcs, nil
-}
-
-func loadCurrentPackage(source string) (*packages.Package, error) {
-	cfg := &packages.Config{
-		Mode: packages.NeedName | packages.NeedTypes,
-	}
-
-	index := strings.LastIndex(source, "/")
-	if index == -1 {
-		source = ""
-	} else {
-		source = source[:index]
-	}
-
-	pkgs, err := packages.Load(cfg, source)
-	if err != nil {
-		return nil, err
-	}
-
-	return pkgs[0], nil
 }
 
 func loadPackagesByImports(imports []*ast.ImportSpec) (Packages, error) {

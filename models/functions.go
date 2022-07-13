@@ -16,7 +16,7 @@ type ConversionFunctionKey struct {
 type ConversionFunction struct {
 	Name        string
 	PackageName string
-	Import      string
+	PackagePath string
 	TypeParam   TypeParamType
 }
 

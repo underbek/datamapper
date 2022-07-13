@@ -9,7 +9,10 @@ import (
 	"os"
 
 	"github.com/underbek/datamapper/models"
+	"github.com/underbek/datamapper/utils"
 	"golang.org/x/exp/maps"
+	"golang.org/x/text/cases"
+	"golang.org/x/text/language"
 )
 
 type ConvertorType = string
@@ -43,8 +46,11 @@ func New(functions models.Functions) *Generator {
 	}
 }
 
-func (g *Generator) CreateConvertor(from, to models.Struct, dest string, packageName string) error {
-	content, err := g.generateConvertor(from, to, packageName)
+func (g *Generator) CreateConvertor(from, to models.Struct, dest string) error {
+	content, err := g.generateConvertor(from, to, dest)
+	if err != nil {
+		return err
+	}
 
 	file, err := os.Create(dest)
 	if err != nil {
@@ -61,8 +67,13 @@ func (g *Generator) CreateConvertor(from, to models.Struct, dest string, package
 	return nil
 }
 
-func (g *Generator) generateConvertor(from, to models.Struct, packageName string) ([]byte, error) {
+func (g *Generator) generateConvertor(from, to models.Struct, dest string) ([]byte, error) {
 	temp, err := template.ParseFS(templates, convertorFilePath)
+	if err != nil {
+		return nil, err
+	}
+
+	pkg, err := utils.LoadPackage(dest)
 	if err != nil {
 		return nil, err
 	}
@@ -72,12 +83,30 @@ func (g *Generator) generateConvertor(from, to models.Struct, packageName string
 		return nil, err
 	}
 
+	res.imports = append(res.imports, from.PackagePath, to.PackagePath)
+
+	convertorName := "Convert"
+	fromName := from.Name
+	toName := to.Name
+	if from.PackagePath != pkg.PkgPath {
+		fromName = fmt.Sprintf("%s.%s", from.PackageName, from.Name)
+		convertorName += cases.Title(language.Und, cases.NoLower).String(from.PackageName)
+	}
+	convertorName += from.Name
+	convertorName += "To"
+	if to.PackagePath != pkg.PkgPath {
+		toName = fmt.Sprintf("%s.%s", to.PackageName, to.Name)
+		convertorName += cases.Title(language.Und, cases.NoLower).String(to.PackageName)
+	}
+	convertorName += to.Name
+
 	data := map[string]any{
-		"packageName": packageName,
-		"fromName":    from.Name,
-		"toName":      to.Name,
-		"fields":      res.fields,
-		"imports":     res.imports,
+		"packageName":   pkg.Name,
+		"fromName":      fromName,
+		"toName":        toName,
+		"convertorName": convertorName,
+		"fields":        res.fields,
+		"imports":       filterImports(pkg.PkgPath, res.imports),
 	}
 
 	buf := bytes.Buffer{}
@@ -157,7 +186,7 @@ func (g *Generator) getConvertorFunctions(fromType, toType models.Type, fromFiel
 	typeParams := getTypeParams(cf, fromType, toType)
 	conversion := fmt.Sprintf("%s.%s%s(from.%s)", cf.PackageName, cf.Name, typeParams, fromFieldName)
 
-	return conversion, cf.Import, nil
+	return conversion, cf.PackagePath, nil
 }
 
 func getTypeParams(cf models.ConversionFunction, fromType, toType models.Type) string {
@@ -170,4 +199,15 @@ func getTypeParams(cf models.ConversionFunction, fromType, toType models.Type) s
 	default:
 		return ""
 	}
+}
+
+func filterImports(currentPkgPath string, imports []string) []string {
+	res := make([]string, 0, len(imports))
+	for _, imp := range imports {
+		if imp != currentPkgPath {
+			res = append(res, imp)
+		}
+	}
+
+	return res
 }

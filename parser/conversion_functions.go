@@ -6,6 +6,7 @@ import (
 	"go/token"
 
 	"github.com/underbek/datamapper/models"
+	"github.com/underbek/datamapper/utils"
 	"golang.org/x/exp/maps"
 	"golang.org/x/tools/go/packages"
 )
@@ -30,7 +31,7 @@ func ParseConversionFunctions(source string) (models.Functions, error) {
 
 	funcs := make(models.Functions)
 
-	ctx.currentPkg, err = loadCurrentPackage(source)
+	ctx.currentPkg, err = utils.LoadPackage(source)
 	if err != nil {
 		return nil, err
 	}

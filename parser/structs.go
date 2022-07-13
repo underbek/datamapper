@@ -7,11 +7,17 @@ import (
 	"strings"
 
 	"github.com/underbek/datamapper/models"
+	"github.com/underbek/datamapper/utils"
 )
 
 func ParseStructs(source string) (map[string]models.Struct, error) {
 	fset := token.NewFileSet()
 	node, err := parser.ParseFile(fset, source, nil, parser.ParseComments)
+	if err != nil {
+		return nil, err
+	}
+
+	pkg, err := utils.LoadPackage(source)
 	if err != nil {
 		return nil, err
 	}
@@ -58,8 +64,10 @@ func ParseStructs(source string) (map[string]models.Struct, error) {
 			}
 
 			structs[currType.Name.Name] = models.Struct{
-				Name:   currType.Name.Name,
-				Fields: fields,
+				Name:        currType.Name.Name,
+				Fields:      fields,
+				PackageName: pkg.Name,
+				PackagePath: pkg.PkgPath,
 			}
 		}
 	}

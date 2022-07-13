@@ -46,7 +46,7 @@ func Test_ParseModels(t *testing.T) {
 	expected := map[string]models.Struct{
 		"Model": {Name: "Model", Fields: []models.Field{
 			{Name: "ID", Type: models.Type{Name: "string"}},
-		}},
+		}, PackageName: "parser", PackagePath: "github.com/underbek/datamapper/test_data/parser"},
 		"TestModel": {Name: "TestModel", Fields: []models.Field{
 			{Name: "ID", Type: models.Type{Name: "int"}, Tags: []models.Tag{
 				{Name: "json", Value: "id"},
@@ -57,7 +57,7 @@ func Test_ParseModels(t *testing.T) {
 				{Name: "map", Value: "name"},
 			}},
 			{Name: "Empty", Type: models.Type{Name: "string"}},
-		}},
+		}, PackageName: "parser", PackagePath: "github.com/underbek/datamapper/test_data/parser"},
 		"TestModelTo": {Name: "TestModelTo", Fields: []models.Field{
 			{Name: "UUID", Type: models.Type{Name: "string"}, Tags: []models.Tag{
 				{Name: "db", Value: "uuid"},
@@ -67,7 +67,7 @@ func Test_ParseModels(t *testing.T) {
 				{Name: "db", Value: "name"},
 				{Name: "map", Value: "name"},
 			}},
-		}},
+		}, PackageName: "parser", PackagePath: "github.com/underbek/datamapper/test_data/parser"},
 	}
 
 	assert.Equal(t, expected, res)

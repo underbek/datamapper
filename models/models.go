@@ -1,8 +1,10 @@
 package models
 
 type Struct struct {
-	Name   string
-	Fields []Field
+	Name        string
+	Fields      []Field
+	PackagePath string
+	PackageName string
 }
 
 type Field struct {

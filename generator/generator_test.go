@@ -18,6 +18,12 @@ const (
 	modelsFileName = "models.go"
 
 	convertsSource = "../converts/simple.go"
+
+	generatedPackagePath = "github.com/underbek/datamapper/generated"
+	generatedPackageName = "generated"
+
+	otherPackagePath = "github.com/underbek/datamapper/test_data/other"
+	otherPackageName = "other"
 )
 
 func copySource(t *testing.T, fileName string) {
@@ -36,7 +42,9 @@ func parseFunctions(t *testing.T) models.Functions {
 
 func Test_CreateModelsPair(t *testing.T) {
 	fromModel := models.Struct{
-		Name: "FromName",
+		Name:        "FromName",
+		PackageName: generatedPackageName,
+		PackagePath: generatedPackagePath,
 		Fields: []models.Field{
 			{Name: "ID", Type: models.Type{Name: "int"}, Tags: []models.Tag{{Name: "map", Value: "id"}}},
 			{Name: "Name", Type: models.Type{Name: "string"}, Tags: []models.Tag{{Name: "map", Value: "name"}}},
@@ -44,7 +52,9 @@ func Test_CreateModelsPair(t *testing.T) {
 		},
 	}
 	toModel := models.Struct{
-		Name: "ToName",
+		Name:        "ToName",
+		PackageName: generatedPackageName,
+		PackagePath: generatedPackagePath,
 		Fields: []models.Field{
 			{Name: "UUID", Type: models.Type{Name: "string"}, Tags: []models.Tag{{Name: "map", Value: "id"}}},
 			{Name: "Name", Type: models.Type{Name: "string"}, Tags: []models.Tag{{Name: "map", Value: "name"}}},
@@ -90,26 +100,32 @@ func Test_CreateModelsPair(t *testing.T) {
 
 func Test_GenerateConvertorWithoutImports(t *testing.T) {
 	fromModel := models.Struct{
-		Name: "Model",
+		Name:        "Model",
+		PackageName: generatedPackageName,
+		PackagePath: generatedPackagePath,
 		Fields: []models.Field{
 			{Name: "Name", Type: models.Type{Name: "string"}, Tags: []models.Tag{{Name: "map", Value: "name"}}},
 		},
 	}
 	toModel := models.Struct{
-		Name: "DAO",
+		Name:        "DAO",
+		PackageName: generatedPackageName,
+		PackagePath: generatedPackagePath,
 		Fields: []models.Field{
 			{Name: "Name", Type: models.Type{Name: "string"}, Tags: []models.Tag{{Name: "map", Value: "name"}}},
 		},
 	}
 
+	destination := generatedPath + "simple_convertor.go"
+
 	g := New(parseFunctions(t))
 
-	actual, err := g.generateConvertor(fromModel, toModel, "generator")
+	actual, err := g.generateConvertor(fromModel, toModel, destination)
 	require.NoError(t, err)
 
 	expected := `package generator
 
-func convertModelToDAO(from Model) DAO {
+func ConvertModelToDAO(from Model) DAO {
 	return DAO{
 		Name: from.Name,
 	}
@@ -121,14 +137,18 @@ func convertModelToDAO(from Model) DAO {
 
 func Test_GenerateConvertorWithOneImport(t *testing.T) {
 	fromModel := models.Struct{
-		Name: "Model",
+		Name:        "Model",
+		PackageName: generatedPackageName,
+		PackagePath: generatedPackagePath,
 		Fields: []models.Field{
 			{Name: "ID", Type: models.Type{Name: "int"}, Tags: []models.Tag{{Name: "map", Value: "id"}}},
 			{Name: "Name", Type: models.Type{Name: "string"}, Tags: []models.Tag{{Name: "map", Value: "name"}}},
 		},
 	}
 	toModel := models.Struct{
-		Name: "DAO",
+		Name:        "DAO",
+		PackageName: generatedPackageName,
+		PackagePath: generatedPackagePath,
 		Fields: []models.Field{
 			{Name: "UUID", Type: models.Type{Name: "string"}, Tags: []models.Tag{{Name: "map", Value: "id"}}},
 			{Name: "Name", Type: models.Type{Name: "string"}, Tags: []models.Tag{{Name: "map", Value: "name"}}},
@@ -136,16 +156,18 @@ func Test_GenerateConvertorWithOneImport(t *testing.T) {
 		},
 	}
 
+	destination := generatedPath + "simple_convertor.go"
+
 	g := New(parseFunctions(t))
 
-	actual, err := g.generateConvertor(fromModel, toModel, "generator")
+	actual, err := g.generateConvertor(fromModel, toModel, destination)
 	require.NoError(t, err)
 
 	expected := `package generator
 
 import "github.com/underbek/datamapper/converts"
 
-func convertModelToDAO(from Model) DAO {
+func ConvertModelToDAO(from Model) DAO {
 	return DAO{
 		UUID: converts.ConvertNumericToString(from.ID),
 		Name: from.Name,
@@ -156,11 +178,13 @@ func convertModelToDAO(from Model) DAO {
 	assert.Equal(t, expected, string(actual))
 }
 
-func Test_CreateConvertor(t *testing.T) {
+func Test_CreateConvertorInPackage(t *testing.T) {
 	copySource(t, modelsFileName)
 
 	fromModel := models.Struct{
-		Name: "Model",
+		Name:        "Model",
+		PackageName: generatedPackageName,
+		PackagePath: generatedPackagePath,
 		Fields: []models.Field{
 			{Name: "ID", Type: models.Type{Name: "int"}, Tags: []models.Tag{{Name: "map", Value: "id"}}},
 			{Name: "Name", Type: models.Type{Name: "string"}, Tags: []models.Tag{{Name: "map", Value: "name"}}},
@@ -168,7 +192,9 @@ func Test_CreateConvertor(t *testing.T) {
 		},
 	}
 	toModel := models.Struct{
-		Name: "DAO",
+		Name:        "DAO",
+		PackageName: generatedPackageName,
+		PackagePath: generatedPackagePath,
 		Fields: []models.Field{
 			{Name: "UUID", Type: models.Type{Name: "string"}, Tags: []models.Tag{{Name: "map", Value: "id"}}},
 			{Name: "Name", Type: models.Type{Name: "string"}, Tags: []models.Tag{{Name: "map", Value: "name"}}},
@@ -181,16 +207,69 @@ func Test_CreateConvertor(t *testing.T) {
 
 	g := New(parseFunctions(t))
 
-	err := g.CreateConvertor(fromModel, toModel, destination, "generator")
+	err := g.CreateConvertor(fromModel, toModel, destination)
 	require.NoError(t, err)
 
 	expected := `package generator
 
 import "github.com/underbek/datamapper/converts"
 
-func convertModelToDAO(from Model) DAO {
+func ConvertModelToDAO(from Model) DAO {
 	return DAO{
 		UUID: converts.ConvertNumericToString(from.ID),
+		Name: from.Name,
+		Age:  converts.ConvertOrderedToOrdered[float64, uint8](from.Age),
+	}
+}
+`
+
+	actual, err := os.ReadFile(destination)
+	require.NoError(t, err)
+
+	assert.Equal(t, expected, string(actual))
+}
+
+func Test_CreateConvertorByOtherPackage(t *testing.T) {
+	fromModel := models.Struct{
+		Name:        "Model",
+		PackageName: otherPackageName,
+		PackagePath: otherPackagePath,
+		Fields: []models.Field{
+			{Name: "ID", Type: models.Type{Name: "string"}, Tags: []models.Tag{{Name: "map", Value: "id"}}},
+			{Name: "Name", Type: models.Type{Name: "string"}, Tags: []models.Tag{{Name: "map", Value: "name"}}},
+			{Name: "Age", Type: models.Type{Name: "float64"}, Tags: []models.Tag{{Name: "map", Value: "age"}}},
+		},
+	}
+	toModel := models.Struct{
+		Name:        "DAO",
+		PackageName: generatedPackageName,
+		PackagePath: generatedPackagePath,
+		Fields: []models.Field{
+			{Name: "UUID", Type: models.Type{Name: "string"}, Tags: []models.Tag{{Name: "map", Value: "id"}}},
+			{Name: "Name", Type: models.Type{Name: "string"}, Tags: []models.Tag{{Name: "map", Value: "name"}}},
+			{Name: "Data", Type: models.Type{Name: "string"}, Tags: []models.Tag{{Name: "map", Value: "data"}}},
+			{Name: "Age", Type: models.Type{Name: "uint8"}, Tags: []models.Tag{{Name: "map", Value: "age"}}},
+		},
+	}
+
+	destination := generatedPath + "convertor_by_other_package.go"
+
+	g := New(parseFunctions(t))
+
+	err := g.CreateConvertor(fromModel, toModel, destination)
+	require.NoError(t, err)
+
+	expected := `package generator
+
+import (
+	"github.com/underbek/datamapper/converts"
+
+	"github.com/underbek/datamapper/test_data/other"
+)
+
+func ConvertOtherModelToDAO(from other.Model) DAO {
+	return DAO{
+		UUID: from.ID,
 		Name: from.Name,
 		Age:  converts.ConvertOrderedToOrdered[float64, uint8](from.Age),
 	}
