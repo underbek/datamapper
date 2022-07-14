@@ -1,6 +1,6 @@
 package parser
 
-import "github.com/underbek/datamapper/test_data/other"
+import "github.com/underbek/datamapper/_test_data/other"
 
 func ConvertCurrentModelToOther(from Model) other.Model {
 	return other.Model{

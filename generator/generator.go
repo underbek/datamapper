@@ -78,7 +78,7 @@ func (g *Generator) generateConvertor(from, to models.Struct, dest string) ([]by
 		return nil, err
 	}
 
-	res, err := g.createModelsPair(from, to)
+	res, err := g.createModelsPair(from, to, pkg.PkgPath)
 	if err != nil {
 		return nil, err
 	}
@@ -123,7 +123,7 @@ func (g *Generator) generateConvertor(from, to models.Struct, dest string) ([]by
 	return content, nil
 }
 
-func (g *Generator) createModelsPair(from, to models.Struct) (result, error) {
+func (g *Generator) createModelsPair(from, to models.Struct, pkgPath string) (result, error) {
 	var fields []FieldsPair
 	imports := make(map[string]struct{})
 
@@ -139,7 +139,7 @@ func (g *Generator) createModelsPair(from, to models.Struct) (result, error) {
 			continue
 		}
 
-		conversion, pack, err := g.getConvertorFunctions(fromField.Type, toField.Type, fromField.Name)
+		conversion, pack, err := g.getConversionFunction(fromField.Type, toField.Type, fromField.Name, pkgPath)
 		if err != nil {
 			return result{}, err
 		}
@@ -163,7 +163,9 @@ func (g *Generator) createModelsPair(from, to models.Struct) (result, error) {
 	}, nil
 }
 
-func (g *Generator) getConvertorFunctions(fromType, toType models.Type, fromFieldName string) (ConvertorType, ImportType, error) {
+func (g *Generator) getConversionFunction(fromType, toType models.Type, fromFieldName, pkgPath string,
+) (ConvertorType, ImportType, error) {
+
 	// TODO: check package
 	if fromType.Name == toType.Name {
 		return fmt.Sprintf("from.%s", fromFieldName), "", nil
@@ -184,6 +186,12 @@ func (g *Generator) getConvertorFunctions(fromType, toType models.Type, fromFiel
 	}
 
 	typeParams := getTypeParams(cf, fromType, toType)
+
+	if cf.PackagePath == pkgPath {
+		conversion := fmt.Sprintf("%s%s(from.%s)", cf.Name, typeParams, fromFieldName)
+		return conversion, cf.PackagePath, nil
+	}
+
 	conversion := fmt.Sprintf("%s.%s%s(from.%s)", cf.PackageName, cf.Name, typeParams, fromFieldName)
 
 	return conversion, cf.PackagePath, nil

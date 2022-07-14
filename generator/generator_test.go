@@ -12,18 +12,19 @@ import (
 )
 
 const (
-	testGeneratorPath = "../test_data/generator/"
-	generatedPath     = "../generated/"
+	testGeneratorPath = "../_test_data/generator/"
+	generatedPath     = "../_test_data/generated/"
 
-	modelsFileName = "models.go"
+	modelsFileName     = "models.go"
+	convertorsFileName = "convertors.go"
 
 	simpleConvertsSource  = "../converts/simple.go"
 	decimalConvertsSource = "../converts/decimal.go"
 
-	generatedPackagePath = "github.com/underbek/datamapper/generated"
+	generatedPackagePath = "github.com/underbek/datamapper/_test_data/generated"
 	generatedPackageName = "generated"
 
-	otherPackagePath = "github.com/underbek/datamapper/test_data/other"
+	otherPackagePath = "github.com/underbek/datamapper/_test_data/other"
 	otherPackageName = "other"
 )
 
@@ -66,7 +67,7 @@ func Test_CreateModelsPair(t *testing.T) {
 
 	g := New(parseFunctions(t, simpleConvertsSource))
 
-	res, err := g.createModelsPair(fromModel, toModel)
+	res, err := g.createModelsPair(fromModel, toModel, "")
 	require.NoError(t, err)
 
 	expected := result{
@@ -231,6 +232,8 @@ func ConvertModelToDAO(from Model) DAO {
 }
 
 func Test_CreateConvertorByOtherPackage(t *testing.T) {
+	copySource(t, modelsFileName)
+
 	fromModel := models.Struct{
 		Name:        "Model",
 		PackageName: otherPackageName,
@@ -265,7 +268,7 @@ func Test_CreateConvertorByOtherPackage(t *testing.T) {
 import (
 	"github.com/underbek/datamapper/converts"
 
-	"github.com/underbek/datamapper/test_data/other"
+	"github.com/underbek/datamapper/_test_data/other"
 )
 
 func ConvertOtherModelToDAO(from other.Model) DAO {
@@ -284,6 +287,8 @@ func ConvertOtherModelToDAO(from other.Model) DAO {
 }
 
 func Test_CreateConvertorByComplexModel(t *testing.T) {
+	copySource(t, modelsFileName)
+
 	fromModel := models.Struct{
 		Name:        "Model",
 		PackageName: otherPackageName,
@@ -322,13 +327,69 @@ func Test_CreateConvertorByComplexModel(t *testing.T) {
 import (
 	"github.com/underbek/datamapper/converts"
 
-	"github.com/underbek/datamapper/test_data/other"
+	"github.com/underbek/datamapper/_test_data/other"
 )
 
 func ConvertOtherModelToDTO(from other.Model) DTO {
 	return DTO{
 		ID:  converts.ConvertStringToDecimal(from.ID),
 		Age: converts.ConvertFloatToDecimal(from.Age),
+	}
+}
+`
+
+	actual, err := os.ReadFile(destination)
+	require.NoError(t, err)
+
+	assert.Equal(t, expected, string(actual))
+}
+
+func Test_CreateConvertorBySameCFPackage(t *testing.T) {
+	copySource(t, modelsFileName)
+	copySource(t, convertorsFileName)
+
+	fromModel := models.Struct{
+		Name:        "DTO",
+		PackageName: generatedPackageName,
+		PackagePath: generatedPackagePath,
+		Fields: []models.Field{
+			{Name: "ID", Type: models.Type{
+				Name:        "Decimal",
+				PackagePath: "github.com/shopspring/decimal",
+			}, Tags: []models.Tag{{Name: "map", Value: "id"}}},
+			{Name: "Age", Type: models.Type{
+				Name:        "Decimal",
+				PackagePath: "github.com/shopspring/decimal",
+			}, Tags: []models.Tag{{Name: "map", Value: "age"}}},
+		},
+	}
+
+	toModel := models.Struct{
+		Name:        "Model",
+		PackageName: otherPackageName,
+		PackagePath: otherPackagePath,
+		Fields: []models.Field{
+			{Name: "ID", Type: models.Type{Name: "string"}, Tags: []models.Tag{{Name: "map", Value: "id"}}},
+			{Name: "Name", Type: models.Type{Name: "string"}, Tags: []models.Tag{{Name: "map", Value: "name"}}},
+			{Name: "Age", Type: models.Type{Name: "float64"}, Tags: []models.Tag{{Name: "map", Value: "age"}}},
+		},
+	}
+
+	destination := generatedPath + "convertor_in_same_package.go"
+
+	g := New(parseFunctions(t, generatedPath+convertorsFileName))
+
+	err := g.CreateConvertor(fromModel, toModel, destination)
+	require.NoError(t, err)
+
+	expected := `package generator
+
+import "github.com/underbek/datamapper/_test_data/other"
+
+func ConvertDTOToOtherModel(from DTO) other.Model {
+	return other.Model{
+		ID:  ConvertDecimalToString(from.ID),
+		Age: ConvertDecimalToNumeric[float64](from.Age),
 	}
 }
 `

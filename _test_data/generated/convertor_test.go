@@ -5,7 +5,7 @@ import (
 
 	"github.com/shopspring/decimal"
 	"github.com/stretchr/testify/assert"
-	"github.com/underbek/datamapper/test_data/other"
+	"github.com/underbek/datamapper/_test_data/other"
 )
 
 func Test_ConvertModelToDao(t *testing.T) {
@@ -40,6 +40,23 @@ func Test_ConvertOtherModelToDTO(t *testing.T) {
 	}
 
 	actual := ConvertOtherModelToDTO(model)
+
+	assert.Equal(t, expected, actual)
+}
+
+func Test_ConvertDTOToOtherModel(t *testing.T) {
+	dto := DTO{
+		ID:  decimal.NewFromInt(123),
+		Age: decimal.NewFromFloat(12.58),
+	}
+
+	expected := other.Model{
+		ID:   "123",
+		Name: "",
+		Age:  12.58,
+	}
+
+	actual := ConvertDTOToOtherModel(dto)
 
 	assert.Equal(t, expected, actual)
 }

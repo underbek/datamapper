@@ -46,7 +46,7 @@ func Test_CFParseSimpleFunctions(t *testing.T) {
 		models.ConversionFunction{
 			Name:        "ConvertIntToString",
 			PackageName: "parser",
-			PackagePath: "github.com/underbek/datamapper/test_data/parser",
+			PackagePath: "github.com/underbek/datamapper/_test_data/parser",
 		},
 		res[models.ConversionFunctionKey{FromType: models.Type{Name: "int"}, ToType: models.Type{Name: "string"}}],
 	)
@@ -55,7 +55,7 @@ func Test_CFParseSimpleFunctions(t *testing.T) {
 		models.ConversionFunction{
 			Name:        "ConvertFloatToString",
 			PackageName: "parser",
-			PackagePath: "github.com/underbek/datamapper/test_data/parser",
+			PackagePath: "github.com/underbek/datamapper/_test_data/parser",
 		},
 		res[models.ConversionFunctionKey{FromType: models.Type{Name: "float32"}, ToType: models.Type{Name: "string"}}],
 	)
@@ -70,7 +70,7 @@ func Test_CFParseGenericFrom(t *testing.T) {
 		models.ConversionFunction{
 			Name:        "ConvertAnyToString",
 			PackageName: "parser",
-			PackagePath: "github.com/underbek/datamapper/test_data/parser",
+			PackagePath: "github.com/underbek/datamapper/_test_data/parser",
 			TypeParam:   models.FromTypeParam,
 		},
 		res[models.ConversionFunctionKey{FromType: models.Type{Name: "any"}, ToType: models.Type{Name: "string"}}],
@@ -80,7 +80,7 @@ func Test_CFParseGenericFrom(t *testing.T) {
 		models.ConversionFunction{
 			Name:        "ConvertIntUintToString",
 			PackageName: "parser",
-			PackagePath: "github.com/underbek/datamapper/test_data/parser",
+			PackagePath: "github.com/underbek/datamapper/_test_data/parser",
 			TypeParam:   models.FromTypeParam,
 		},
 		res[models.ConversionFunctionKey{FromType: models.Type{Name: "int"}, ToType: models.Type{Name: "string"}}],
@@ -90,7 +90,7 @@ func Test_CFParseGenericFrom(t *testing.T) {
 		models.ConversionFunction{
 			Name:        "ConvertIntUintToString",
 			PackageName: "parser",
-			PackagePath: "github.com/underbek/datamapper/test_data/parser",
+			PackagePath: "github.com/underbek/datamapper/_test_data/parser",
 			TypeParam:   models.FromTypeParam,
 		},
 		res[models.ConversionFunctionKey{FromType: models.Type{Name: "uint"}, ToType: models.Type{Name: "string"}}],
@@ -100,7 +100,7 @@ func Test_CFParseGenericFrom(t *testing.T) {
 		models.ConversionFunction{
 			Name:        "ConvertIntegersToString",
 			PackageName: "parser",
-			PackagePath: "github.com/underbek/datamapper/test_data/parser",
+			PackagePath: "github.com/underbek/datamapper/_test_data/parser",
 			TypeParam:   models.FromTypeParam,
 		},
 		res[models.ConversionFunctionKey{FromType: models.Type{Name: "int8"}, ToType: models.Type{Name: "string"}}],
@@ -110,7 +110,7 @@ func Test_CFParseGenericFrom(t *testing.T) {
 		models.ConversionFunction{
 			Name:        "ConvertIntegersToString",
 			PackageName: "parser",
-			PackagePath: "github.com/underbek/datamapper/test_data/parser",
+			PackagePath: "github.com/underbek/datamapper/_test_data/parser",
 			TypeParam:   models.FromTypeParam,
 		},
 		res[models.ConversionFunctionKey{FromType: models.Type{Name: "int16"}, ToType: models.Type{Name: "string"}}],
@@ -120,7 +120,7 @@ func Test_CFParseGenericFrom(t *testing.T) {
 		models.ConversionFunction{
 			Name:        "ConvertIntegersToString",
 			PackageName: "parser",
-			PackagePath: "github.com/underbek/datamapper/test_data/parser",
+			PackagePath: "github.com/underbek/datamapper/_test_data/parser",
 			TypeParam:   models.FromTypeParam,
 		},
 		res[models.ConversionFunctionKey{FromType: models.Type{Name: "int32"}, ToType: models.Type{Name: "string"}}],
@@ -130,7 +130,7 @@ func Test_CFParseGenericFrom(t *testing.T) {
 		models.ConversionFunction{
 			Name:        "ConvertXFloatToString",
 			PackageName: "parser",
-			PackagePath: "github.com/underbek/datamapper/test_data/parser",
+			PackagePath: "github.com/underbek/datamapper/_test_data/parser",
 			TypeParam:   models.FromTypeParam,
 		},
 		res[models.ConversionFunctionKey{FromType: models.Type{Name: "float32"}, ToType: models.Type{Name: "string"}}],
@@ -140,7 +140,7 @@ func Test_CFParseGenericFrom(t *testing.T) {
 		models.ConversionFunction{
 			Name:        "ConvertXFloatToString",
 			PackageName: "parser",
-			PackagePath: "github.com/underbek/datamapper/test_data/parser",
+			PackagePath: "github.com/underbek/datamapper/_test_data/parser",
 			TypeParam:   models.FromTypeParam,
 		},
 		res[models.ConversionFunctionKey{FromType: models.Type{Name: "float64"}, ToType: models.Type{Name: "string"}}],
@@ -156,7 +156,7 @@ func Test_CFParseGenericTo(t *testing.T) {
 		models.ConversionFunction{
 			Name:        "ConvertStringToAny",
 			PackageName: "parser",
-			PackagePath: "github.com/underbek/datamapper/test_data/parser",
+			PackagePath: "github.com/underbek/datamapper/_test_data/parser",
 			TypeParam:   models.ToTypeParam,
 		},
 		res[models.ConversionFunctionKey{FromType: models.Type{Name: "string"}, ToType: models.Type{Name: "any"}}],
@@ -166,7 +166,7 @@ func Test_CFParseGenericTo(t *testing.T) {
 		models.ConversionFunction{
 			Name:        "ConvertStringToIntUint",
 			PackageName: "parser",
-			PackagePath: "github.com/underbek/datamapper/test_data/parser",
+			PackagePath: "github.com/underbek/datamapper/_test_data/parser",
 			TypeParam:   models.ToTypeParam,
 		},
 		res[models.ConversionFunctionKey{FromType: models.Type{Name: "string"}, ToType: models.Type{Name: "int"}}],
@@ -176,7 +176,7 @@ func Test_CFParseGenericTo(t *testing.T) {
 		models.ConversionFunction{
 			Name:        "ConvertStringToIntUint",
 			PackageName: "parser",
-			PackagePath: "github.com/underbek/datamapper/test_data/parser",
+			PackagePath: "github.com/underbek/datamapper/_test_data/parser",
 			TypeParam:   models.ToTypeParam,
 		},
 		res[models.ConversionFunctionKey{FromType: models.Type{Name: "string"}, ToType: models.Type{Name: "uint"}}],
@@ -186,7 +186,7 @@ func Test_CFParseGenericTo(t *testing.T) {
 		models.ConversionFunction{
 			Name:        "ConvertStringToIntegers",
 			PackageName: "parser",
-			PackagePath: "github.com/underbek/datamapper/test_data/parser",
+			PackagePath: "github.com/underbek/datamapper/_test_data/parser",
 			TypeParam:   models.ToTypeParam,
 		},
 		res[models.ConversionFunctionKey{FromType: models.Type{Name: "string"}, ToType: models.Type{Name: "int8"}}],
@@ -196,7 +196,7 @@ func Test_CFParseGenericTo(t *testing.T) {
 		models.ConversionFunction{
 			Name:        "ConvertStringToIntegers",
 			PackageName: "parser",
-			PackagePath: "github.com/underbek/datamapper/test_data/parser",
+			PackagePath: "github.com/underbek/datamapper/_test_data/parser",
 			TypeParam:   models.ToTypeParam,
 		},
 		res[models.ConversionFunctionKey{FromType: models.Type{Name: "string"}, ToType: models.Type{Name: "int16"}}],
@@ -206,7 +206,7 @@ func Test_CFParseGenericTo(t *testing.T) {
 		models.ConversionFunction{
 			Name:        "ConvertStringToIntegers",
 			PackageName: "parser",
-			PackagePath: "github.com/underbek/datamapper/test_data/parser",
+			PackagePath: "github.com/underbek/datamapper/_test_data/parser",
 			TypeParam:   models.ToTypeParam,
 		},
 		res[models.ConversionFunctionKey{FromType: models.Type{Name: "string"}, ToType: models.Type{Name: "int32"}}],
@@ -216,7 +216,7 @@ func Test_CFParseGenericTo(t *testing.T) {
 		models.ConversionFunction{
 			Name:        "ConvertStringToXFloat",
 			PackageName: "parser",
-			PackagePath: "github.com/underbek/datamapper/test_data/parser",
+			PackagePath: "github.com/underbek/datamapper/_test_data/parser",
 			TypeParam:   models.ToTypeParam,
 		},
 		res[models.ConversionFunctionKey{FromType: models.Type{Name: "string"}, ToType: models.Type{Name: "float32"}}],
@@ -226,7 +226,7 @@ func Test_CFParseGenericTo(t *testing.T) {
 		models.ConversionFunction{
 			Name:        "ConvertStringToXFloat",
 			PackageName: "parser",
-			PackagePath: "github.com/underbek/datamapper/test_data/parser",
+			PackagePath: "github.com/underbek/datamapper/_test_data/parser",
 			TypeParam:   models.ToTypeParam,
 		},
 		res[models.ConversionFunctionKey{FromType: models.Type{Name: "string"}, ToType: models.Type{Name: "float64"}}],
@@ -242,7 +242,7 @@ func Test_CFParseGenericFromTo(t *testing.T) {
 		models.ConversionFunction{
 			Name:        "ConvertXFloatToIntegers",
 			PackageName: "parser",
-			PackagePath: "github.com/underbek/datamapper/test_data/parser",
+			PackagePath: "github.com/underbek/datamapper/_test_data/parser",
 			TypeParam:   models.FromToTypeParam,
 		},
 		res[models.ConversionFunctionKey{FromType: models.Type{Name: "float32"}, ToType: models.Type{Name: "int"}}],
@@ -252,7 +252,7 @@ func Test_CFParseGenericFromTo(t *testing.T) {
 		models.ConversionFunction{
 			Name:        "ConvertXFloatToIntegers",
 			PackageName: "parser",
-			PackagePath: "github.com/underbek/datamapper/test_data/parser",
+			PackagePath: "github.com/underbek/datamapper/_test_data/parser",
 			TypeParam:   models.FromToTypeParam,
 		},
 		res[models.ConversionFunctionKey{FromType: models.Type{Name: "float32"}, ToType: models.Type{Name: "uint"}}],
@@ -262,7 +262,7 @@ func Test_CFParseGenericFromTo(t *testing.T) {
 		models.ConversionFunction{
 			Name:        "ConvertXFloatToIntegers",
 			PackageName: "parser",
-			PackagePath: "github.com/underbek/datamapper/test_data/parser",
+			PackagePath: "github.com/underbek/datamapper/_test_data/parser",
 			TypeParam:   models.FromToTypeParam,
 		},
 		res[models.ConversionFunctionKey{FromType: models.Type{Name: "float64"}, ToType: models.Type{Name: "int"}}],
@@ -272,7 +272,7 @@ func Test_CFParseGenericFromTo(t *testing.T) {
 		models.ConversionFunction{
 			Name:        "ConvertXFloatToIntegers",
 			PackageName: "parser",
-			PackagePath: "github.com/underbek/datamapper/test_data/parser",
+			PackagePath: "github.com/underbek/datamapper/_test_data/parser",
 			TypeParam:   models.FromToTypeParam,
 		},
 		res[models.ConversionFunctionKey{FromType: models.Type{Name: "float64"}, ToType: models.Type{Name: "uint"}}],
@@ -288,12 +288,12 @@ func Test_CFParseGenericStruct(t *testing.T) {
 		models.ConversionFunction{
 			Name:        "ConvertModelsToString",
 			PackageName: "parser",
-			PackagePath: "github.com/underbek/datamapper/test_data/parser",
+			PackagePath: "github.com/underbek/datamapper/_test_data/parser",
 			TypeParam:   models.FromTypeParam,
 		},
 		res[models.ConversionFunctionKey{FromType: models.Type{
 			Name:        "Model",
-			PackagePath: "github.com/underbek/datamapper/test_data/parser",
+			PackagePath: "github.com/underbek/datamapper/_test_data/parser",
 		}, ToType: models.Type{Name: "string"}}],
 	)
 
@@ -301,12 +301,12 @@ func Test_CFParseGenericStruct(t *testing.T) {
 		models.ConversionFunction{
 			Name:        "ConvertModelsToString",
 			PackageName: "parser",
-			PackagePath: "github.com/underbek/datamapper/test_data/parser",
+			PackagePath: "github.com/underbek/datamapper/_test_data/parser",
 			TypeParam:   models.FromTypeParam,
 		},
 		res[models.ConversionFunctionKey{FromType: models.Type{
 			Name:        "Model",
-			PackagePath: "github.com/underbek/datamapper/test_data/other",
+			PackagePath: "github.com/underbek/datamapper/_test_data/other",
 		}, ToType: models.Type{Name: "string"}}],
 	)
 }
@@ -320,14 +320,14 @@ func Test_CFParseWithStruct(t *testing.T) {
 		models.ConversionFunction{
 			Name:        "ConvertCurrentModelToOther",
 			PackageName: "parser",
-			PackagePath: "github.com/underbek/datamapper/test_data/parser",
+			PackagePath: "github.com/underbek/datamapper/_test_data/parser",
 		},
 		res[models.ConversionFunctionKey{FromType: models.Type{
 			Name:        "Model",
-			PackagePath: "github.com/underbek/datamapper/test_data/parser",
+			PackagePath: "github.com/underbek/datamapper/_test_data/parser",
 		}, ToType: models.Type{
 			Name:        "Model",
-			PackagePath: "github.com/underbek/datamapper/test_data/other",
+			PackagePath: "github.com/underbek/datamapper/_test_data/other",
 		}}],
 	)
 
@@ -335,14 +335,14 @@ func Test_CFParseWithStruct(t *testing.T) {
 		models.ConversionFunction{
 			Name:        "ConvertOtherModelToCurrent",
 			PackageName: "parser",
-			PackagePath: "github.com/underbek/datamapper/test_data/parser",
+			PackagePath: "github.com/underbek/datamapper/_test_data/parser",
 		},
 		res[models.ConversionFunctionKey{FromType: models.Type{
 			Name:        "Model",
-			PackagePath: "github.com/underbek/datamapper/test_data/other",
+			PackagePath: "github.com/underbek/datamapper/_test_data/other",
 		}, ToType: models.Type{
 			Name:        "Model",
-			PackagePath: "github.com/underbek/datamapper/test_data/parser",
+			PackagePath: "github.com/underbek/datamapper/_test_data/parser",
 		}}],
 	)
 }
