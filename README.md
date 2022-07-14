@@ -68,12 +68,14 @@ func ConvertAnyToMany[T,V int | uint | float32](from T) V {
 * [x] Parse conversion functions with struct
 * [x] Create base conversation source
 * [x] Generate convertors by other package models
-* [ ] Generate convertors by other package fields in models
+* [x] Generate convertors by other package fields in models
 * [ ] Generate convertors by same package conversion functions
 * [ ] Use other conversion functions in convertor
 * [ ] Fix tests
+* [ ] Delete package flag
 * [ ] First generator tests
 * [ ] Add CI with tests and linters
+* [ ] Add generation info
 * [ ] Parse user struct in struct
 * [ ] Use generated convertors in convertor like conversion function
 * [ ] Parse embed struct

@@ -1,9 +1,10 @@
 package parser
 
 import (
-	"go/ast"
-	"go/parser"
-	"go/token"
+	"fmt"
+	"go/types"
+	"path/filepath"
+	"strings"
 
 	"github.com/underbek/datamapper/models"
 	"github.com/underbek/datamapper/utils"
@@ -11,48 +12,107 @@ import (
 	"golang.org/x/tools/go/packages"
 )
 
-type Packages = map[string]*packages.Package
+func ParseConversionFunctions(source string) (models.Functions, error) {
+	absSourcePath, err := filepath.Abs(source)
+	if err != nil {
+		return nil, err
+	}
 
-type context struct {
-	packages   Packages
-	currentPkg *packages.Package
-	fset       *token.FileSet
+	pkg, err := utils.LoadPackage(source)
+	if err != nil {
+		return nil, err
+	}
+
+	if pkg.Types == nil {
+		return nil, fmt.Errorf("package %s haven't type", pkg.Name)
+	}
+
+	funcs := make(models.Functions)
+
+	names := pkg.Types.Scope().Names()
+	for _, name := range names {
+		obj := pkg.Types.Scope().Lookup(name)
+
+		fset := pkg.Fset.Position(obj.Pos())
+		if !strings.Contains(fset.Filename, absSourcePath) {
+			continue
+		}
+
+		f, ok := obj.(*types.Func)
+		if !ok {
+			continue
+		}
+
+		if !f.Exported() {
+			continue
+		}
+
+		currentFuncs, err := parseFunction(pkg, f)
+		if err != nil {
+			return nil, err
+		}
+		maps.Copy(funcs, currentFuncs)
+	}
+
+	return funcs, nil
 }
 
-func ParseConversionFunctions(source string) (models.Functions, error) {
-	ctx := context{}
+func parseFunction(pkg *packages.Package, f *types.Func) (models.Functions, error) {
+	signature, ok := f.Type().(*types.Signature)
+	if !ok {
+		return nil, fmt.Errorf("function %s hasn't signature", f.Name())
+	}
 
-	ctx.fset = token.NewFileSet()
+	if signature.Params().Len() != 1 {
+		return nil, nil
+	}
 
-	node, err := parser.ParseFile(ctx.fset, source, nil, parser.ParseComments)
+	if signature.Results().Len() != 1 {
+		return nil, nil
+	}
+
+	if signature.Params().At(0).Type() == nil {
+		return nil, nil
+	}
+
+	if signature.Results().At(0).Type() == nil {
+		return nil, nil
+	}
+
+	fromTypes, err := parseType(signature.Params().At(0).Type())
+	if err != nil {
+		return nil, err
+	}
+
+	toTypes, err := parseType(signature.Results().At(0).Type())
 	if err != nil {
 		return nil, err
 	}
 
 	funcs := make(models.Functions)
 
-	ctx.currentPkg, err = utils.LoadPackage(source)
-	if err != nil {
-		return nil, err
-	}
+	for _, fromType := range fromTypes {
+		for _, toType := range toTypes {
+			key := models.ConversionFunctionKey{
+				FromType: models.Type{
+					Name:        fromType.Name,
+					PackagePath: fromType.PackagePath,
+				},
+				ToType: models.Type{
+					Name:        toType.Name,
+					PackagePath: toType.PackagePath,
+				},
+			}
 
-	ctx.packages, err = loadPackagesByImports(node.Imports)
-	if err != nil {
-		return nil, err
-	}
+			cv := models.ConversionFunction{
+				Name:        f.Name(),
+				PackageName: pkg.Name,
+				PackagePath: pkg.PkgPath,
+				TypeParam:   getTypeParam(fromType.generic, toType.generic),
+			}
 
-	for _, f := range node.Decls {
-		funcD, ok := f.(*ast.FuncDecl)
-		if !ok {
-			continue
+			funcs[key] = cv
 		}
-
-		currentFuncs, err := parseFunction(ctx, funcD)
-		if err != nil {
-			return nil, err
-		}
-
-		maps.Copy(funcs, currentFuncs)
 	}
 
 	return funcs, nil

@@ -72,3 +72,36 @@ func Test_ParseModels(t *testing.T) {
 
 	assert.Equal(t, expected, res)
 }
+
+func Test_ParseComplexModel(t *testing.T) {
+	res, err := ParseStructs(testPath + "complex_model.go")
+	assert.NoError(t, err)
+	assert.Len(t, res, 1)
+	expected := map[string]models.Struct{
+		"ComplexModel": {Name: "ComplexModel", Fields: []models.Field{
+			{
+				Name: "ID", Type: models.Type{
+					Name:        "Model",
+					PackagePath: "github.com/underbek/datamapper/test_data/parser",
+				},
+				Tags: []models.Tag{
+					{Name: "json", Value: "id"},
+					{Name: "map", Value: "id"},
+				},
+			},
+			{
+				Name: "Age",
+				Type: models.Type{
+					Name:        "Decimal",
+					PackagePath: "github.com/shopspring/decimal",
+				},
+				Tags: []models.Tag{
+					{Name: "json", Value: "age"},
+					{Name: "map", Value: "age"},
+				},
+			},
+		}, PackageName: "parser", PackagePath: "github.com/underbek/datamapper/test_data/parser"},
+	}
+
+	assert.Equal(t, expected, res)
+}

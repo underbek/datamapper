@@ -19,6 +19,6 @@ type Tag struct {
 }
 
 type Type struct {
-	Name    string
-	Package string
+	Name        string
+	PackagePath string
 }

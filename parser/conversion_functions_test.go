@@ -292,8 +292,8 @@ func Test_CFParseGenericStruct(t *testing.T) {
 			TypeParam:   models.FromTypeParam,
 		},
 		res[models.ConversionFunctionKey{FromType: models.Type{
-			Name:    "Model",
-			Package: "parser",
+			Name:        "Model",
+			PackagePath: "github.com/underbek/datamapper/test_data/parser",
 		}, ToType: models.Type{Name: "string"}}],
 	)
 
@@ -305,8 +305,8 @@ func Test_CFParseGenericStruct(t *testing.T) {
 			TypeParam:   models.FromTypeParam,
 		},
 		res[models.ConversionFunctionKey{FromType: models.Type{
-			Name:    "Model",
-			Package: "other",
+			Name:        "Model",
+			PackagePath: "github.com/underbek/datamapper/test_data/other",
 		}, ToType: models.Type{Name: "string"}}],
 	)
 }
@@ -323,11 +323,11 @@ func Test_CFParseWithStruct(t *testing.T) {
 			PackagePath: "github.com/underbek/datamapper/test_data/parser",
 		},
 		res[models.ConversionFunctionKey{FromType: models.Type{
-			Name:    "Model",
-			Package: "parser",
+			Name:        "Model",
+			PackagePath: "github.com/underbek/datamapper/test_data/parser",
 		}, ToType: models.Type{
-			Name:    "Model",
-			Package: "other",
+			Name:        "Model",
+			PackagePath: "github.com/underbek/datamapper/test_data/other",
 		}}],
 	)
 
@@ -338,11 +338,11 @@ func Test_CFParseWithStruct(t *testing.T) {
 			PackagePath: "github.com/underbek/datamapper/test_data/parser",
 		},
 		res[models.ConversionFunctionKey{FromType: models.Type{
-			Name:    "Model",
-			Package: "other",
+			Name:        "Model",
+			PackagePath: "github.com/underbek/datamapper/test_data/other",
 		}, ToType: models.Type{
-			Name:    "Model",
-			Package: "parser",
+			Name:        "Model",
+			PackagePath: "github.com/underbek/datamapper/test_data/parser",
 		}}],
 	)
 }

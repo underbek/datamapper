@@ -4,6 +4,7 @@ go 1.18
 
 require (
 	github.com/jessevdk/go-flags v1.5.0
+	github.com/shopspring/decimal v1.3.1
 	github.com/stretchr/testify v1.8.0
 	golang.org/x/exp v0.0.0-20220706164943-b4a6d9510983
 	golang.org/x/text v0.3.7

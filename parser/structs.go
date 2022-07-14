@@ -1,9 +1,8 @@
 package parser
 
 import (
-	"go/ast"
-	"go/parser"
-	"go/token"
+	"go/types"
+	"path/filepath"
 	"strings"
 
 	"github.com/underbek/datamapper/models"
@@ -11,8 +10,7 @@ import (
 )
 
 func ParseStructs(source string) (map[string]models.Struct, error) {
-	fset := token.NewFileSet()
-	node, err := parser.ParseFile(fset, source, nil, parser.ParseComments)
+	absSourcePath, err := filepath.Abs(source)
 	if err != nil {
 		return nil, err
 	}
@@ -24,76 +22,62 @@ func ParseStructs(source string) (map[string]models.Struct, error) {
 
 	structs := make(map[string]models.Struct)
 
-	for _, f := range node.Decls {
-		genD, ok := f.(*ast.GenDecl)
+	names := pkg.Types.Scope().Names()
+	for _, name := range names {
+		obj := pkg.Types.Scope().Lookup(name)
+
+		fset := pkg.Fset.Position(obj.Pos())
+		if !strings.Contains(fset.Filename, absSourcePath) {
+			continue
+		}
+
+		currType, ok := obj.(*types.TypeName)
 		if !ok {
 			continue
 		}
-		for _, spec := range genD.Specs {
-			currType, ok := spec.(*ast.TypeSpec)
-			if !ok {
-				continue
-			}
 
-			currStruct, ok := currType.Type.(*ast.StructType)
-			if !ok {
-				continue
-			}
-
-			if len(currStruct.Fields.List) == 0 {
-				continue
-			}
-
-			fields := make([]models.Field, 0, len(currStruct.Fields.List))
-			for _, field := range currStruct.Fields.List {
-				fieldType, ok := field.Type.(*ast.Ident)
-				if !ok {
-					continue
-				}
-
-				if len(field.Names) == 0 {
-					continue
-				}
-
-				// TODO: add package into field type
-				fields = append(fields, models.Field{
-					Name: field.Names[0].Name,
-					Type: models.Type{Name: fieldType.Name},
-					Tags: parseTag(field.Tag),
-				})
-			}
-
-			structs[currType.Name.Name] = models.Struct{
-				Name:        currType.Name.Name,
-				Fields:      fields,
-				PackageName: pkg.Name,
-				PackagePath: pkg.PkgPath,
-			}
-		}
-	}
-	return structs, nil
-}
-
-func parseTag(tag *ast.BasicLit) []models.Tag {
-	if tag == nil {
-		return nil
-	}
-
-	value := strings.Trim(tag.Value, "`")
-	textTags := strings.Split(value, " ")
-
-	tags := make([]models.Tag, 0, len(textTags))
-	for _, textTag := range textTags {
-		sepIndex := strings.Index(textTag, ":")
-		if sepIndex == -1 {
+		if !currType.Exported() {
 			continue
 		}
 
-		tags = append(tags, models.Tag{
-			Name:  textTag[:sepIndex],
-			Value: strings.Trim(textTag[sepIndex+1:], "\""),
-		})
-	}
+		currStruct, ok := currType.Type().Underlying().(*types.Struct)
+		if !ok {
+			continue
+		}
 
-	return tags
+		if currStruct.NumFields() == 0 {
+			continue
+		}
+
+		fields := make([]models.Field, 0, currStruct.NumFields())
+		for i := 0; i < currStruct.NumFields(); i++ {
+			field := currStruct.Field(i)
+			tts, err := parseType(field.Type())
+			if err != nil {
+				return nil, err
+			}
+
+			if len(tts) != 1 {
+				continue
+			}
+
+			fields = append(fields, models.Field{
+				Name: field.Name(),
+				Type: models.Type{
+					Name:        tts[0].Name,
+					PackagePath: tts[0].PackagePath,
+				},
+				Tags: parseTag(currStruct.Tag(i)),
+			})
+		}
+
+		structs[currType.Name()] = models.Struct{
+			Name:        currType.Name(),
+			Fields:      fields,
+			PackageName: pkg.Name,
+			PackagePath: pkg.PkgPath,
+		}
+
+	}
+	return structs, nil
 }
