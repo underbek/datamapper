@@ -46,7 +46,7 @@ func ConvertStringToMany[T int | uint | float32](from int) T {
 	return T(from)
 }
 
-func ConvertAnyToMany[T,V int | uint | float32](from T) V {
+func ConvertAnyToMany[T, V int | uint | float32](from T) V {
 	return V(from)
 }
 ```
@@ -71,10 +71,11 @@ func ConvertAnyToMany[T,V int | uint | float32](from T) V {
 * [x] Generate convertors by other package fields in models
 * [x] Generate convertors by same package conversion functions
 * [x] Fix tests
-* [ ] Delete package flag
-* [ ] First generator tests
-* [ ] Use other conversion functions in convertor
+* [x] Delete package flag
+* [x] First mapper tests
+* [x] Use other conversion functions in convertor
 * [ ] Add CI with tests and linters
+* [ ] First console generate
 * [ ] Add generation info
 * [ ] First release
 * [ ] Use in my projects

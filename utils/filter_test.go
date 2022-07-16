@@ -1,4 +1,4 @@
-package main
+package utils
 
 import (
 	"testing"
@@ -20,7 +20,7 @@ func Test_Filter(t *testing.T) {
 		{Name: "Empty", Type: models.Type{Name: "string"}},
 	}
 
-	res := filterFields("map", fields)
+	res := FilterFields("map", fields)
 	assert.Len(t, res, 2)
 
 	expected := []models.Field{

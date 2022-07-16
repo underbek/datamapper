@@ -13,7 +13,7 @@ import (
 
 const (
 	testGeneratorPath = "../_test_data/generator/"
-	generatedPath     = "../_test_data/generated/"
+	generatedPath     = "../_test_data/generated/generator/"
 
 	modelsFileName     = "models.go"
 	convertorsFileName = "convertors.go"
@@ -21,8 +21,8 @@ const (
 	simpleConvertsSource  = "../converts/simple.go"
 	decimalConvertsSource = "../converts/decimal.go"
 
-	generatedPackagePath = "github.com/underbek/datamapper/_test_data/generated"
-	generatedPackageName = "generated"
+	generatedPackagePath = "github.com/underbek/datamapper/_test_data/generated/generator"
+	generatedPackageName = "generator"
 
 	otherPackagePath = "github.com/underbek/datamapper/_test_data/other"
 	otherPackageName = "other"
@@ -65,9 +65,7 @@ func Test_CreateModelsPair(t *testing.T) {
 		},
 	}
 
-	g := New(parseFunctions(t, simpleConvertsSource))
-
-	res, err := g.createModelsPair(fromModel, toModel, "")
+	res, err := createModelsPair(fromModel, toModel, "", parseFunctions(t, simpleConvertsSource))
 	require.NoError(t, err)
 
 	expected := result{
@@ -120,9 +118,7 @@ func Test_GenerateConvertorWithoutImports(t *testing.T) {
 
 	destination := generatedPath + "simple_convertor.go"
 
-	g := New(parseFunctions(t, simpleConvertsSource))
-
-	actual, err := g.generateConvertor(fromModel, toModel, destination)
+	actual, err := generateConvertor(fromModel, toModel, destination, parseFunctions(t, simpleConvertsSource))
 	require.NoError(t, err)
 
 	expected := `package generator
@@ -160,9 +156,7 @@ func Test_GenerateConvertorWithOneImport(t *testing.T) {
 
 	destination := generatedPath + "simple_convertor.go"
 
-	g := New(parseFunctions(t, simpleConvertsSource))
-
-	actual, err := g.generateConvertor(fromModel, toModel, destination)
+	actual, err := generateConvertor(fromModel, toModel, destination, parseFunctions(t, simpleConvertsSource))
 	require.NoError(t, err)
 
 	expected := `package generator
@@ -207,9 +201,7 @@ func Test_CreateConvertorInPackage(t *testing.T) {
 
 	destination := generatedPath + "simple_convertor.go"
 
-	g := New(parseFunctions(t, simpleConvertsSource))
-
-	err := g.CreateConvertor(fromModel, toModel, destination)
+	err := CreateConvertor(fromModel, toModel, destination, parseFunctions(t, simpleConvertsSource))
 	require.NoError(t, err)
 
 	expected := `package generator
@@ -258,9 +250,7 @@ func Test_CreateConvertorByOtherPackage(t *testing.T) {
 
 	destination := generatedPath + "convertor_by_other_package.go"
 
-	g := New(parseFunctions(t, simpleConvertsSource))
-
-	err := g.CreateConvertor(fromModel, toModel, destination)
+	err := CreateConvertor(fromModel, toModel, destination, parseFunctions(t, simpleConvertsSource))
 	require.NoError(t, err)
 
 	expected := `package generator
@@ -317,9 +307,7 @@ func Test_CreateConvertorByComplexModel(t *testing.T) {
 
 	destination := generatedPath + "convertor_with_complex_model.go"
 
-	g := New(parseFunctions(t, decimalConvertsSource))
-
-	err := g.CreateConvertor(fromModel, toModel, destination)
+	err := CreateConvertor(fromModel, toModel, destination, parseFunctions(t, decimalConvertsSource))
 	require.NoError(t, err)
 
 	expected := `package generator
@@ -377,9 +365,7 @@ func Test_CreateConvertorBySameCFPackage(t *testing.T) {
 
 	destination := generatedPath + "convertor_in_same_package.go"
 
-	g := New(parseFunctions(t, generatedPath+convertorsFileName))
-
-	err := g.CreateConvertor(fromModel, toModel, destination)
+	err := CreateConvertor(fromModel, toModel, destination, parseFunctions(t, generatedPath+convertorsFileName))
 	require.NoError(t, err)
 
 	expected := `package generator

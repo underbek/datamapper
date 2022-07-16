@@ -9,7 +9,7 @@ import (
 	"github.com/underbek/datamapper/utils"
 )
 
-func ParseStructs(source string) (map[string]models.Struct, error) {
+func ParseModels(source string) (map[string]models.Struct, error) {
 	absSourcePath, err := filepath.Abs(source)
 	if err != nil {
 		return nil, err

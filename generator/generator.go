@@ -7,6 +7,7 @@ import (
 	"go/format"
 	"html/template"
 	"os"
+	"strings"
 
 	"github.com/underbek/datamapper/models"
 	"github.com/underbek/datamapper/utils"
@@ -36,18 +37,8 @@ const convertorFilePath = "templates/convertor.temp"
 //go:embed templates
 var templates embed.FS
 
-type Generator struct {
-	functions models.Functions
-}
-
-func New(functions models.Functions) *Generator {
-	return &Generator{
-		functions: functions,
-	}
-}
-
-func (g *Generator) CreateConvertor(from, to models.Struct, dest string) error {
-	content, err := g.generateConvertor(from, to, dest)
+func CreateConvertor(from, to models.Struct, dest string, functions models.Functions) error {
+	content, err := generateConvertor(from, to, dest, functions)
 	if err != nil {
 		return err
 	}
@@ -67,7 +58,7 @@ func (g *Generator) CreateConvertor(from, to models.Struct, dest string) error {
 	return nil
 }
 
-func (g *Generator) generateConvertor(from, to models.Struct, dest string) ([]byte, error) {
+func generateConvertor(from, to models.Struct, dest string, functions models.Functions) ([]byte, error) {
 	temp, err := template.ParseFS(templates, convertorFilePath)
 	if err != nil {
 		return nil, err
@@ -78,7 +69,7 @@ func (g *Generator) generateConvertor(from, to models.Struct, dest string) ([]by
 		return nil, err
 	}
 
-	res, err := g.createModelsPair(from, to, pkg.PkgPath)
+	res, err := createModelsPair(from, to, pkg.PkgPath, functions)
 	if err != nil {
 		return nil, err
 	}
@@ -100,8 +91,17 @@ func (g *Generator) generateConvertor(from, to models.Struct, dest string) ([]by
 	}
 	convertorName += to.Name
 
+	pkgName := pkg.Name
+	if pkgName == "" {
+		names := strings.Split(pkg.PkgPath, "/")
+		if len(names) == 0 {
+			return nil, fmt.Errorf("incorrect parsed package path from destination %s", dest)
+		}
+		pkgName = names[len(names)-1]
+	}
+
 	data := map[string]any{
-		"packageName":   pkg.Name,
+		"packageName":   pkgName,
 		"fromName":      fromName,
 		"toName":        toName,
 		"convertorName": convertorName,
@@ -123,7 +123,7 @@ func (g *Generator) generateConvertor(from, to models.Struct, dest string) ([]by
 	return content, nil
 }
 
-func (g *Generator) createModelsPair(from, to models.Struct, pkgPath string) (result, error) {
+func createModelsPair(from, to models.Struct, pkgPath string, functions models.Functions) (result, error) {
 	var fields []FieldsPair
 	imports := make(map[string]struct{})
 
@@ -139,7 +139,7 @@ func (g *Generator) createModelsPair(from, to models.Struct, pkgPath string) (re
 			continue
 		}
 
-		conversion, pack, err := g.getConversionFunction(fromField.Type, toField.Type, fromField.Name, pkgPath)
+		conversion, pack, err := getConversionFunction(fromField.Type, toField.Type, fromField.Name, pkgPath, functions)
 		if err != nil {
 			return result{}, err
 		}
@@ -163,7 +163,7 @@ func (g *Generator) createModelsPair(from, to models.Struct, pkgPath string) (re
 	}, nil
 }
 
-func (g *Generator) getConversionFunction(fromType, toType models.Type, fromFieldName, pkgPath string,
+func getConversionFunction(fromType, toType models.Type, fromFieldName, pkgPath string, functions models.Functions,
 ) (ConvertorType, ImportType, error) {
 
 	// TODO: check package
@@ -171,7 +171,7 @@ func (g *Generator) getConversionFunction(fromType, toType models.Type, fromFiel
 		return fmt.Sprintf("from.%s", fromFieldName), "", nil
 	}
 
-	cf, ok := g.functions[models.ConversionFunctionKey{
+	cf, ok := functions[models.ConversionFunctionKey{
 		FromType: fromType,
 		ToType:   toType,
 	}]

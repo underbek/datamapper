@@ -1,3 +1,4 @@
 .idea
 /_test_data/generated
-!/_test_data/generated/convertor_test.go
+!/_test_data/generated/generator/convertor_test.go
+!/_test_data/generated/mapper/convertor_test.go

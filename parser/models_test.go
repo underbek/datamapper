@@ -11,7 +11,7 @@ import (
 const testPath = "../_test_data/parser/"
 
 func Test_IncorrectFile(t *testing.T) {
-	_, err := ParseStructs("incorrect name")
+	_, err := ParseModels("incorrect name")
 	require.Error(t, err)
 }
 
@@ -32,7 +32,7 @@ func Test_ParseEmptyFile(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			res, err := ParseStructs(testPath + tt.fileName)
+			res, err := ParseModels(testPath + tt.fileName)
 			assert.NoError(t, err)
 			assert.Empty(t, res)
 		})
@@ -40,7 +40,7 @@ func Test_ParseEmptyFile(t *testing.T) {
 }
 
 func Test_ParseModels(t *testing.T) {
-	res, err := ParseStructs(testPath + "models.go")
+	res, err := ParseModels(testPath + "models.go")
 	assert.NoError(t, err)
 	assert.Len(t, res, 3)
 	expected := map[string]models.Struct{
@@ -74,7 +74,7 @@ func Test_ParseModels(t *testing.T) {
 }
 
 func Test_ParseComplexModel(t *testing.T) {
-	res, err := ParseStructs(testPath + "complex_model.go")
+	res, err := ParseModels(testPath + "complex_model.go")
 	assert.NoError(t, err)
 	assert.Len(t, res, 1)
 	expected := map[string]models.Struct{

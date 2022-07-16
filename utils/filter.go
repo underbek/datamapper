@@ -1,4 +1,4 @@
-package main
+package utils
 
 import "github.com/underbek/datamapper/models"
 
@@ -12,7 +12,7 @@ func findTag(tagName string, tags []models.Tag) (models.Tag, bool) {
 	return models.Tag{}, false
 }
 
-func filterFields(tagName string, fields []models.Field) []models.Field {
+func FilterFields(tagName string, fields []models.Field) []models.Field {
 	var res []models.Field
 	for _, field := range fields {
 		tag, ok := findTag(tagName, field.Tags)

@@ -64,6 +64,8 @@ func parseType(t types.Type) ([]Type, error) {
 			res[i].generic = true
 		}
 		return res, nil
+	case *types.Array:
+		return []Type{{Type: models.Type{Name: t.String()}}}, nil
 	default:
 		return nil, fmt.Errorf("undefined type %s", t.String())
 	}

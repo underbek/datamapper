@@ -2,6 +2,8 @@ package utils
 
 import (
 	"errors"
+	"fmt"
+	"path/filepath"
 	"strings"
 
 	"golang.org/x/tools/go/packages"
@@ -22,7 +24,12 @@ func LoadPackage(source string) (*packages.Package, error) {
 		}
 	}
 
-	pkgs, err := packages.Load(cfg, source)
+	absSourcePath, err := filepath.Abs(source)
+	if err != nil {
+		return nil, err
+	}
+
+	pkgs, err := packages.Load(cfg, absSourcePath)
 	if err != nil {
 		return nil, err
 	}
@@ -32,9 +39,13 @@ func LoadPackage(source string) (*packages.Package, error) {
 	if len(pkg.Errors) != 0 {
 		errs := make([]string, 0, len(pkg.Errors))
 		for _, err := range pkg.Errors {
-			errs = append(errs, err.Error())
+			if !strings.Contains(err.Error(), fmt.Sprintf("no Go files in %s", absSourcePath)) {
+				errs = append(errs, err.Error())
+			}
 		}
-		return nil, errors.New(strings.Join(errs, "; "))
+		if len(errs) != 0 {
+			return nil, errors.New(strings.Join(errs, "; "))
+		}
 	}
 
 	return pkg, nil
