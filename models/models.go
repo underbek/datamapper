@@ -21,4 +21,5 @@ type Tag struct {
 type Type struct {
 	Name        string
 	PackagePath string
+	Pointer     bool
 }

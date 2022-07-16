@@ -105,3 +105,34 @@ func Test_ParseComplexModel(t *testing.T) {
 
 	assert.Equal(t, expected, res)
 }
+
+func Test_ParseModelWithPointerField(t *testing.T) {
+	res, err := ParseModels(testPath + "pointer_model.go")
+	assert.NoError(t, err)
+	assert.Len(t, res, 1)
+	expected := map[string]models.Struct{
+		"PointerModel": {Name: "PointerModel", Fields: []models.Field{
+			{
+				Name: "ID",
+				Type: models.Type{Name: "int", Pointer: true},
+				Tags: []models.Tag{{Name: "map", Value: "id"}},
+			},
+			{
+				Name: "Name",
+				Type: models.Type{Name: "string", Pointer: true},
+				Tags: []models.Tag{{Name: "map", Value: "name"}},
+			},
+			{
+				Name: "Age",
+				Type: models.Type{
+					Name:        "Decimal",
+					PackagePath: "github.com/shopspring/decimal",
+					Pointer:     true,
+				},
+				Tags: []models.Tag{{Name: "map", Value: "age"}},
+			},
+		}, PackageName: "parser", PackagePath: "github.com/underbek/datamapper/_test_data/parser"},
+	}
+
+	assert.Equal(t, expected, res)
+}

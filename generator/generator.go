@@ -182,8 +182,8 @@ func getConversionFunction(fromType, toType models.Type, fromFieldName, pkgPath 
 	if !ok {
 		return "", "", false, fmt.Errorf(
 			"not found convertor function for types %s -> %s by %s field",
-			fromType,
-			toType,
+			fromType.Name,
+			toType.Name,
 			fromFieldName,
 		)
 	}

@@ -63,10 +63,7 @@ func ParseModels(source string) (map[string]models.Struct, error) {
 
 			fields = append(fields, models.Field{
 				Name: field.Name(),
-				Type: models.Type{
-					Name:        tts[0].Name,
-					PackagePath: tts[0].PackagePath,
-				},
+				Type: tts[0].Type,
 				Tags: parseTag(currStruct.Tag(i)),
 			})
 		}

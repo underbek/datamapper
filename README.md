@@ -75,6 +75,7 @@ func ConvertAnyToMany[T, V int | uint | float32](from T) V {
 * [x] First mapper tests
 * [x] Use other conversion functions in convertor
 * [x] Use conversion functions with error -> convertor with error
+* [ ] Convert with pointer filed
 * [ ] Add CI with tests and linters
 * [ ] First console generate
 * [ ] Add generation info

@@ -67,6 +67,17 @@ func parseType(t types.Type) ([]Type, error) {
 		return res, nil
 	case *types.Array:
 		return []Type{{Type: models.Type{Name: t.String()}}}, nil
+	case *types.Pointer:
+		res, err := parseType(t.Elem())
+		if err != nil {
+			return nil, err
+		}
+
+		for i := range res {
+			res[i].Pointer = true
+		}
+
+		return res, nil
 	default:
 		return nil, fmt.Errorf("undefined type %s", t.String())
 	}
