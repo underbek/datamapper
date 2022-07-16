@@ -25,10 +25,11 @@ func parseType(t types.Type) ([]Type, error) {
 		}
 		return parseType(t.Underlying())
 	case *types.Interface:
-		if t.String() == "any" {
-			return []Type{{Type: models.Type{Name: "any"}}}, nil
-		}
 		n := t.NumEmbeddeds()
+		if n == 0 {
+			return []Type{{Type: models.Type{Name: t.String()}}}, nil
+		}
+
 		res := make([]Type, 0, n)
 		for i := 0; i < n; i++ {
 			names, err := parseType(t.EmbeddedType(i))
@@ -109,4 +110,30 @@ func parseTag(tag string) []models.Tag {
 	}
 
 	return tags
+}
+
+func isErrorType(t types.Type) (bool, error) {
+	errTypes, err := parseType(t)
+	if err != nil {
+		return false, err
+	}
+
+	if len(errTypes) != 1 {
+		return false, nil
+	}
+
+	if errTypes[0].generic {
+		return false, nil
+	}
+
+	// TODO: parse custom error by errors interface
+	if errTypes[0].PackagePath != "" {
+		return false, nil
+	}
+
+	if errTypes[0].Name != "interface{Error() string}" {
+		return false, nil
+	}
+
+	return true, nil
 }

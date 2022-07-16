@@ -13,10 +13,8 @@ func ConvertDecimalToNumeric[T constraints.Integer | constraints.Float](from dec
 	return T(from.InexactFloat64())
 }
 
-func ConvertStringToDecimal(from string) decimal.Decimal {
-	// TODO: handle error from conversion function
-	to, _ := decimal.NewFromString(from)
-	return to
+func ConvertStringToDecimal(from string) (decimal.Decimal, error) {
+	return decimal.NewFromString(from)
 }
 
 func ConvertIntegerToDecimal[T constraints.Integer](from T) decimal.Decimal {

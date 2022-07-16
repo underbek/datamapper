@@ -18,6 +18,7 @@ type ConversionFunction struct {
 	PackageName string
 	PackagePath string
 	TypeParam   TypeParamType
+	WithError   bool
 }
 
 type Functions = map[ConversionFunctionKey]ConversionFunction

@@ -284,7 +284,6 @@ func Test_CreateConvertorByComplexModel(t *testing.T) {
 		PackageName: otherPackageName,
 		PackagePath: otherPackagePath,
 		Fields: []models.Field{
-			{Name: "ID", Type: models.Type{Name: "string"}, Tags: []models.Tag{{Name: "map", Value: "id"}}},
 			{Name: "Name", Type: models.Type{Name: "string"}, Tags: []models.Tag{{Name: "map", Value: "name"}}},
 			{Name: "Age", Type: models.Type{Name: "float64"}, Tags: []models.Tag{{Name: "map", Value: "age"}}},
 		},
@@ -294,10 +293,6 @@ func Test_CreateConvertorByComplexModel(t *testing.T) {
 		PackageName: generatedPackageName,
 		PackagePath: generatedPackagePath,
 		Fields: []models.Field{
-			{Name: "ID", Type: models.Type{
-				Name:        "Decimal",
-				PackagePath: "github.com/shopspring/decimal",
-			}, Tags: []models.Tag{{Name: "map", Value: "id"}}},
 			{Name: "Age", Type: models.Type{
 				Name:        "Decimal",
 				PackagePath: "github.com/shopspring/decimal",
@@ -320,7 +315,6 @@ import (
 
 func ConvertOtherModelToDTO(from other.Model) DTO {
 	return DTO{
-		ID:  converts.ConvertStringToDecimal(from.ID),
 		Age: converts.ConvertFloatToDecimal(from.Age),
 	}
 }
@@ -377,6 +371,63 @@ func ConvertDTOToOtherModel(from DTO) other.Model {
 		ID:  ConvertDecimalToString(from.ID),
 		Age: ConvertDecimalToNumeric[float64](from.Age),
 	}
+}
+`
+
+	actual, err := os.ReadFile(destination)
+	require.NoError(t, err)
+
+	assert.Equal(t, expected, string(actual))
+}
+
+func Test_CreateConvertorWithError(t *testing.T) {
+	copySource(t, modelsFileName)
+
+	fromModel := models.Struct{
+		Name:        "DAO",
+		PackageName: generatedPackageName,
+		PackagePath: generatedPackagePath,
+		Fields: []models.Field{
+			{Name: "UUID", Type: models.Type{Name: "string"}, Tags: []models.Tag{{Name: "map", Value: "id"}}},
+			{Name: "Name", Type: models.Type{Name: "string"}, Tags: []models.Tag{{Name: "map", Value: "name"}}},
+			{Name: "Age", Type: models.Type{Name: "uint8"}, Tags: []models.Tag{{Name: "map", Value: "age"}}},
+		},
+	}
+	toModel := models.Struct{
+		Name:        "DTO",
+		PackageName: generatedPackageName,
+		PackagePath: generatedPackagePath,
+		Fields: []models.Field{
+			{Name: "ID", Type: models.Type{
+				Name:        "Decimal",
+				PackagePath: "github.com/shopspring/decimal",
+			}, Tags: []models.Tag{{Name: "map", Value: "id"}}},
+			{Name: "Age", Type: models.Type{
+				Name:        "Decimal",
+				PackagePath: "github.com/shopspring/decimal",
+			}, Tags: []models.Tag{{Name: "map", Value: "age"}}},
+		},
+	}
+
+	destination := generatedPath + "convertor_with_error.go"
+
+	err := CreateConvertor(fromModel, toModel, destination, parseFunctions(t, decimalConvertsSource))
+	require.NoError(t, err)
+
+	expected := `package generator
+
+import "github.com/underbek/datamapper/converts"
+
+func ConvertDAOToDTO(from DAO) (DTO, error) {
+	fromUUID, err := converts.ConvertStringToDecimal(from.UUID)
+	if err != nil {
+		return DTO{}, err
+	}
+
+	return DTO{
+		ID:  fromUUID,
+		Age: converts.ConvertIntegerToDecimal(from.Age),
+	}, nil
 }
 `
 

@@ -19,7 +19,10 @@ func ConvertOrderedToOrdered[T, V constraints.Integer | constraints.Float](from 
 	return V(from)
 }
 
-func ConvertStringToSigned[T constraints.Signed](from string) T {
-	res, _ := strconv.ParseInt(from, 10, 0)
-	return T(res)
+func ConvertStringToSigned[T constraints.Signed](from string) (T, error) {
+	res, err := strconv.ParseInt(from, 10, 0)
+	if err != nil {
+		return 0, err
+	}
+	return T(res), nil
 }

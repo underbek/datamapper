@@ -67,7 +67,7 @@ func parseFunction(pkg *packages.Package, f *types.Func) (models.Functions, erro
 		return nil, nil
 	}
 
-	if signature.Results().Len() != 1 {
+	if signature.Results().Len() == 0 || signature.Results().Len() > 2 {
 		return nil, nil
 	}
 
@@ -87,6 +87,19 @@ func parseFunction(pkg *packages.Package, f *types.Func) (models.Functions, erro
 	toTypes, err := parseType(signature.Results().At(0).Type())
 	if err != nil {
 		return nil, err
+	}
+
+	withError := false
+	if signature.Results().Len() == 2 {
+		isError, err := isErrorType(signature.Results().At(1).Type())
+		if err != nil {
+			return nil, err
+		}
+		if !isError {
+			return nil, nil
+		}
+
+		withError = true
 	}
 
 	funcs := make(models.Functions)
@@ -109,6 +122,7 @@ func parseFunction(pkg *packages.Package, f *types.Func) (models.Functions, erro
 				PackageName: pkg.Name,
 				PackagePath: pkg.PkgPath,
 				TypeParam:   getTypeParam(fromType.generic, toType.generic),
+				WithError:   withError,
 			}
 
 			funcs[key] = cv

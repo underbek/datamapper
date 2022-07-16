@@ -74,6 +74,7 @@ func ConvertAnyToMany[T, V int | uint | float32](from T) V {
 * [x] Delete package flag
 * [x] First mapper tests
 * [x] Use other conversion functions in convertor
+* [ ] Use conversion functions with error -> convertor with error
 * [ ] Add CI with tests and linters
 * [ ] First console generate
 * [ ] Add generation info
@@ -88,7 +89,7 @@ func ConvertAnyToMany[T, V int | uint | float32](from T) V {
 * [ ] Warning or error politics if tags is not equals
 * [ ] Fill some conversion functions
 * [ ] Copy using conversion functions from datamapper to target service if flag set
-* [ ] Use conversion functions with error -> convertor with error
+* [ ] Parse custom error by conversion functions
 
 ### With comment ???
 

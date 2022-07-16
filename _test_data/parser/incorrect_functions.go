@@ -16,8 +16,8 @@ func ManyArguments2(fromA float32, fromB int) string {
 	return "test"
 }
 
-func ManyResults(from int) (string, error) {
-	return "test", nil
+func ManyResults(from int) (string, string) {
+	return "test", "test"
 }
 
 func ManyResults2(from int) (a, b string) {

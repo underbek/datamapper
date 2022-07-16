@@ -25,7 +25,8 @@ func Test_ConvertTransportUserToDomainUser(t *testing.T) {
 		ChildCount: 2,
 	}
 
-	actual := ConvertTransportUserToDomainUser(model)
+	actual, err := ConvertTransportUserToDomainUser(model)
 
+	assert.NoError(t, err)
 	assert.Equal(t, expected, actual)
 }

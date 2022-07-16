@@ -346,3 +346,41 @@ func Test_CFParseWithStruct(t *testing.T) {
 		}}],
 	)
 }
+
+func Test_CFParseWithError(t *testing.T) {
+	res, err := ParseConversionFunctions(testPath + "with_error.go")
+	require.NoError(t, err)
+	assert.Len(t, res, 6)
+
+	for _, toTypeName := range []string{"int", "int8", "int16", "int32", "int64"} {
+		assert.Equal(t,
+			models.ConversionFunction{
+				Name:        "ConvertStringToSigned",
+				PackageName: "parser",
+				PackagePath: "github.com/underbek/datamapper/_test_data/parser",
+				TypeParam:   models.ToTypeParam,
+				WithError:   true,
+			},
+			res[models.ConversionFunctionKey{FromType: models.Type{
+				Name: "string",
+			}, ToType: models.Type{
+				Name: toTypeName,
+			}}],
+		)
+	}
+
+	assert.Equal(t,
+		models.ConversionFunction{
+			Name:        "ConvertStringToDecimal",
+			PackageName: "parser",
+			PackagePath: "github.com/underbek/datamapper/_test_data/parser",
+			WithError:   true,
+		},
+		res[models.ConversionFunctionKey{FromType: models.Type{
+			Name: "string",
+		}, ToType: models.Type{
+			Name:        "Decimal",
+			PackagePath: "github.com/shopspring/decimal",
+		}}],
+	)
+}

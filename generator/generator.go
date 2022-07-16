@@ -25,6 +25,7 @@ type FieldsPair struct {
 	ToName     string
 	ToType     string
 	Conversion string
+	WithError  bool
 }
 
 type result struct {
@@ -107,6 +108,7 @@ func generateConvertor(from, to models.Struct, dest string, functions models.Fun
 		"convertorName": convertorName,
 		"fields":        res.fields,
 		"imports":       filterImports(pkg.PkgPath, res.imports),
+		"withError":     isReturnError(res.fields),
 	}
 
 	buf := bytes.Buffer{}
@@ -139,7 +141,7 @@ func createModelsPair(from, to models.Struct, pkgPath string, functions models.F
 			continue
 		}
 
-		conversion, pack, err := getConversionFunction(fromField.Type, toField.Type, fromField.Name, pkgPath, functions)
+		conversion, pack, withError, err := getConversionFunction(fromField.Type, toField.Type, fromField.Name, pkgPath, functions)
 		if err != nil {
 			return result{}, err
 		}
@@ -154,6 +156,7 @@ func createModelsPair(from, to models.Struct, pkgPath string, functions models.F
 			ToName:     toField.Name,
 			ToType:     toField.Type.Name,
 			Conversion: conversion,
+			WithError:  withError,
 		})
 	}
 
@@ -164,11 +167,11 @@ func createModelsPair(from, to models.Struct, pkgPath string, functions models.F
 }
 
 func getConversionFunction(fromType, toType models.Type, fromFieldName, pkgPath string, functions models.Functions,
-) (ConvertorType, ImportType, error) {
+) (ConvertorType, ImportType, bool, error) {
 
 	// TODO: check package
 	if fromType.Name == toType.Name {
-		return fmt.Sprintf("from.%s", fromFieldName), "", nil
+		return fmt.Sprintf("from.%s", fromFieldName), "", false, nil
 	}
 
 	cf, ok := functions[models.ConversionFunctionKey{
@@ -177,7 +180,7 @@ func getConversionFunction(fromType, toType models.Type, fromFieldName, pkgPath 
 	}]
 
 	if !ok {
-		return "", "", fmt.Errorf(
+		return "", "", false, fmt.Errorf(
 			"not found convertor function for types %s -> %s by %s field",
 			fromType,
 			toType,
@@ -189,12 +192,12 @@ func getConversionFunction(fromType, toType models.Type, fromFieldName, pkgPath 
 
 	if cf.PackagePath == pkgPath {
 		conversion := fmt.Sprintf("%s%s(from.%s)", cf.Name, typeParams, fromFieldName)
-		return conversion, cf.PackagePath, nil
+		return conversion, cf.PackagePath, cf.WithError, nil
 	}
 
 	conversion := fmt.Sprintf("%s.%s%s(from.%s)", cf.PackageName, cf.Name, typeParams, fromFieldName)
 
-	return conversion, cf.PackagePath, nil
+	return conversion, cf.PackagePath, cf.WithError, nil
 }
 
 func getTypeParams(cf models.ConversionFunction, fromType, toType models.Type) string {
@@ -218,4 +221,14 @@ func filterImports(currentPkgPath string, imports []string) []string {
 	}
 
 	return res
+}
+
+func isReturnError(fields []FieldsPair) bool {
+	for _, field := range fields {
+		if field.WithError {
+			return true
+		}
+	}
+
+	return false
 }
