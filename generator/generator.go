@@ -208,28 +208,20 @@ func getFieldsPair(from, to models.Field, fromModel, toModel models.Struct, pkgP
 		conversation = fmt.Sprintf("%s%s(%sfrom.%s)", cf.Name, typeParams, ptr, from.Name)
 	}
 
-	if to.Type.Pointer {
-		pointerConversion, err := getPointerConversion(from.Name, conversation)
-		if err != nil {
-			return FieldsPair{}, nil, err
-		}
-
-		res.Conversions = append(res.Conversions, pointerConversion)
-		conversation = fmt.Sprintf("&from%s", from.Name)
-	}
-
-	if !cf.WithError {
-		res.Assignment = conversation
-		return res, imports, nil
-	}
-
-	errorConversation, err := getErrorConversion(from.Name, getFullStructName(toModel, pkgPath), conversation)
+	conversation, assignment, err := createPointerErrorConversion(
+		from, to,
+		getFullStructName(toModel, pkgPath),
+		conversation, cf.WithError,
+	)
 	if err != nil {
 		return FieldsPair{}, nil, err
 	}
 
-	res.Assignment = fmt.Sprintf("from%s", from.Name)
-	res.Conversions = append(res.Conversions, errorConversation)
+	if conversation != "" {
+		res.Conversions = append(res.Conversions, conversation)
+	}
+
+	res.Assignment = assignment
 
 	return res, imports, nil
 }
@@ -407,4 +399,37 @@ func getFullStructName(model models.Struct, pkgPath string) string {
 	}
 
 	return model.Name
+}
+
+func createPointerErrorConversion(fromFiled, toFiled models.Field, toModelName, conversation string, withError bool,
+) (string, string, error) {
+	if !toFiled.Type.Pointer && !withError {
+		return "", conversation, nil
+	}
+
+	var res string
+	var err error
+
+	refAssignment := fmt.Sprintf("&from%s", fromFiled.Name)
+	valueAssignment := fmt.Sprintf("from%s", fromFiled.Name)
+
+	if toFiled.Type.Pointer && !withError {
+		res, err = getPointerConversion(fromFiled.Name, conversation)
+		if err != nil {
+			return "", "", err
+		}
+	}
+
+	if withError {
+		res, err = getErrorConversion(fromFiled.Name, toModelName, conversation)
+		if err != nil {
+			return "", "", err
+		}
+	}
+
+	if toFiled.Type.Pointer {
+		return res, refAssignment, nil
+	}
+
+	return res, valueAssignment, nil
 }

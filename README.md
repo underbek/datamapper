@@ -76,7 +76,7 @@ func ConvertAnyToMany[T, V int | uint | float32](from T) V {
 * [x] Use other conversion functions in convertor
 * [x] Use conversion functions with error -> convertor with error
 * [x] Convert with pointer field
-* [ ] Convert with pointer field with error
+* [x] Convert with pointer field with error
 * [ ] No nil err if from and to fields are pointers
 * [ ] Add CI with tests and linters
 * [ ] First console generate

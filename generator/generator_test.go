@@ -152,6 +152,13 @@ func Test_GenerateConvertor(t *testing.T) {
 			generatePath: "with_filed_pointers_and_convertors",
 			cfPath:       cfPath,
 		},
+		{
+			name:         "With filed pointers and errors",
+			pathFrom:     "with_filed_pointers_and_errors",
+			pathTo:       "with_filed_pointers_and_errors",
+			generatePath: "with_filed_pointers_and_errors",
+			cfPath:       cfPath,
+		},
 	}
 
 	for _, tt := range tests {
