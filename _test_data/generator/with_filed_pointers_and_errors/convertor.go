@@ -1,9 +1,11 @@
 package with_filed_pointers_and_errors
 
 import (
-	"github.com/underbek/datamapper/converts"
-
 	"fmt"
+
+	"github.com/shopspring/decimal"
+
+	"github.com/underbek/datamapper/converts"
 )
 
 func ConvertFromToTo(from From) (To, error) {
@@ -21,18 +23,19 @@ func ConvertFromToTo(from From) (To, error) {
 		return To{}, err
 	}
 
-	if from.Children == nil {
-		return To{}, fmt.Errorf("cannot convert From.Children -> To.Children, field is nil")
-	}
+	var fromChildren *decimal.Decimal
+	if from.Children != nil {
+		res, err := converts.ConvertStringToDecimal(*from.Children)
+		if err != nil {
+			return To{}, err
+		}
 
-	fromChildren, err := converts.ConvertStringToDecimal(*from.Children)
-	if err != nil {
-		return To{}, err
+		fromChildren = &res
 	}
 
 	return To{
 		UUID:     &fromID,
 		Age:      fromAge,
-		Children: &fromChildren,
+		Children: fromChildren,
 	}, nil
 }

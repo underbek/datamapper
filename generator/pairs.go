@@ -4,12 +4,11 @@ import (
 	"fmt"
 
 	"github.com/underbek/datamapper/models"
-	"golang.org/x/exp/maps"
 )
 
 func createModelsPair(from, to models.Struct, pkgPath string, functions models.Functions) (result, error) {
 	var fields []FieldsPair
-	imports := make(map[string]struct{})
+	var imports []ImportType
 
 	fromFields := make(map[string]models.Field)
 	for _, field := range from.Fields {
@@ -28,18 +27,13 @@ func createModelsPair(from, to models.Struct, pkgPath string, functions models.F
 			return result{}, err
 		}
 
-		for _, pack := range packs {
-			if pack != "" {
-				imports[pack] = struct{}{}
-			}
-		}
-
+		imports = append(imports, packs...)
 		fields = append(fields, pair)
 	}
 
 	return result{
 		fields:        fields,
-		imports:       maps.Keys(imports),
+		imports:       filterAndSortImports(imports),
 		conversations: fillConversations(fields),
 	}, nil
 }
@@ -124,6 +118,16 @@ func fillConversionFunction(pair FieldsPair, fromFiled, toFiled models.Field, fr
 
 	ptr := ""
 	if fromFiled.Type.Pointer {
+		ptr = "*"
+	}
+
+	typeParams := getTypeParams(cf, fromFiled.Type, toFiled.Type)
+	conversion := fmt.Sprintf("%s.%s%s(%sfrom.%s)", cf.PackageName, cf.Name, typeParams, ptr, fromFiled.Name)
+	if cf.PackagePath == pkgPath {
+		conversion = fmt.Sprintf("%s%s(%sfrom.%s)", cf.Name, typeParams, ptr, fromFiled.Name)
+	}
+
+	if fromFiled.Type.Pointer && !toFiled.Type.Pointer {
 		pointerCheck, err := getPointerCheck(fromFiled, toFiled,
 			getFullStructName(fromModel, pkgPath),
 			getFullStructName(toModel, pkgPath),
@@ -133,15 +137,8 @@ func fillConversionFunction(pair FieldsPair, fromFiled, toFiled models.Field, fr
 		}
 
 		pair.Conversions = append(pair.Conversions, pointerCheck)
-		ptr = "*"
 		imports = append(imports, "fmt")
 		pair.PointerToValue = true
-	}
-
-	typeParams := getTypeParams(cf, fromFiled.Type, toFiled.Type)
-	conversion := fmt.Sprintf("%s.%s%s(%sfrom.%s)", cf.PackageName, cf.Name, typeParams, ptr, fromFiled.Name)
-	if cf.PackagePath == pkgPath {
-		conversion = fmt.Sprintf("%s%s(%sfrom.%s)", cf.Name, typeParams, ptr, fromFiled.Name)
 	}
 
 	if !toFiled.Type.Pointer && !cf.WithError {
@@ -153,6 +150,24 @@ func fillConversionFunction(pair FieldsPair, fromFiled, toFiled models.Field, fr
 
 	refAssignment := fmt.Sprintf("&from%s", fromFiled.Name)
 	valueAssignment := fmt.Sprintf("from%s", fromFiled.Name)
+
+	if fromFiled.Type.Pointer && toFiled.Type.Pointer {
+		pointerToPointer, err := getPointerToPointerConversion(
+			fromFiled.Name,
+			getFullStructName(toModel, pkgPath),
+			getFullFieldName(toFiled, pkgPath),
+			conversion,
+			cf.WithError,
+		)
+		if err != nil {
+			return FieldsPair{}, nil, err
+		}
+
+		imports = append(imports, toFiled.Type.PackagePath)
+		pair.Conversions = append(pair.Conversions, pointerToPointer)
+		pair.Assignment = valueAssignment
+		return pair, imports, nil
+	}
 
 	if toFiled.Type.Pointer && !cf.WithError {
 		conversion, err = getPointerConversion(fromFiled.Name, conversion)

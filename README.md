@@ -77,23 +77,23 @@ func ConvertAnyToMany[T, V int | uint | float32](from T) V {
 * [x] Use conversion functions with error -> convertor with error
 * [x] Convert with pointer field
 * [x] Convert with pointer field with error
-* [ ] No nil err if from and to fields are pointers
+* [x] No nil err if from and to fields are pointers
 * [ ] Add CI with tests and linters
 * [ ] First console generate
 * [ ] Add generation info
 * [ ] First release
 * [ ] Use in my projects
-* [ ] Parse comments
 * [ ] Parse user struct in struct
+* [ ] Option for default field value if from field is nil
+* [ ] Parse comments
 * [ ] Use generated convertors in convertor like conversion function
 * [ ] Parse embed struct
-* [ ] Map filed without tag
 * [ ] Parse other package
+* [ ] Map filed without tag
 * [ ] Warning or error politics if tags is not equals
 * [ ] Fill some conversion functions
 * [ ] Copy using conversion functions from datamapper to target service if flag set
 * [ ] Use conversion functions with pointers
-* [ ] Option for default field value if from field is nil
 * [ ] Parse custom error by conversion functions
 
 ### With comment ???

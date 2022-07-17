@@ -1,5 +1,12 @@
-var from{{.fromFieldName}} *{{if .toFieldPkg not eq ""}}{{.toFieldPkg}}.{{end}}{{.toFieldType}}
+var from{{.fromFieldName}} *{{.toFullFieldType}}
 if from.{{.fromFieldName}} != nil {
+    {{- if .isError -}}
+    res, err := {{.conversionFunction}}
+    if err != nil {
+        return {{.toModelName}}{}, err
+    }
+    {{else}}
     res := {{.conversionFunction}}
+    {{- end}}
     from{{.fromFieldName}} = &res
 }

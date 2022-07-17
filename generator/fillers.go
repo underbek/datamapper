@@ -92,13 +92,14 @@ func getPointerConversion(fromFieldName string, conversionFunction string) (stri
 	return fillTemplate[string](pointerConversionFilePath, data)
 }
 
-func getPointerToPointerConversion(fromFieldName string, toFieldPkg, toFieldType, conversionFunction string,
+func getPointerToPointerConversion(fromFieldName, toModelName, toFullFieldType, conversionFunction string, isError bool,
 ) (string, error) {
 	data := map[string]any{
 		"fromFieldName":      fromFieldName,
-		"toFieldPkg":         toFieldPkg,
-		"toFieldType":        toFieldType,
+		"toModelName":        toModelName,
+		"toFullFieldType":    toFullFieldType,
 		"conversionFunction": conversionFunction,
+		"isError":            isError,
 	}
 
 	return fillTemplate[string](pointerToPointerConversionFilePath, data)

@@ -2,8 +2,11 @@ package generator
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/underbek/datamapper/models"
+	"golang.org/x/exp/maps"
+	"golang.org/x/exp/slices"
 )
 
 func getTypeParams(cf models.ConversionFunction, fromType, toType models.Type) string {
@@ -54,4 +57,32 @@ func getFullStructName(model models.Struct, pkgPath string) string {
 	}
 
 	return model.Name
+}
+
+func getFullFieldName(filed models.Field, pkgPath string) string {
+	if filed.Type.PackagePath != "" && filed.Type.PackagePath != pkgPath {
+		pkgName := getPackageNameByPath(filed.Type.PackagePath)
+		return fmt.Sprintf("%s.%s", pkgName, filed.Type.Name)
+	}
+
+	return filed.Type.Name
+}
+
+func getPackageNameByPath(path string) string {
+	names := strings.Split(path, "/")
+	return names[len(names)-1]
+}
+
+func filterAndSortImports(imports []ImportType) []ImportType {
+	set := make(map[ImportType]struct{})
+	for _, importType := range imports {
+		if importType != "" {
+			set[importType] = struct{}{}
+		}
+	}
+
+	res := maps.Keys(set)
+	slices.Sort(res)
+
+	return res
 }

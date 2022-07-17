@@ -3,7 +3,6 @@ package generator
 import (
 	"fmt"
 	"os"
-	"strings"
 
 	"github.com/underbek/datamapper/models"
 	"github.com/underbek/datamapper/utils"
@@ -78,11 +77,10 @@ func generateConvertor(from, to models.Struct, dest string, functions models.Fun
 
 	pkgName := pkg.Name
 	if pkgName == "" {
-		names := strings.Split(pkg.PkgPath, "/")
-		if len(names) == 0 {
+		if pkg.PkgPath == "" {
 			return nil, fmt.Errorf("incorrect parsed package path from destination %s", dest)
 		}
-		pkgName = names[len(names)-1]
+		pkgName = getPackageNameByPath(pkg.PkgPath)
 	}
 
 	fromName := getFullStructName(from, pkg.PkgPath)
