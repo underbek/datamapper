@@ -1,0 +1,5 @@
+var from{{.fromFieldName}} *{{if .toFieldPkg not eq ""}}{{.toFieldPkg}}.{{end}}{{.toFieldType}}
+if from.{{.fromFieldName}} != nil {
+    res := {{.conversionFunction}}
+    from{{.fromFieldName}} = &res
+}
