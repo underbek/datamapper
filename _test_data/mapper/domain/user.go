@@ -6,6 +6,6 @@ type User struct {
 	ID         int             `map:"id"`
 	Name       string          `map:"name"`
 	Age        decimal.Decimal `map:"age"`
-	ChildCount int             `map:"children"`
+	ChildCount *int            `map:"children"`
 	Empty      string
 }

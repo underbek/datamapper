@@ -75,7 +75,9 @@ func ConvertAnyToMany[T, V int | uint | float32](from T) V {
 * [x] First mapper tests
 * [x] Use other conversion functions in convertor
 * [x] Use conversion functions with error -> convertor with error
-* [ ] Convert with pointer filed
+* [x] Convert with pointer field
+* [ ] Convert with pointer field with error
+* [ ] No nil err if from and to fields are pointers
 * [ ] Add CI with tests and linters
 * [ ] First console generate
 * [ ] Add generation info
@@ -90,6 +92,8 @@ func ConvertAnyToMany[T, V int | uint | float32](from T) V {
 * [ ] Warning or error politics if tags is not equals
 * [ ] Fill some conversion functions
 * [ ] Copy using conversion functions from datamapper to target service if flag set
+* [ ] Use conversion functions with pointers
+* [ ] Option for default field value if from field is nil
 * [ ] Parse custom error by conversion functions
 
 ### With comment ???

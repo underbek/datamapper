@@ -1,0 +1,4 @@
+from{{.fromFieldName}}, err := {{.conversionFunction}}
+if err != nil {
+  return {{.toModelName}}{}, err
+}

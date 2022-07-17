@@ -14,25 +14,15 @@ import (
 
 {{ if .withError -}}
 func {{.convertorName}}(from {{.fromName}}) ({{.toName}}, error) {
-{{- else -}}
+{{else}}
 func {{.convertorName}}(from {{.fromName}}) {{.toName}} {
-{{- end -}}
-{{- range $field := .fields -}}
-  {{- if $field.WithError -}}
-  from{{$field.FromName}}, err := {{$field.Conversion}}
-  if err != nil {
-      return {{$.toName}}{}, err
-  }
-
-  {{end}}
-{{- end -}}
+{{ end -}}
+{{- range $conversation := .conversations -}}
+{{$conversation}}
+{{ end -}}
 
   return {{.toName}}{ {{range $field := .fields}}
-    {{ if $field.WithError -}}
-      {{$field.ToName}}: from{{$field.FromName}},
-    {{- else -}}
-      {{$field.ToName}}: {{$field.Conversion}},
-    {{- end }}
+      {{$field.ToName}}: {{$field.Assignment}},
   {{- end}}
   }{{ if .withError }}, nil{{end}}
 }

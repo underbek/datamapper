@@ -5,9 +5,9 @@ import (
 	"embed"
 	"fmt"
 	"go/format"
-	"html/template"
 	"os"
 	"strings"
+	"text/template"
 
 	"github.com/underbek/datamapper/models"
 	"github.com/underbek/datamapper/utils"
@@ -20,20 +20,28 @@ type ConvertorType = string
 type ImportType = string
 
 type FieldsPair struct {
-	FromName   string
-	FromType   string
-	ToName     string
-	ToType     string
-	Conversion string
-	WithError  bool
+	FromName       string
+	FromType       string
+	ToName         string
+	ToType         string
+	Assignment     string
+	Conversions    []string
+	WithError      bool
+	PointerToValue bool
 }
 
 type result struct {
-	fields  []FieldsPair
-	imports []string
+	fields        []FieldsPair
+	imports       []string
+	conversations []string
 }
 
-const convertorFilePath = "templates/convertor.temp"
+const (
+	convertorFilePath           = "templates/convertor.temp"
+	errorConversationFilePath   = "templates/error_conversion.temp"
+	pointerCheckFilePath        = "templates/pointer_check.temp"
+	pointerConversationFilePath = "templates/pointer_conversion.temp"
+)
 
 //go:embed templates
 var templates embed.FS
@@ -60,11 +68,6 @@ func CreateConvertor(from, to models.Struct, dest string, functions models.Funct
 }
 
 func generateConvertor(from, to models.Struct, dest string, functions models.Functions) ([]byte, error) {
-	temp, err := template.ParseFS(templates, convertorFilePath)
-	if err != nil {
-		return nil, err
-	}
-
 	pkg, err := utils.LoadPackage(dest)
 	if err != nil {
 		return nil, err
@@ -78,16 +81,12 @@ func generateConvertor(from, to models.Struct, dest string, functions models.Fun
 	res.imports = append(res.imports, from.PackagePath, to.PackagePath)
 
 	convertorName := "Convert"
-	fromName := from.Name
-	toName := to.Name
 	if from.PackagePath != pkg.PkgPath {
-		fromName = fmt.Sprintf("%s.%s", from.PackageName, from.Name)
 		convertorName += cases.Title(language.Und, cases.NoLower).String(from.PackageName)
 	}
 	convertorName += from.Name
 	convertorName += "To"
 	if to.PackagePath != pkg.PkgPath {
-		toName = fmt.Sprintf("%s.%s", to.PackageName, to.Name)
 		convertorName += cases.Title(language.Und, cases.NoLower).String(to.PackageName)
 	}
 	convertorName += to.Name
@@ -101,28 +100,10 @@ func generateConvertor(from, to models.Struct, dest string, functions models.Fun
 		pkgName = names[len(names)-1]
 	}
 
-	data := map[string]any{
-		"packageName":   pkgName,
-		"fromName":      fromName,
-		"toName":        toName,
-		"convertorName": convertorName,
-		"fields":        res.fields,
-		"imports":       filterImports(pkg.PkgPath, res.imports),
-		"withError":     isReturnError(res.fields),
-	}
+	fromName := getFullStructName(from, pkg.PkgPath)
+	toName := getFullStructName(to, pkg.PkgPath)
 
-	buf := bytes.Buffer{}
-	err = temp.Execute(&buf, data)
-	if err != nil {
-		return nil, err
-	}
-
-	content, err := format.Source(buf.Bytes())
-	if err != nil {
-		return nil, err
-	}
-
-	return content, nil
+	return createConvertor(pkgName, fromName, toName, convertorName, pkg.PkgPath, res)
 }
 
 func createModelsPair(from, to models.Struct, pkgPath string, functions models.Functions) (result, error) {
@@ -141,63 +122,116 @@ func createModelsPair(from, to models.Struct, pkgPath string, functions models.F
 			continue
 		}
 
-		conversion, pack, withError, err := getConversionFunction(fromField.Type, toField.Type, fromField.Name, pkgPath, functions)
+		pair, packs, err := getFieldsPair(fromField, toField, from, to, pkgPath, functions)
 		if err != nil {
 			return result{}, err
 		}
 
-		if pack != "" {
-			imports[pack] = struct{}{}
+		for _, pack := range packs {
+			if pack != "" {
+				imports[pack] = struct{}{}
+			}
 		}
 
-		fields = append(fields, FieldsPair{
-			FromName:   fromField.Name,
-			FromType:   fromField.Type.Name,
-			ToName:     toField.Name,
-			ToType:     toField.Type.Name,
-			Conversion: conversion,
-			WithError:  withError,
-		})
+		fields = append(fields, pair)
 	}
 
 	return result{
-		fields:  fields,
-		imports: maps.Keys(imports),
+		fields:        fields,
+		imports:       maps.Keys(imports),
+		conversations: fillConversations(fields),
 	}, nil
 }
 
-func getConversionFunction(fromType, toType models.Type, fromFieldName, pkgPath string, functions models.Functions,
-) (ConvertorType, ImportType, bool, error) {
+func getFieldsPair(from, to models.Field, fromModel, toModel models.Struct, pkgPath string, functions models.Functions,
+) (FieldsPair, []ImportType, error) {
 
 	// TODO: check package
-	if fromType.Name == toType.Name {
-		return fmt.Sprintf("from.%s", fromFieldName), "", false, nil
+	if from.Type.Name == to.Type.Name {
+		res, pkg, err := getFieldsPairBySameTypes(from, to, fromModel.Name, toModel.Name)
+		if err != nil {
+			return FieldsPair{}, nil, err
+		}
+		return res, []ImportType{pkg}, nil
 	}
 
-	cf, ok := functions[models.ConversionFunctionKey{
-		FromType: fromType,
-		ToType:   toType,
-	}]
+	key := models.ConversionFunctionKey{
+		FromType: from.Type,
+		ToType:   to.Type,
+	}
+
+	//TODO: Use conversion functions with pointers
+	key.FromType.Pointer = false
+	key.ToType.Pointer = false
+
+	cf, ok := functions[key]
 
 	if !ok {
-		return "", "", false, fmt.Errorf(
+		return FieldsPair{}, nil, fmt.Errorf(
 			"not found convertor function for types %s -> %s by %s field",
-			fromType.Name,
-			toType.Name,
-			fromFieldName,
+			from.Type.Name,
+			to.Type.Name,
+			from.Name,
 		)
 	}
 
-	typeParams := getTypeParams(cf, fromType, toType)
+	typeParams := getTypeParams(cf, from.Type, to.Type)
 
-	if cf.PackagePath == pkgPath {
-		conversion := fmt.Sprintf("%s%s(from.%s)", cf.Name, typeParams, fromFieldName)
-		return conversion, cf.PackagePath, cf.WithError, nil
+	res := FieldsPair{
+		FromName:  from.Name,
+		FromType:  from.Type.Name,
+		ToName:    to.Name,
+		ToType:    to.Type.Name,
+		WithError: cf.WithError,
 	}
 
-	conversion := fmt.Sprintf("%s.%s%s(from.%s)", cf.PackageName, cf.Name, typeParams, fromFieldName)
+	ptr := ""
+	imports := []ImportType{cf.PackagePath}
 
-	return conversion, cf.PackagePath, cf.WithError, nil
+	if from.Type.Pointer {
+		pointerCheck, err := getPointerCheck(from, to,
+			getFullStructName(fromModel, pkgPath),
+			getFullStructName(toModel, pkgPath),
+		)
+		if err != nil {
+			return FieldsPair{}, nil, err
+		}
+
+		res.Conversions = append(res.Conversions, pointerCheck)
+		ptr = "*"
+		imports = append(imports, "fmt")
+		res.PointerToValue = true
+	}
+
+	conversation := fmt.Sprintf("%s.%s%s(%sfrom.%s)", cf.PackageName, cf.Name, typeParams, ptr, from.Name)
+	if cf.PackagePath == pkgPath {
+		conversation = fmt.Sprintf("%s%s(%sfrom.%s)", cf.Name, typeParams, ptr, from.Name)
+	}
+
+	if to.Type.Pointer {
+		pointerConversion, err := getPointerConversion(from.Name, conversation)
+		if err != nil {
+			return FieldsPair{}, nil, err
+		}
+
+		res.Conversions = append(res.Conversions, pointerConversion)
+		conversation = fmt.Sprintf("&from%s", from.Name)
+	}
+
+	if !cf.WithError {
+		res.Assignment = conversation
+		return res, imports, nil
+	}
+
+	errorConversation, err := getErrorConversion(from.Name, getFullStructName(toModel, pkgPath), conversation)
+	if err != nil {
+		return FieldsPair{}, nil, err
+	}
+
+	res.Assignment = fmt.Sprintf("from%s", from.Name)
+	res.Conversions = append(res.Conversions, errorConversation)
+
+	return res, imports, nil
 }
 
 func getTypeParams(cf models.ConversionFunction, fromType, toType models.Type) string {
@@ -223,12 +257,154 @@ func filterImports(currentPkgPath string, imports []string) []string {
 	return res
 }
 
+func fillConversations(fields []FieldsPair) []string {
+	var res []string
+	for _, field := range fields {
+		res = append(res, field.Conversions...)
+	}
+
+	return res
+}
+
 func isReturnError(fields []FieldsPair) bool {
 	for _, field := range fields {
-		if field.WithError {
+		if field.WithError || field.PointerToValue {
 			return true
 		}
 	}
 
 	return false
+}
+
+func getFieldsPairBySameTypes(from, to models.Field, fromName, toName string) (FieldsPair, ImportType, error) {
+	res := FieldsPair{
+		FromName: from.Name,
+		FromType: from.Type.Name,
+		ToName:   to.Name,
+		ToType:   to.Type.Name,
+	}
+
+	if from.Type.Pointer == to.Type.Pointer {
+		res.Assignment = fmt.Sprintf("from.%s", from.Name)
+		return res, "", nil
+	}
+
+	if to.Type.Pointer {
+		res.Assignment = fmt.Sprintf("&from.%s", from.Name)
+		return res, "", nil
+	}
+
+	res.PointerToValue = true
+	res.Assignment = fmt.Sprintf("*from.%s", from.Name)
+
+	conversion, err := getPointerCheck(from, to, fromName, toName)
+	if err != nil {
+		return FieldsPair{}, "", err
+	}
+
+	res.Conversions = append(res.Conversions, conversion)
+
+	return res, "fmt", nil
+}
+
+func createConvertor(pkgName, fromName, toName, convertorName, pkgPath string, res result) ([]byte, error) {
+	temp, err := template.ParseFS(templates, convertorFilePath)
+	if err != nil {
+		return nil, err
+	}
+
+	data := map[string]any{
+		"packageName":   pkgName,
+		"fromName":      fromName,
+		"toName":        toName,
+		"convertorName": convertorName,
+		"fields":        res.fields,
+		"imports":       filterImports(pkgPath, res.imports),
+		"withError":     isReturnError(res.fields),
+		"conversations": res.conversations,
+	}
+
+	buf := bytes.Buffer{}
+	err = temp.Execute(&buf, data)
+	if err != nil {
+		return nil, err
+	}
+
+	content, err := format.Source(buf.Bytes())
+	if err != nil {
+		return nil, err
+	}
+
+	return content, nil
+}
+
+func getPointerCheck(from, to models.Field, fromName, toName string) (string, error) {
+	temp, err := template.ParseFS(templates, pointerCheckFilePath)
+	if err != nil {
+		return "", err
+	}
+
+	data := map[string]any{
+		"fromModelName": fromName,
+		"toModelName":   toName,
+		"fromFieldName": from.Name,
+		"toFieldName":   to.Name,
+	}
+
+	buf := bytes.Buffer{}
+	err = temp.Execute(&buf, data)
+	if err != nil {
+		return "", err
+	}
+
+	return buf.String(), nil
+}
+
+func getErrorConversion(fromFiledName, toModelName, conversionFunction string) (string, error) {
+	temp, err := template.ParseFS(templates, errorConversationFilePath)
+	if err != nil {
+		return "", err
+	}
+
+	data := map[string]any{
+		"toModelName":        toModelName,
+		"fromFieldName":      fromFiledName,
+		"conversionFunction": conversionFunction,
+	}
+
+	buf := bytes.Buffer{}
+	err = temp.Execute(&buf, data)
+	if err != nil {
+		return "", err
+	}
+
+	return buf.String(), nil
+}
+
+func getPointerConversion(fromFieldName string, conversionFunction string) (string, error) {
+	temp, err := template.ParseFS(templates, pointerConversationFilePath)
+	if err != nil {
+		return "", err
+	}
+
+	data := map[string]any{
+		"fromFieldName":      fromFieldName,
+		"conversionFunction": conversionFunction,
+	}
+
+	buf := bytes.Buffer{}
+	err = temp.Execute(&buf, data)
+	if err != nil {
+		return "", err
+	}
+
+	return buf.String(), nil
+}
+
+func getFullStructName(model models.Struct, pkgPath string) string {
+	if model.PackagePath != pkgPath {
+		return fmt.Sprintf("%s.%s", model.PackageName, model.Name)
+	}
+
+	return model.Name
 }
