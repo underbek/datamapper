@@ -1,6 +1,7 @@
 package generator
 
 import (
+	"errors"
 	"fmt"
 	"os"
 
@@ -8,6 +9,11 @@ import (
 	"github.com/underbek/datamapper/utils"
 	"golang.org/x/text/cases"
 	"golang.org/x/text/language"
+)
+
+var (
+	ErrParseError = errors.New("parse error")
+	ErrNotFound   = errors.New("not found error")
 )
 
 type ConvertorType = string
@@ -36,7 +42,7 @@ func CreateConvertor(from, to models.Struct, dest string, functions models.Funct
 		return err
 	}
 
-	file, err := os.Create(dest)
+	file, err := os.Create(dest) //nolint:gosec
 	if err != nil {
 		return err
 	}
@@ -78,7 +84,7 @@ func generateConvertor(from, to models.Struct, dest string, functions models.Fun
 	pkgName := pkg.Name
 	if pkgName == "" {
 		if pkg.PkgPath == "" {
-			return nil, fmt.Errorf("incorrect parsed package path from destination %s", dest)
+			return nil, fmt.Errorf("incorrect parsed package path from destination %s: %w", dest, ErrParseError)
 		}
 		pkgName = getPackageNameByPath(pkg.PkgPath)
 	}

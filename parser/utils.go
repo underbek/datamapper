@@ -79,7 +79,7 @@ func parseType(t types.Type) ([]Type, error) {
 
 		return res, nil
 	default:
-		return nil, fmt.Errorf("undefined type %s", t.String())
+		return nil, fmt.Errorf("%w: %s", ErrUndefinedType, t.String())
 	}
 }
 

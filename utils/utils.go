@@ -9,6 +9,8 @@ import (
 	"golang.org/x/tools/go/packages"
 )
 
+var ErrParseError = errors.New("parse error")
+
 func LoadPackage(source string) (*packages.Package, error) {
 	cfg := &packages.Config{
 		Mode: packages.NeedName | packages.NeedTypes | packages.NeedDeps | packages.NeedImports,
@@ -44,7 +46,7 @@ func LoadPackage(source string) (*packages.Package, error) {
 			}
 		}
 		if len(errs) != 0 {
-			return nil, errors.New(strings.Join(errs, "; "))
+			return nil, fmt.Errorf("%w: %s", ErrParseError, strings.Join(errs, "; "))
 		}
 	}
 

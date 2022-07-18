@@ -1,6 +1,7 @@
 package mapper
 
 import (
+	"errors"
 	"fmt"
 
 	"github.com/underbek/datamapper/generator"
@@ -12,6 +13,11 @@ import (
 
 const (
 	internalConvertsPackagePath = "../converts"
+)
+
+var (
+	ErrNotFoundStruct = errors.New("not found struct error")
+	ErrNotFoundTag    = errors.New("not found tag error")
 )
 
 func MapModels(opts options.Options) error {
@@ -30,7 +36,7 @@ func MapModels(opts options.Options) error {
 
 	from, ok := structs[opts.FromName]
 	if !ok {
-		return fmt.Errorf("source model %s not found from %s", opts.FromName, opts.FromSource)
+		return fmt.Errorf(" %w: source model %s from %s", ErrNotFoundStruct, opts.FromName, opts.FromSource)
 	}
 
 	structs, err = parser.ParseModels(opts.ToSource)
@@ -40,17 +46,22 @@ func MapModels(opts options.Options) error {
 
 	to, ok := structs[opts.ToName]
 	if !ok {
-		return fmt.Errorf("to model %s not found from %s", opts.ToName, opts.ToSource)
+		return fmt.Errorf("%w: to model %s from %s", ErrNotFoundStruct, opts.ToName, opts.ToSource)
 	}
 
 	from.Fields = utils.FilterFields(opts.FromTag, from.Fields)
 	if len(from.Fields) == 0 {
-		return fmt.Errorf("soure model %s does not contain tag %s", opts.FromName, opts.FromTag)
+		return fmt.Errorf(
+			"%w: source model %s does not contain tag %s",
+			ErrNotFoundTag,
+			opts.FromName,
+			opts.FromTag,
+		)
 	}
 
 	to.Fields = utils.FilterFields(opts.ToTag, to.Fields)
 	if len(to.Fields) == 0 {
-		return fmt.Errorf("to model %s does not contain tag %s", opts.ToName, opts.ToTag)
+		return fmt.Errorf("%w: to model %s does not contain tag %s", ErrNotFoundTag, opts.ToName, opts.ToTag)
 	}
 
 	//TODO: parse or copy embed sources

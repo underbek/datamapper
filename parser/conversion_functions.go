@@ -1,6 +1,7 @@
 package parser
 
 import (
+	"errors"
 	"fmt"
 	"go/types"
 	"path/filepath"
@@ -10,6 +11,12 @@ import (
 	"github.com/underbek/datamapper/utils"
 	"golang.org/x/exp/maps"
 	"golang.org/x/tools/go/packages"
+)
+
+var (
+	ErrNotFoundType  = errors.New("not found type error")
+	ErrNotFoundSign  = errors.New("not found signature error")
+	ErrUndefinedType = errors.New("undefined type error")
 )
 
 func ParseConversionFunctions(source string) (models.Functions, error) {
@@ -24,7 +31,7 @@ func ParseConversionFunctions(source string) (models.Functions, error) {
 	}
 
 	if pkg.Types == nil {
-		return nil, fmt.Errorf("package %s haven't type", pkg.Name)
+		return nil, fmt.Errorf("%w: package %s hasn't type", ErrNotFoundType, pkg.Name)
 	}
 
 	funcs := make(models.Functions)
@@ -60,7 +67,7 @@ func ParseConversionFunctions(source string) (models.Functions, error) {
 func parseFunction(pkg *packages.Package, f *types.Func) (models.Functions, error) {
 	signature, ok := f.Type().(*types.Signature)
 	if !ok {
-		return nil, fmt.Errorf("function %s hasn't signature", f.Name())
+		return nil, fmt.Errorf("%w: function %s hasn't signature", ErrNotFoundSign, f.Name())
 	}
 
 	if signature.Params().Len() != 1 {
@@ -90,7 +97,7 @@ func parseFunction(pkg *packages.Package, f *types.Func) (models.Functions, erro
 	}
 
 	withError := false
-	if signature.Results().Len() == 2 {
+	if signature.Results().Len() == 2 { //nolint:gomnd
 		isError, err := isErrorType(signature.Results().At(1).Type())
 		if err != nil {
 			return nil, err

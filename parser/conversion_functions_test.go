@@ -1,6 +1,7 @@
 package parser
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -66,85 +67,46 @@ func Test_CFParseGenericFrom(t *testing.T) {
 	require.NoError(t, err)
 	assert.Len(t, res, 8)
 
-	assert.Equal(t,
-		models.ConversionFunction{
-			Name:        "ConvertAnyToString",
-			PackageName: "parser",
-			PackagePath: "github.com/underbek/datamapper/_test_data/parser",
-			TypeParam:   models.FromTypeParam,
+	tests := []struct {
+		Name          string
+		FromTypeNames []string
+	}{
+		{
+			Name:          "ConvertAnyToString",
+			FromTypeNames: []string{"any"},
 		},
-		res[models.ConversionFunctionKey{FromType: models.Type{Name: "any"}, ToType: models.Type{Name: "string"}}],
-	)
+		{
+			Name:          "ConvertIntUintToString",
+			FromTypeNames: []string{"int", "uint"},
+		},
+		{
+			Name:          "ConvertIntegersToString",
+			FromTypeNames: []string{"int8", "int16", "int32"},
+		},
+		{
+			Name:          "ConvertXFloatToString",
+			FromTypeNames: []string{"float32", "float64"},
+		},
+	}
 
-	assert.Equal(t,
-		models.ConversionFunction{
-			Name:        "ConvertIntUintToString",
-			PackageName: "parser",
-			PackagePath: "github.com/underbek/datamapper/_test_data/parser",
-			TypeParam:   models.FromTypeParam,
-		},
-		res[models.ConversionFunctionKey{FromType: models.Type{Name: "int"}, ToType: models.Type{Name: "string"}}],
-	)
-
-	assert.Equal(t,
-		models.ConversionFunction{
-			Name:        "ConvertIntUintToString",
-			PackageName: "parser",
-			PackagePath: "github.com/underbek/datamapper/_test_data/parser",
-			TypeParam:   models.FromTypeParam,
-		},
-		res[models.ConversionFunctionKey{FromType: models.Type{Name: "uint"}, ToType: models.Type{Name: "string"}}],
-	)
-
-	assert.Equal(t,
-		models.ConversionFunction{
-			Name:        "ConvertIntegersToString",
-			PackageName: "parser",
-			PackagePath: "github.com/underbek/datamapper/_test_data/parser",
-			TypeParam:   models.FromTypeParam,
-		},
-		res[models.ConversionFunctionKey{FromType: models.Type{Name: "int8"}, ToType: models.Type{Name: "string"}}],
-	)
-
-	assert.Equal(t,
-		models.ConversionFunction{
-			Name:        "ConvertIntegersToString",
-			PackageName: "parser",
-			PackagePath: "github.com/underbek/datamapper/_test_data/parser",
-			TypeParam:   models.FromTypeParam,
-		},
-		res[models.ConversionFunctionKey{FromType: models.Type{Name: "int16"}, ToType: models.Type{Name: "string"}}],
-	)
-
-	assert.Equal(t,
-		models.ConversionFunction{
-			Name:        "ConvertIntegersToString",
-			PackageName: "parser",
-			PackagePath: "github.com/underbek/datamapper/_test_data/parser",
-			TypeParam:   models.FromTypeParam,
-		},
-		res[models.ConversionFunctionKey{FromType: models.Type{Name: "int32"}, ToType: models.Type{Name: "string"}}],
-	)
-
-	assert.Equal(t,
-		models.ConversionFunction{
-			Name:        "ConvertXFloatToString",
-			PackageName: "parser",
-			PackagePath: "github.com/underbek/datamapper/_test_data/parser",
-			TypeParam:   models.FromTypeParam,
-		},
-		res[models.ConversionFunctionKey{FromType: models.Type{Name: "float32"}, ToType: models.Type{Name: "string"}}],
-	)
-
-	assert.Equal(t,
-		models.ConversionFunction{
-			Name:        "ConvertXFloatToString",
-			PackageName: "parser",
-			PackagePath: "github.com/underbek/datamapper/_test_data/parser",
-			TypeParam:   models.FromTypeParam,
-		},
-		res[models.ConversionFunctionKey{FromType: models.Type{Name: "float64"}, ToType: models.Type{Name: "string"}}],
-	)
+	for _, tt := range tests {
+		t.Run(tt.Name, func(t *testing.T) {
+			for _, name := range tt.FromTypeNames {
+				assert.Equal(t,
+					models.ConversionFunction{
+						Name:        tt.Name,
+						PackageName: "parser",
+						PackagePath: "github.com/underbek/datamapper/_test_data/parser",
+						TypeParam:   models.FromTypeParam,
+					},
+					res[models.ConversionFunctionKey{
+						FromType: models.Type{Name: name},
+						ToType:   models.Type{Name: "string"},
+					}],
+				)
+			}
+		})
+	}
 }
 
 func Test_CFParseGenericTo(t *testing.T) {
@@ -152,85 +114,46 @@ func Test_CFParseGenericTo(t *testing.T) {
 	require.NoError(t, err)
 	assert.Len(t, res, 8)
 
-	assert.Equal(t,
-		models.ConversionFunction{
+	tests := []struct {
+		Name        string
+		ToTypeNames []string
+	}{
+		{
 			Name:        "ConvertStringToAny",
-			PackageName: "parser",
-			PackagePath: "github.com/underbek/datamapper/_test_data/parser",
-			TypeParam:   models.ToTypeParam,
+			ToTypeNames: []string{"any"},
 		},
-		res[models.ConversionFunctionKey{FromType: models.Type{Name: "string"}, ToType: models.Type{Name: "any"}}],
-	)
-
-	assert.Equal(t,
-		models.ConversionFunction{
+		{
 			Name:        "ConvertStringToIntUint",
-			PackageName: "parser",
-			PackagePath: "github.com/underbek/datamapper/_test_data/parser",
-			TypeParam:   models.ToTypeParam,
+			ToTypeNames: []string{"int", "uint"},
 		},
-		res[models.ConversionFunctionKey{FromType: models.Type{Name: "string"}, ToType: models.Type{Name: "int"}}],
-	)
-
-	assert.Equal(t,
-		models.ConversionFunction{
-			Name:        "ConvertStringToIntUint",
-			PackageName: "parser",
-			PackagePath: "github.com/underbek/datamapper/_test_data/parser",
-			TypeParam:   models.ToTypeParam,
-		},
-		res[models.ConversionFunctionKey{FromType: models.Type{Name: "string"}, ToType: models.Type{Name: "uint"}}],
-	)
-
-	assert.Equal(t,
-		models.ConversionFunction{
+		{
 			Name:        "ConvertStringToIntegers",
-			PackageName: "parser",
-			PackagePath: "github.com/underbek/datamapper/_test_data/parser",
-			TypeParam:   models.ToTypeParam,
+			ToTypeNames: []string{"int8", "int16", "int32"},
 		},
-		res[models.ConversionFunctionKey{FromType: models.Type{Name: "string"}, ToType: models.Type{Name: "int8"}}],
-	)
-
-	assert.Equal(t,
-		models.ConversionFunction{
-			Name:        "ConvertStringToIntegers",
-			PackageName: "parser",
-			PackagePath: "github.com/underbek/datamapper/_test_data/parser",
-			TypeParam:   models.ToTypeParam,
-		},
-		res[models.ConversionFunctionKey{FromType: models.Type{Name: "string"}, ToType: models.Type{Name: "int16"}}],
-	)
-
-	assert.Equal(t,
-		models.ConversionFunction{
-			Name:        "ConvertStringToIntegers",
-			PackageName: "parser",
-			PackagePath: "github.com/underbek/datamapper/_test_data/parser",
-			TypeParam:   models.ToTypeParam,
-		},
-		res[models.ConversionFunctionKey{FromType: models.Type{Name: "string"}, ToType: models.Type{Name: "int32"}}],
-	)
-
-	assert.Equal(t,
-		models.ConversionFunction{
+		{
 			Name:        "ConvertStringToXFloat",
-			PackageName: "parser",
-			PackagePath: "github.com/underbek/datamapper/_test_data/parser",
-			TypeParam:   models.ToTypeParam,
+			ToTypeNames: []string{"float32", "float64"},
 		},
-		res[models.ConversionFunctionKey{FromType: models.Type{Name: "string"}, ToType: models.Type{Name: "float32"}}],
-	)
+	}
 
-	assert.Equal(t,
-		models.ConversionFunction{
-			Name:        "ConvertStringToXFloat",
-			PackageName: "parser",
-			PackagePath: "github.com/underbek/datamapper/_test_data/parser",
-			TypeParam:   models.ToTypeParam,
-		},
-		res[models.ConversionFunctionKey{FromType: models.Type{Name: "string"}, ToType: models.Type{Name: "float64"}}],
-	)
+	for _, tt := range tests {
+		t.Run(tt.Name, func(t *testing.T) {
+			for _, name := range tt.ToTypeNames {
+				assert.Equal(t,
+					models.ConversionFunction{
+						Name:        tt.Name,
+						PackageName: "parser",
+						PackagePath: "github.com/underbek/datamapper/_test_data/parser",
+						TypeParam:   models.ToTypeParam,
+					},
+					res[models.ConversionFunctionKey{
+						FromType: models.Type{Name: "string"},
+						ToType:   models.Type{Name: name},
+					}],
+				)
+			}
+		})
+	}
 }
 
 func Test_CFParseGenericFromTo(t *testing.T) {
@@ -238,45 +161,44 @@ func Test_CFParseGenericFromTo(t *testing.T) {
 	require.NoError(t, err)
 	assert.Len(t, res, 4)
 
-	assert.Equal(t,
-		models.ConversionFunction{
-			Name:        "ConvertXFloatToIntegers",
-			PackageName: "parser",
-			PackagePath: "github.com/underbek/datamapper/_test_data/parser",
-			TypeParam:   models.FromToTypeParam,
+	tests := []struct {
+		FromTypeName string
+		ToTypeName   string
+	}{
+		{
+			FromTypeName: "float32",
+			ToTypeName:   "int",
 		},
-		res[models.ConversionFunctionKey{FromType: models.Type{Name: "float32"}, ToType: models.Type{Name: "int"}}],
-	)
+		{
+			FromTypeName: "float32",
+			ToTypeName:   "uint",
+		},
+		{
+			FromTypeName: "float64",
+			ToTypeName:   "int",
+		},
+		{
+			FromTypeName: "float64",
+			ToTypeName:   "uint",
+		},
+	}
 
-	assert.Equal(t,
-		models.ConversionFunction{
-			Name:        "ConvertXFloatToIntegers",
-			PackageName: "parser",
-			PackagePath: "github.com/underbek/datamapper/_test_data/parser",
-			TypeParam:   models.FromToTypeParam,
-		},
-		res[models.ConversionFunctionKey{FromType: models.Type{Name: "float32"}, ToType: models.Type{Name: "uint"}}],
-	)
-
-	assert.Equal(t,
-		models.ConversionFunction{
-			Name:        "ConvertXFloatToIntegers",
-			PackageName: "parser",
-			PackagePath: "github.com/underbek/datamapper/_test_data/parser",
-			TypeParam:   models.FromToTypeParam,
-		},
-		res[models.ConversionFunctionKey{FromType: models.Type{Name: "float64"}, ToType: models.Type{Name: "int"}}],
-	)
-
-	assert.Equal(t,
-		models.ConversionFunction{
-			Name:        "ConvertXFloatToIntegers",
-			PackageName: "parser",
-			PackagePath: "github.com/underbek/datamapper/_test_data/parser",
-			TypeParam:   models.FromToTypeParam,
-		},
-		res[models.ConversionFunctionKey{FromType: models.Type{Name: "float64"}, ToType: models.Type{Name: "uint"}}],
-	)
+	for _, tt := range tests {
+		t.Run(fmt.Sprintf("%s->%s", tt.FromTypeName, tt.ToTypeName), func(t *testing.T) {
+			assert.Equal(t,
+				models.ConversionFunction{
+					Name:        "ConvertXFloatToIntegers",
+					PackageName: "parser",
+					PackagePath: "github.com/underbek/datamapper/_test_data/parser",
+					TypeParam:   models.FromToTypeParam,
+				},
+				res[models.ConversionFunctionKey{
+					FromType: models.Type{Name: tt.FromTypeName},
+					ToType:   models.Type{Name: tt.ToTypeName},
+				}],
+			)
+		})
+	}
 }
 
 func Test_CFParseGenericStruct(t *testing.T) {
@@ -284,31 +206,36 @@ func Test_CFParseGenericStruct(t *testing.T) {
 	require.NoError(t, err)
 	assert.Len(t, res, 2)
 
-	assert.Equal(t,
-		models.ConversionFunction{
+	tests := []struct {
+		Name        string
+		PackagePath string
+	}{
+		{
 			Name:        "ConvertModelsToString",
-			PackageName: "parser",
 			PackagePath: "github.com/underbek/datamapper/_test_data/parser",
-			TypeParam:   models.FromTypeParam,
 		},
-		res[models.ConversionFunctionKey{FromType: models.Type{
-			Name:        "Model",
-			PackagePath: "github.com/underbek/datamapper/_test_data/parser",
-		}, ToType: models.Type{Name: "string"}}],
-	)
-
-	assert.Equal(t,
-		models.ConversionFunction{
+		{
 			Name:        "ConvertModelsToString",
-			PackageName: "parser",
-			PackagePath: "github.com/underbek/datamapper/_test_data/parser",
-			TypeParam:   models.FromTypeParam,
-		},
-		res[models.ConversionFunctionKey{FromType: models.Type{
-			Name:        "Model",
 			PackagePath: "github.com/underbek/datamapper/_test_data/other",
-		}, ToType: models.Type{Name: "string"}}],
-	)
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.Name, func(t *testing.T) {
+			assert.Equal(t,
+				models.ConversionFunction{
+					Name:        "ConvertModelsToString",
+					PackageName: "parser",
+					PackagePath: "github.com/underbek/datamapper/_test_data/parser",
+					TypeParam:   models.FromTypeParam,
+				},
+				res[models.ConversionFunctionKey{FromType: models.Type{
+					Name:        "Model",
+					PackagePath: tt.PackagePath,
+				}, ToType: models.Type{Name: "string"}}],
+			)
+		})
+	}
 }
 
 func Test_CFParseWithStruct(t *testing.T) {
@@ -316,35 +243,41 @@ func Test_CFParseWithStruct(t *testing.T) {
 	require.NoError(t, err)
 	assert.Len(t, res, 2)
 
-	assert.Equal(t,
-		models.ConversionFunction{
-			Name:        "ConvertCurrentModelToOther",
-			PackageName: "parser",
-			PackagePath: "github.com/underbek/datamapper/_test_data/parser",
+	tests := []struct {
+		Name            string
+		FromPackagePath string
+		ToPackagePath   string
+	}{
+		{
+			Name:            "ConvertCurrentModelToOther",
+			FromPackagePath: "github.com/underbek/datamapper/_test_data/parser",
+			ToPackagePath:   "github.com/underbek/datamapper/_test_data/other",
 		},
-		res[models.ConversionFunctionKey{FromType: models.Type{
-			Name:        "Model",
-			PackagePath: "github.com/underbek/datamapper/_test_data/parser",
-		}, ToType: models.Type{
-			Name:        "Model",
-			PackagePath: "github.com/underbek/datamapper/_test_data/other",
-		}}],
-	)
+		{
+			Name:            "ConvertOtherModelToCurrent",
+			FromPackagePath: "github.com/underbek/datamapper/_test_data/other",
+			ToPackagePath:   "github.com/underbek/datamapper/_test_data/parser",
+		},
+	}
 
-	assert.Equal(t,
-		models.ConversionFunction{
-			Name:        "ConvertOtherModelToCurrent",
-			PackageName: "parser",
-			PackagePath: "github.com/underbek/datamapper/_test_data/parser",
-		},
-		res[models.ConversionFunctionKey{FromType: models.Type{
-			Name:        "Model",
-			PackagePath: "github.com/underbek/datamapper/_test_data/other",
-		}, ToType: models.Type{
-			Name:        "Model",
-			PackagePath: "github.com/underbek/datamapper/_test_data/parser",
-		}}],
-	)
+	for _, tt := range tests {
+		t.Run(tt.Name, func(t *testing.T) {
+			assert.Equal(t,
+				models.ConversionFunction{
+					Name:        tt.Name,
+					PackageName: "parser",
+					PackagePath: "github.com/underbek/datamapper/_test_data/parser",
+				},
+				res[models.ConversionFunctionKey{FromType: models.Type{
+					Name:        "Model",
+					PackagePath: tt.FromPackagePath,
+				}, ToType: models.Type{
+					Name:        "Model",
+					PackagePath: tt.ToPackagePath,
+				}}],
+			)
+		})
+	}
 }
 
 func Test_CFParseWithError(t *testing.T) {
@@ -352,35 +285,43 @@ func Test_CFParseWithError(t *testing.T) {
 	require.NoError(t, err)
 	assert.Len(t, res, 6)
 
-	for _, toTypeName := range []string{"int", "int8", "int16", "int32", "int64"} {
-		assert.Equal(t,
-			models.ConversionFunction{
-				Name:        "ConvertStringToSigned",
-				PackageName: "parser",
-				PackagePath: "github.com/underbek/datamapper/_test_data/parser",
-				TypeParam:   models.ToTypeParam,
-				WithError:   true,
-			},
-			res[models.ConversionFunctionKey{FromType: models.Type{
-				Name: "string",
-			}, ToType: models.Type{
-				Name: toTypeName,
-			}}],
-		)
+	tests := []struct {
+		Name          string
+		TypeParam     models.TypeParamType
+		ToTypes       []string
+		ToTypePackage string
+	}{
+		{
+			Name:      "ConvertStringToSigned",
+			TypeParam: models.ToTypeParam,
+			ToTypes:   []string{"int", "int8", "int16", "int32", "int64"},
+		},
+		{
+			Name:          "ConvertStringToDecimal",
+			ToTypes:       []string{"Decimal"},
+			ToTypePackage: "github.com/shopspring/decimal",
+		},
 	}
 
-	assert.Equal(t,
-		models.ConversionFunction{
-			Name:        "ConvertStringToDecimal",
-			PackageName: "parser",
-			PackagePath: "github.com/underbek/datamapper/_test_data/parser",
-			WithError:   true,
-		},
-		res[models.ConversionFunctionKey{FromType: models.Type{
-			Name: "string",
-		}, ToType: models.Type{
-			Name:        "Decimal",
-			PackagePath: "github.com/shopspring/decimal",
-		}}],
-	)
+	for _, tt := range tests {
+		t.Run(tt.Name, func(t *testing.T) {
+			for _, toTypeName := range tt.ToTypes {
+				assert.Equal(t,
+					models.ConversionFunction{
+						Name:        tt.Name,
+						PackageName: "parser",
+						PackagePath: "github.com/underbek/datamapper/_test_data/parser",
+						TypeParam:   tt.TypeParam,
+						WithError:   true,
+					},
+					res[models.ConversionFunctionKey{FromType: models.Type{
+						Name: "string",
+					}, ToType: models.Type{
+						Name:        toTypeName,
+						PackagePath: tt.ToTypePackage,
+					}}],
+				)
+			}
+		})
+	}
 }

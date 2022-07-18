@@ -63,10 +63,11 @@ func getFieldsPair(from, to models.Field, fromModel, toModel models.Struct, pkgP
 
 	if !ok {
 		return FieldsPair{}, nil, fmt.Errorf(
-			"not found convertor function for types %s -> %s by %s field",
+			"not found convertor function for types %s -> %s by %s field: %w",
 			from.Type.Name,
 			to.Type.Name,
 			from.Name,
+			ErrNotFound,
 		)
 	}
 

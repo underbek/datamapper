@@ -1,0 +1,58 @@
+# More info on config here: https://github.com/golangci/golangci-lint#config-file
+run:
+  go: '1.18'
+  deadline: 120s
+  issues-exit-code: 1
+  tests: true
+  skip-dirs:
+    - bin
+  skip-files:
+    - \.pb\.go$
+    - \.pb\.gw\.go$
+
+output:
+  format: colored-line-number
+  print-issued-lines: true
+  print-linter-name: true
+
+linters-settings:
+  dupl:
+    threshold: 100
+  gomnd:
+    ignored-files:
+      - '_test_data/*'
+
+linters:
+  disable:
+    - contextcheck #is disabled because of go1.18
+    - gosimple #is disabled because of go1.18
+    - staticcheck #is disabled because of go1.18
+    - structcheck #is disabled because of go1.18
+    - unused #is disabled because of go1.18
+  enable:
+    - varcheck
+    - typecheck
+    - goconst
+    - gosec
+    - goimports
+    - megacheck
+    - exportloopref
+    - containedctx
+    - decorder
+    - depguard
+    - dupl
+    - errname
+    - errorlint
+    - exportloopref
+    - goconst
+    - goerr113
+    - gofmt
+    - nilnil
+    - lll
+    - gomnd
+    #- cyclop TODO
+
+issues:
+  exclude-use-default: false
+  exclude:
+    - Using the variable on range scope `tt` in function literal
