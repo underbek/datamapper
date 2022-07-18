@@ -1,4 +1,4 @@
-name: lint and units
+name: test
 on:
   push:
     tags:
@@ -8,7 +8,7 @@ on:
       - main
   pull_request:
 jobs:
-  test_and_build:
+  test:
     name: test
     runs-on: ubuntu-latest
     steps:
