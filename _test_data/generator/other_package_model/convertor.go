@@ -1,9 +1,8 @@
 package other_package_model
 
 import (
-	"github.com/underbek/datamapper/converts"
-
 	"github.com/underbek/datamapper/_test_data/generator/other_package_model/other"
+	"github.com/underbek/datamapper/converts"
 )
 
 func ConvertOtherFromToTo(from other.From) To {

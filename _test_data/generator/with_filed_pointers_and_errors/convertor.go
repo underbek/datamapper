@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	"github.com/shopspring/decimal"
-
 	"github.com/underbek/datamapper/converts"
 )
 

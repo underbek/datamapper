@@ -29,7 +29,7 @@ func filterImports(currentPkgPath string, imports []string) []string {
 		}
 	}
 
-	return res
+	return filterAndSortImports(res)
 }
 
 func fillConversations(fields []FieldsPair) []string {

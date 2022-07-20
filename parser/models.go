@@ -1,13 +1,29 @@
 package parser
 
 import (
+	"go/build"
 	"go/types"
+	"os"
 	"path/filepath"
 	"strings"
 
 	"github.com/underbek/datamapper/models"
 	"github.com/underbek/datamapper/utils"
 )
+
+func ParseModelsByPackage(source string) (map[string]models.Struct, error) {
+	wd, err := os.Getwd()
+	if err != nil {
+		return nil, err
+	}
+
+	p, err := build.Import(source, wd, build.FindOnly)
+	if err != nil {
+		return ParseModels(source)
+	}
+
+	return ParseModels(p.Dir)
+}
 
 func ParseModels(source string) (map[string]models.Struct, error) {
 	absSourcePath, err := filepath.Abs(source)

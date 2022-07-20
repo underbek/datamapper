@@ -136,3 +136,32 @@ func Test_ParseModelWithPointerField(t *testing.T) {
 
 	assert.Equal(t, expected, res)
 }
+
+func Test_ParseModeByPackage(t *testing.T) {
+	tests := []struct {
+		name   string
+		source string
+	}{
+		{
+			name:   "Parse by package path",
+			source: "github.com/underbek/datamapper/_test_data/mapper/transport",
+		},
+		{
+			name:   "Parse by sources path",
+			source: "../_test_data/mapper/transport",
+		},
+		{
+			name:   "Parse by one source path",
+			source: "../_test_data/mapper/transport/models.go",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			res, err := ParseModelsByPackage(tt.source)
+			require.NoError(t, err)
+			_, ok := res["User"]
+			assert.True(t, ok)
+		})
+	}
+}

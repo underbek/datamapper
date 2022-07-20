@@ -19,15 +19,7 @@ var (
 )
 
 func MapModels(opts options.Options) error {
-	if opts.FromSource == "" {
-		opts.FromSource = "."
-	}
-
-	if opts.ToSource == "" {
-		opts.ToSource = "."
-	}
-
-	structs, err := parser.ParseModels(opts.FromSource)
+	structs, err := parser.ParseModelsByPackage(opts.FromSource)
 	if err != nil {
 		return fmt.Errorf("parse models error: %w", err)
 	}
@@ -37,7 +29,7 @@ func MapModels(opts options.Options) error {
 		return fmt.Errorf(" %w: source model %s from %s", ErrNotFoundStruct, opts.FromName, opts.FromSource)
 	}
 
-	structs, err = parser.ParseModels(opts.ToSource)
+	structs, err = parser.ParseModelsByPackage(opts.ToSource)
 	if err != nil {
 		return fmt.Errorf("parse models error: %w", err)
 	}

@@ -81,6 +81,7 @@ func ConvertAnyToMany[T, V int | uint | float32](from T) V {
 * [x] Add CI with tests and linters
 * [x] Parse other package
 * [x] First console generate
+* [x] Set default options
 * [ ] Add generation info
 * [ ] Fill readme
 * [ ] First release

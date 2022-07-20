@@ -14,6 +14,8 @@ lint:
 
 .PHONY: local-test
 local-test: build
+	mkdir -p _test_data/local_test
+
 	./bin/datamapper --from User --from-tag map --from-source _test_data/mapper/domain/user.go \
 	 	--to User --to-tag map --to-source _test_data/mapper/transport/models.go \
 	 	-d _test_data/local_test/domain_to_dto_user_converter.go \
@@ -23,3 +25,10 @@ local-test: build
 		--to User --to-tag map --to-source _test_data/mapper/transport/models.go \
 		-d _test_data/local_test/domain_to_dto_user_converter.go \
 		--cf ./_test_data/mapper/convertors/user_conversion_functions.go
+
+	./bin/datamapper --from User --from-source github.com/underbek/datamapper/_test_data/mapper/domain \
+		--to User --to-source github.com/underbek/datamapper/_test_data/mapper/transport \
+		-d _test_data/local_test/domain_to_dto_user_converter.go \
+		--cf github.com/underbek/datamapper/_test_data/mapper/convertors
+
+	$(GOENV) go generate ./_test_data/mapper/domain

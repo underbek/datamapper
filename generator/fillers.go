@@ -3,10 +3,10 @@ package generator
 import (
 	"bytes"
 	"embed"
-	"go/format"
 	"text/template"
 
 	"github.com/underbek/datamapper/models"
+	"golang.org/x/tools/imports"
 )
 
 const (
@@ -54,7 +54,7 @@ func createConvertor(pkgName, fromName, toName, convertorName, pkgPath string, r
 		return nil, err
 	}
 
-	content, err := format.Source(body)
+	content, err := imports.Process(pkgPath, body, nil)
 	if err != nil {
 		return nil, err
 	}
