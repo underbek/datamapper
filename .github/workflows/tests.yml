@@ -27,5 +27,5 @@ jobs:
           go-version: 1.18
       - uses: actions/checkout@v3
       - run: |
-        mkdir ./_test_data/local_test
-        make local-test
+          mkdir ./_test_data/local_test
+          make local-test
