@@ -16,4 +16,16 @@ jobs:
         with:
           go-version: 1.18
       - uses: actions/checkout@v3
-      - run: go test ./... ./_test_data/generator/...
+      - run: make test
+
+  local-test:
+    name: local-test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-go@v3
+        with:
+          go-version: 1.18
+      - uses: actions/checkout@v3
+      - run: |
+        mkdir ./_test_data/local_test
+        make local-test

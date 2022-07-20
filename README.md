@@ -7,7 +7,7 @@
 ```go
 package models
 
-//go:generate datamapper --from Model --from-tag dto --to DTO --to-tag json -s models.go -d model_dto_converter.go -p models  
+//go:generate datamapper --from Model --from-tag dto --to DTO --to-tag json -s models.go -d model_dto_converter.go
 type Model struct {
 	ID   int    `dto:"id" dao:"id"`
 	Name string `dto:"name" dao:"name"`
@@ -79,8 +79,10 @@ func ConvertAnyToMany[T, V int | uint | float32](from T) V {
 * [x] Convert with pointer field with error
 * [x] No nil err if from and to fields are pointers
 * [x] Add CI with tests and linters
-* [ ] First console generate
+* [x] Parse other package
+* [x] First console generate
 * [ ] Add generation info
+* [ ] Fill readme
 * [ ] First release
 * [ ] Use in my projects
 * [ ] Parse user struct in struct
@@ -88,13 +90,14 @@ func ConvertAnyToMany[T, V int | uint | float32](from T) V {
 * [ ] Parse comments
 * [ ] Use generated convertors in convertor like conversion function
 * [ ] Parse embed struct
-* [ ] Parse other package
-* [ ] Map filed without tag
+* [ ] Map field without tag
 * [ ] Warning or error politics if tags is not equals
 * [ ] Fill some conversion functions
 * [ ] Copy using conversion functions from datamapper to target service if flag set
 * [ ] Use conversion functions with pointers
 * [ ] Parse custom error by conversion functions
+* [ ] Fix cyclop linter
+* [ ] Tag for default field value if from field is nil
 
 ### With comment ???
 

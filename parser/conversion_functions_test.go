@@ -325,3 +325,31 @@ func Test_CFParseWithError(t *testing.T) {
 		})
 	}
 }
+
+func Test_CFParseByPackage(t *testing.T) {
+	tests := []struct {
+		name   string
+		source string
+	}{
+		{
+			name:   "Parse by package path",
+			source: "github.com/underbek/datamapper/_test_data/mapper/convertors",
+		},
+		{
+			name:   "Parse by sources path",
+			source: "../_test_data/mapper/convertors",
+		},
+		{
+			name:   "Parse by one source path",
+			source: "../_test_data/mapper/convertors/user_conversion_functions.go",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			res, err := ParseConversionFunctionsByPackage(tt.source)
+			require.NoError(t, err)
+			assert.Len(t, res, 22)
+		})
+	}
+}

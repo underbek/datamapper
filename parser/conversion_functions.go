@@ -3,7 +3,9 @@ package parser
 import (
 	"errors"
 	"fmt"
+	"go/build"
 	"go/types"
+	"os"
 	"path/filepath"
 	"strings"
 
@@ -19,7 +21,21 @@ var (
 	ErrUndefinedType = errors.New("undefined type error")
 )
 
+func ParseConversionFunctionsByPackage(source string) (models.Functions, error) {
+	wd, err := os.Getwd()
+	if err != nil {
+		return nil, err
+	}
+
+	p, err := build.Import(source, wd, build.FindOnly)
+	if err != nil {
+		return ParseConversionFunctions(source)
+	}
+
+	return ParseConversionFunctions(p.Dir)
+}
 func ParseConversionFunctions(source string) (models.Functions, error) {
+
 	absSourcePath, err := filepath.Abs(source)
 	if err != nil {
 		return nil, err

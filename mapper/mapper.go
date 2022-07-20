@@ -11,9 +11,7 @@ import (
 	"golang.org/x/exp/maps"
 )
 
-const (
-	internalConvertsPackagePath = "../converts"
-)
+const internalConvertsPackagePath = "github.com/underbek/datamapper/converts"
 
 var (
 	ErrNotFoundStruct = errors.New("not found struct error")
@@ -65,13 +63,13 @@ func MapModels(opts options.Options) error {
 	}
 
 	//TODO: parse or copy embed sources
-	funcs, err := parser.ParseConversionFunctions(internalConvertsPackagePath)
+	funcs, err := parser.ParseConversionFunctionsByPackage(internalConvertsPackagePath)
 	if err != nil {
 		return fmt.Errorf("parse internal conversion functions error: %w", err)
 	}
 
 	if opts.UserCFSource != "" {
-		userFuncs, err := parser.ParseConversionFunctions(opts.UserCFSource)
+		userFuncs, err := parser.ParseConversionFunctionsByPackage(opts.UserCFSource)
 		if err != nil {
 			return fmt.Errorf("parse user conversion functions error: %w", err)
 		}
