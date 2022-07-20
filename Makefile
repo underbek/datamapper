@@ -22,4 +22,4 @@ local-test: build
 	./bin/datamapper --from User --from-tag map --from-source _test_data/mapper/domain/user.go \
 		--to User --to-tag map --to-source _test_data/mapper/transport/models.go \
 		-d _test_data/local_test/domain_to_dto_user_converter.go \
-		--cf ./_test_data/mapper/convertors/user_conversion_functions.goo
+		--cf ./_test_data/mapper/convertors/user_conversion_functions.go
