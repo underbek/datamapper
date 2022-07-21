@@ -82,15 +82,17 @@ func ConvertAnyToMany[T, V int | uint | float32](from T) V {
 * [x] Parse other package
 * [x] First console generate
 * [x] Set default options
-* [ ] Add generation info
+* [x] Add generation info
 * [ ] Fill readme
 * [ ] First release
 * [ ] Use in my projects
+* [ ] Converts both ways in one source
 * [ ] Parse user struct in struct
 * [ ] Option for default field value if from field is nil
 * [ ] Parse comments
 * [ ] Use generated convertors in convertor like conversion function
 * [ ] Parse embed struct
+* [ ] Parse func aliases
 * [ ] Map field without tag
 * [ ] Warning or error politics if tags is not equals
 * [ ] Fill some conversion functions

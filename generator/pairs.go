@@ -32,9 +32,9 @@ func createModelsPair(from, to models.Struct, pkgPath string, functions models.F
 	}
 
 	return result{
-		fields:        fields,
-		imports:       filterAndSortImports(imports),
-		conversations: fillConversations(fields),
+		fields:      fields,
+		imports:     filterAndSortImports(pkgPath, imports),
+		conversions: fillConversions(fields),
 	}, nil
 }
 

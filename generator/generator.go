@@ -2,13 +2,10 @@ package generator
 
 import (
 	"errors"
-	"fmt"
 	"os"
 
 	"github.com/underbek/datamapper/models"
 	"github.com/underbek/datamapper/utils"
-	"golang.org/x/text/cases"
-	"golang.org/x/text/language"
 )
 
 var (
@@ -31,9 +28,17 @@ type FieldsPair struct {
 }
 
 type result struct {
+	convertorName string
+	pkgName       string
+	pkgPath       string
+	fromName      string
+	toName        string
+	fromTag       string
+	toTag         string
 	fields        []FieldsPair
 	imports       []string
-	conversations []string
+	conversions   []string
+	withError     bool
 }
 
 func CreateConvertor(from, to models.Struct, dest string, functions models.Functions) error {
@@ -68,29 +73,23 @@ func generateConvertor(from, to models.Struct, dest string, functions models.Fun
 		return nil, err
 	}
 
-	res.imports = append(res.imports, from.PackagePath, to.PackagePath)
+	imports := append(res.imports, from.PackagePath, to.PackagePath)
 
-	convertorName := "Convert"
-	if from.PackagePath != pkg.PkgPath {
-		convertorName += cases.Title(language.Und, cases.NoLower).String(from.PackageName)
-	}
-	convertorName += from.Name
-	convertorName += "To"
-	if to.PackagePath != pkg.PkgPath {
-		convertorName += cases.Title(language.Und, cases.NoLower).String(to.PackageName)
-	}
-	convertorName += to.Name
-
-	pkgName := pkg.Name
-	if pkgName == "" {
-		if pkg.PkgPath == "" {
-			return nil, fmt.Errorf("incorrect parsed package path from destination %s: %w", dest, ErrParseError)
-		}
-		pkgName = getPackageNameByPath(pkg.PkgPath)
+	res.imports = filterAndSortImports(pkg.PkgPath, imports)
+	res.pkgPath = pkg.PkgPath
+	res.convertorName = generateConvertorName(from, to, pkg.PkgPath)
+	res.pkgName, err = generatePackageName(pkg)
+	if err != nil {
+		return nil, err
 	}
 
-	fromName := getFullStructName(from, pkg.PkgPath)
-	toName := getFullStructName(to, pkg.PkgPath)
+	res.fromName = getFullStructName(from, pkg.PkgPath)
+	res.toName = getFullStructName(to, pkg.PkgPath)
 
-	return createConvertor(pkgName, fromName, toName, convertorName, pkg.PkgPath, res)
+	res.fromTag = from.Fields[0].Tags[0].Name
+	res.toTag = to.Fields[0].Tags[0].Name
+
+	res.withError = isReturnError(res.fields)
+
+	return createConvertor(res)
 }

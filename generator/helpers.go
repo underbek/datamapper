@@ -7,6 +7,9 @@ import (
 	"github.com/underbek/datamapper/models"
 	"golang.org/x/exp/maps"
 	"golang.org/x/exp/slices"
+	"golang.org/x/text/cases"
+	"golang.org/x/text/language"
+	"golang.org/x/tools/go/packages"
 )
 
 func getTypeParams(cf models.ConversionFunction, fromType, toType models.Type) string {
@@ -21,18 +24,7 @@ func getTypeParams(cf models.ConversionFunction, fromType, toType models.Type) s
 	}
 }
 
-func filterImports(currentPkgPath string, imports []string) []string {
-	res := make([]string, 0, len(imports))
-	for _, imp := range imports {
-		if imp != currentPkgPath {
-			res = append(res, imp)
-		}
-	}
-
-	return filterAndSortImports(res)
-}
-
-func fillConversations(fields []FieldsPair) []string {
+func fillConversions(fields []FieldsPair) []string {
 	var res []string
 	for _, field := range fields {
 		res = append(res, field.Conversions...)
@@ -73,11 +65,11 @@ func getPackageNameByPath(path string) string {
 	return names[len(names)-1]
 }
 
-func filterAndSortImports(imports []ImportType) []ImportType {
+func filterAndSortImports(currentPkgPath string, imports []ImportType) []ImportType {
 	set := make(map[ImportType]struct{})
-	for _, importType := range imports {
-		if importType != "" {
-			set[importType] = struct{}{}
+	for _, imp := range imports {
+		if imp != "" && imp != currentPkgPath {
+			set[imp] = struct{}{}
 		}
 	}
 
@@ -85,4 +77,31 @@ func filterAndSortImports(imports []ImportType) []ImportType {
 	slices.Sort(res)
 
 	return res
+}
+
+func generateConvertorName(from, to models.Struct, pkgPath string) string {
+	convertorName := "Convert"
+	if from.PackagePath != pkgPath {
+		convertorName += cases.Title(language.Und, cases.NoLower).String(from.PackageName)
+	}
+	convertorName += from.Name
+	convertorName += "To"
+	if to.PackagePath != pkgPath {
+		convertorName += cases.Title(language.Und, cases.NoLower).String(to.PackageName)
+	}
+	convertorName += to.Name
+
+	return convertorName
+}
+
+func generatePackageName(pkg *packages.Package) (string, error) {
+	if pkg.Name != "" {
+		return pkg.Name, nil
+	}
+
+	if pkg.PkgPath == "" {
+		return "", fmt.Errorf("incorrect parsed destination package: %w", ErrParseError)
+	}
+
+	return getPackageNameByPath(pkg.PkgPath), nil
 }
