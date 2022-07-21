@@ -2,12 +2,30 @@
 
 ### Usage
 
+```text
+Usage:
+  datamapper [OPTIONS]
+
+Application Options:
+  -d, --destination= Destination file path
+      --cf=          User conversion functions source/package
+      --from=        Model from name
+      --from-tag=    Model from tag (default: map)
+      --from-source= From model source/package (default: .)
+      --to=          Model to name
+      --to-tag=      Model to tag (default: map)
+      --to-source=   To model source/package (default: .)
+
+Help Options:
+  -h, --help         Show this help message
+```
+
 ### go generate
 
 ```go
 package models
 
-//go:generate datamapper --from Model --from-tag dto --to DTO --to-tag json -s models.go -d model_dto_converter.go
+//go:generate datamapper --from Model --from-tag dto --to DTO --to-tag json -d model_dto_converter.go
 type Model struct {
 	ID   int    `dto:"id" dao:"id"`
 	Name string `dto:"name" dao:"name"`
@@ -26,12 +44,14 @@ type DTO struct {
 ```go
 package conversion
 
-func ConvertStringToStringPtr(from string) *string {
-	return &from
+import "fmt"
+
+func ConvertIntToString(from int) string {
+	return fmt.Sprint(from)
 }
 ```
 
-2. By comments. Could use generic
+2. By generic
 
 ```go
 package conversion
@@ -51,7 +71,19 @@ func ConvertAnyToMany[T, V int | uint | float32](from T) V {
 }
 ```
 
-### Future
+3. With error
+
+```go
+package converts
+
+import "github.com/shopspring/decimal"
+
+func ConvertStringToDecimal(from string) (decimal.Decimal, error) {
+	return decimal.NewFromString(from)
+}
+```
+
+### Features
 
 * [x] Parse and filter tag
 * [x] Generate empty convertor
@@ -83,7 +115,7 @@ func ConvertAnyToMany[T, V int | uint | float32](from T) V {
 * [x] First console generate
 * [x] Set default options
 * [x] Add generation info
-* [ ] Fill readme
+* [x] Fill readme
 * [ ] First release
 * [ ] Use in my projects
 * [ ] Converts both ways in one source
@@ -102,7 +134,7 @@ func ConvertAnyToMany[T, V int | uint | float32](from T) V {
 * [ ] Fix cyclop linter
 * [ ] Tag for default field value if from field is nil
 
-### With comment ???
+### With comment feature example (not implemented):
 
 ```go
 package test
