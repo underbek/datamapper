@@ -116,9 +116,10 @@ func ConvertStringToDecimal(from string) (decimal.Decimal, error) {
 * [x] Set default options
 * [x] Add generation info
 * [x] Fill readme
-* [ ] First release
+* [x] First release
 * [ ] Use in my projects
 * [ ] Converts both ways in one source
+* [ ] Recursive convert by option if not found conversions
 * [ ] Parse user struct in struct
 * [ ] Option for default field value if from field is nil
 * [ ] Parse comments
