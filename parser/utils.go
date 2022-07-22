@@ -65,7 +65,7 @@ func parseType(t types.Type) ([]Type, error) {
 			res[i].generic = true
 		}
 		return res, nil
-	case *types.Array:
+	case *types.Array, *types.Slice:
 		return []Type{{Type: models.Type{Name: t.String()}}}, nil
 	case *types.Pointer:
 		res, err := parseType(t.Elem())
@@ -114,9 +114,11 @@ func parseTag(tag string) []models.Tag {
 			continue
 		}
 
+		valueTag := strings.Trim(textTag[sepIndex+1:], "\"")
+
 		tags = append(tags, models.Tag{
 			Name:  textTag[:sepIndex],
-			Value: strings.Trim(textTag[sepIndex+1:], "\""),
+			Value: strings.Split(valueTag, ",")[0],
 		})
 	}
 

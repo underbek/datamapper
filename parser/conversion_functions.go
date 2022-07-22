@@ -22,6 +22,15 @@ var (
 )
 
 func ParseConversionFunctionsByPackage(source string) (models.Functions, error) {
+	_, err := os.Stat(source)
+	if err == nil {
+		return ParseConversionFunctions(source)
+	}
+
+	if !os.IsNotExist(err) {
+		return nil, err
+	}
+
 	wd, err := os.Getwd()
 	if err != nil {
 		return nil, err
@@ -29,7 +38,7 @@ func ParseConversionFunctionsByPackage(source string) (models.Functions, error) 
 
 	p, err := build.Import(source, wd, build.FindOnly)
 	if err != nil {
-		return ParseConversionFunctions(source)
+		return nil, err
 	}
 
 	return ParseConversionFunctions(p.Dir)

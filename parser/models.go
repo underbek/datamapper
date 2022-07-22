@@ -12,6 +12,15 @@ import (
 )
 
 func ParseModelsByPackage(source string) (map[string]models.Struct, error) {
+	_, err := os.Stat(source)
+	if err == nil {
+		return ParseModels(source)
+	}
+
+	if !os.IsNotExist(err) {
+		return nil, err
+	}
+
 	wd, err := os.Getwd()
 	if err != nil {
 		return nil, err
@@ -19,7 +28,7 @@ func ParseModelsByPackage(source string) (map[string]models.Struct, error) {
 
 	p, err := build.Import(source, wd, build.FindOnly)
 	if err != nil {
-		return ParseModels(source)
+		return nil, err
 	}
 
 	return ParseModels(p.Dir)

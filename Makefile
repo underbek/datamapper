@@ -2,7 +2,7 @@ GOENV:=GO111MODULE=on
 
 .PHONY: build
 build:
-	$(GOENV) CGO_ENABLED=0 go build -v -o ./bin/datamapper ./cmd/datamapper
+	$(GOENV) CGO_ENABLED=0 go build -v -o ./bin/datamapper ./main.go
 
 .PHONY: test
 test:

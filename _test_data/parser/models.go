@@ -1,8 +1,8 @@
 package parser
 
 type TestModel struct {
-	ID    int    `json:"id" map:"id"`
-	Name  string `json:"name" map:"name"`
+	ID    int    `json:"id,omitempty" map:"id"`
+	Name  string `json:"name,omitempty" map:"name"`
 	Empty string
 }
 

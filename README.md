@@ -1,5 +1,10 @@
 # datamapper
 
+### Install
+```shell
+go install github.com/underbek/datamapper@v0.0.2
+```
+
 ### Usage
 
 ```text
@@ -117,6 +122,10 @@ func ConvertStringToDecimal(from string) (decimal.Decimal, error) {
 * [x] Add generation info
 * [x] Fill readme
 * [x] First release
+* [x] Get first value by tag
+* [x] Move main to root
+* [ ] Alias package name for (from/to) models and custom cf
+* [ ] Parse array, slice, map
 * [ ] Use in my projects
 * [ ] Converts both ways in one source
 * [ ] Recursive convert by option if not found conversions
