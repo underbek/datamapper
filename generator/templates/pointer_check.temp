@@ -1,0 +1,3 @@
+if from.{{.fromFieldName}} == nil {
+    return {{.toModelName}}{}, fmt.Errorf("cannot convert {{.fromModelName}}.{{.fromFieldName}} -> {{.toModelName}}.{{.toFieldName}}, field is nil")
+}
