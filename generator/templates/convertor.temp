@@ -6,11 +6,11 @@ package {{.packageName}}
 
 {{ if not (eq (len .imports) 0) }}
   {{ if eq (len .imports) 1 }}
-import "{{ index .imports 0 }}"
+import {{ index .imports 0 }}
   {{else}}
 import (
   {{range $import := .imports}}
-    "{{$import}}"
+    {{$import}}
   {{- end}}
 )
   {{end}}

@@ -29,6 +29,10 @@ func MapModels(opts options.Options) error {
 		return fmt.Errorf(" %w: source model %s from %s", ErrNotFoundStruct, opts.FromName, opts.FromSource)
 	}
 
+	if opts.FromPackageAlias != "" {
+		from.Package.Alias = opts.FromPackageAlias
+	}
+
 	structs, err = parser.ParseModelsByPackage(opts.ToSource)
 	if err != nil {
 		return fmt.Errorf("parse models error: %w", err)
@@ -37,6 +41,10 @@ func MapModels(opts options.Options) error {
 	to, ok := structs[opts.ToName]
 	if !ok {
 		return fmt.Errorf("%w: to model %s from %s", ErrNotFoundStruct, opts.ToName, opts.ToSource)
+	}
+
+	if opts.ToPackageAlias != "" {
+		to.Package.Alias = opts.ToPackageAlias
 	}
 
 	from.Fields = utils.FilterFields(opts.FromTag, from.Fields)
@@ -64,6 +72,13 @@ func MapModels(opts options.Options) error {
 		userFuncs, err := parser.ParseConversionFunctionsByPackage(opts.UserCFSource)
 		if err != nil {
 			return fmt.Errorf("parse user conversion functions error: %w", err)
+		}
+
+		if opts.UserCFPackageAlias != "" {
+			for key, cf := range userFuncs {
+				cf.Package.Alias = opts.UserCFPackageAlias
+				userFuncs[key] = cf
+			}
 		}
 
 		maps.Copy(funcs, userFuncs)

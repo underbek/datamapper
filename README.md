@@ -124,7 +124,7 @@ func ConvertStringToDecimal(from string) (decimal.Decimal, error) {
 * [x] First release
 * [x] Get first value by tag
 * [x] Move main to root
-* [ ] Alias package name for (from/to) models and custom cf
+* [x] Alias package name for (from/to) models and custom cf
 * [ ] Parse array, slice, map
 * [ ] Use in my projects
 * [ ] Converts both ways in one source

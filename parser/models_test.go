@@ -46,7 +46,7 @@ func Test_ParseModels(t *testing.T) {
 	expected := map[string]models.Struct{
 		"Model": {Name: "Model", Fields: []models.Field{
 			{Name: "ID", Type: models.Type{Name: "string"}},
-		}, PackageName: "parser", PackagePath: "github.com/underbek/datamapper/_test_data/parser"},
+		}, Package: models.Package{Name: "parser", Path: "github.com/underbek/datamapper/_test_data/parser"}},
 		"TestModel": {Name: "TestModel", Fields: []models.Field{
 			{Name: "ID", Type: models.Type{Name: "int"}, Tags: []models.Tag{
 				{Name: "json", Value: "id"},
@@ -57,7 +57,7 @@ func Test_ParseModels(t *testing.T) {
 				{Name: "map", Value: "name"},
 			}},
 			{Name: "Empty", Type: models.Type{Name: "string"}},
-		}, PackageName: "parser", PackagePath: "github.com/underbek/datamapper/_test_data/parser"},
+		}, Package: models.Package{Name: "parser", Path: "github.com/underbek/datamapper/_test_data/parser"}},
 		"TestModelTo": {Name: "TestModelTo", Fields: []models.Field{
 			{Name: "UUID", Type: models.Type{Name: "string"}, Tags: []models.Tag{
 				{Name: "db", Value: "uuid"},
@@ -67,7 +67,7 @@ func Test_ParseModels(t *testing.T) {
 				{Name: "db", Value: "name"},
 				{Name: "map", Value: "name"},
 			}},
-		}, PackageName: "parser", PackagePath: "github.com/underbek/datamapper/_test_data/parser"},
+		}, Package: models.Package{Name: "parser", Path: "github.com/underbek/datamapper/_test_data/parser"}},
 	}
 
 	assert.Equal(t, expected, res)
@@ -81,8 +81,11 @@ func Test_ParseComplexModel(t *testing.T) {
 		"ComplexModel": {Name: "ComplexModel", Fields: []models.Field{
 			{
 				Name: "ID", Type: models.Type{
-					Name:        "Model",
-					PackagePath: "github.com/underbek/datamapper/_test_data/parser",
+					Name: "Model",
+					Package: models.Package{
+						Name: "parser",
+						Path: "github.com/underbek/datamapper/_test_data/parser",
+					},
 				},
 				Tags: []models.Tag{
 					{Name: "json", Value: "id"},
@@ -92,15 +95,18 @@ func Test_ParseComplexModel(t *testing.T) {
 			{
 				Name: "Age",
 				Type: models.Type{
-					Name:        "Decimal",
-					PackagePath: "github.com/shopspring/decimal",
+					Name: "Decimal",
+					Package: models.Package{
+						Name: "decimal",
+						Path: "github.com/shopspring/decimal",
+					},
 				},
 				Tags: []models.Tag{
 					{Name: "json", Value: "age"},
 					{Name: "map", Value: "age"},
 				},
 			},
-		}, PackageName: "parser", PackagePath: "github.com/underbek/datamapper/_test_data/parser"},
+		}, Package: models.Package{Name: "parser", Path: "github.com/underbek/datamapper/_test_data/parser"}},
 	}
 
 	assert.Equal(t, expected, res)
@@ -125,13 +131,16 @@ func Test_ParseModelWithPointerField(t *testing.T) {
 			{
 				Name: "Age",
 				Type: models.Type{
-					Name:        "Decimal",
-					PackagePath: "github.com/shopspring/decimal",
-					Pointer:     true,
+					Name: "Decimal",
+					Package: models.Package{
+						Name: "decimal",
+						Path: "github.com/shopspring/decimal",
+					},
+					Pointer: true,
 				},
 				Tags: []models.Tag{{Name: "map", Value: "age"}},
 			},
-		}, PackageName: "parser", PackagePath: "github.com/underbek/datamapper/_test_data/parser"},
+		}, Package: models.Package{Name: "parser", Path: "github.com/underbek/datamapper/_test_data/parser"}},
 	}
 
 	assert.Equal(t, expected, res)

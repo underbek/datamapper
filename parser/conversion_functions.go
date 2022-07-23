@@ -140,21 +140,23 @@ func parseFunction(pkg *packages.Package, f *types.Func) (models.Functions, erro
 		for _, toType := range toTypes {
 			key := models.ConversionFunctionKey{
 				FromType: models.Type{
-					Name:        fromType.Name,
-					PackagePath: fromType.PackagePath,
+					Name:    fromType.Name,
+					Package: fromType.Package,
 				},
 				ToType: models.Type{
-					Name:        toType.Name,
-					PackagePath: toType.PackagePath,
+					Name:    toType.Name,
+					Package: toType.Package,
 				},
 			}
 
 			cv := models.ConversionFunction{
-				Name:        f.Name(),
-				PackageName: pkg.Name,
-				PackagePath: pkg.PkgPath,
-				TypeParam:   getTypeParam(fromType.generic, toType.generic),
-				WithError:   withError,
+				Name: f.Name(),
+				Package: models.Package{
+					Name: pkg.Name,
+					Path: pkg.PkgPath,
+				},
+				TypeParam: getTypeParam(fromType.generic, toType.generic),
+				WithError: withError,
 			}
 
 			funcs[key] = cv

@@ -29,14 +29,13 @@ type FieldsPair struct {
 
 type result struct {
 	convertorName string
-	pkgName       string
-	pkgPath       string
+	pkg           models.Package
 	fromName      string
 	toName        string
 	fromTag       string
 	toTag         string
 	fields        []FieldsPair
-	imports       []string
+	packages      map[models.Package]struct{}
 	conversions   []string
 	withError     bool
 }
@@ -73,12 +72,11 @@ func generateConvertor(from, to models.Struct, dest string, functions models.Fun
 		return nil, err
 	}
 
-	imports := append(res.imports, from.PackagePath, to.PackagePath)
+	res.packages[from.Package] = struct{}{}
+	res.packages[to.Package] = struct{}{}
 
-	res.imports = filterAndSortImports(pkg.PkgPath, imports)
-	res.pkgPath = pkg.PkgPath
 	res.convertorName = generateConvertorName(from, to, pkg.PkgPath)
-	res.pkgName, err = generatePackageName(pkg)
+	res.pkg, err = generateModelPackage(pkg)
 	if err != nil {
 		return nil, err
 	}

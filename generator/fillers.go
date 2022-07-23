@@ -38,15 +38,20 @@ func fillTemplate[T []byte | string](tempPath string, data map[string]any) (T, e
 }
 
 func createConvertor(res result) ([]byte, error) {
+	imps := make([]string, 0, len(res.packages))
+	for pkg := range res.packages {
+		imps = append(imps, pkg.Import())
+	}
+
 	data := map[string]any{
-		"packageName":   res.pkgName,
+		"packageName":   res.pkg.Name,
 		"fromName":      res.fromName,
 		"toName":        res.toName,
 		"fromTag":       res.fromTag,
 		"toTag":         res.toTag,
 		"convertorName": res.convertorName,
 		"fields":        res.fields,
-		"imports":       res.imports,
+		"imports":       filterAndSortImports(res.pkg, imps),
 		"withError":     res.withError,
 		"conversions":   res.conversions,
 	}
@@ -56,7 +61,7 @@ func createConvertor(res result) ([]byte, error) {
 		return nil, err
 	}
 
-	content, err := imports.Process(res.pkgPath, body, nil)
+	content, err := imports.Process(res.pkg.Path, body, nil)
 	if err != nil {
 		return nil, err
 	}

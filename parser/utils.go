@@ -19,8 +19,11 @@ func parseType(t types.Type) ([]Type, error) {
 		und := t.Underlying()
 		if _, ok := und.(*types.Struct); ok {
 			return []Type{{Type: models.Type{
-				Name:        t.Obj().Name(),
-				PackagePath: t.Obj().Pkg().Path(),
+				Name: t.Obj().Name(),
+				Package: models.Package{
+					Name: t.Obj().Pkg().Name(),
+					Path: t.Obj().Pkg().Path(),
+				},
 			}}}, nil
 		}
 		return parseType(t.Underlying())
@@ -140,7 +143,7 @@ func isErrorType(t types.Type) (bool, error) {
 	}
 
 	// TODO: parse custom error by errors interface
-	if errTypes[0].PackagePath != "" {
+	if errTypes[0].Package.Path != "" {
 		return false, nil
 	}
 

@@ -4,11 +4,12 @@ import (
 	"fmt"
 
 	"github.com/underbek/datamapper/models"
+	"golang.org/x/exp/maps"
 )
 
 func createModelsPair(from, to models.Struct, pkgPath string, functions models.Functions) (result, error) {
 	var fields []FieldsPair
-	var imports []ImportType
+	packages := make(map[models.Package]struct{})
 
 	fromFields := make(map[string]models.Field)
 	for _, field := range from.Fields {
@@ -27,19 +28,19 @@ func createModelsPair(from, to models.Struct, pkgPath string, functions models.F
 			return result{}, err
 		}
 
-		imports = append(imports, packs...)
+		maps.Copy(packages, packs)
 		fields = append(fields, pair)
 	}
 
 	return result{
 		fields:      fields,
-		imports:     filterAndSortImports(pkgPath, imports),
+		packages:    packages,
 		conversions: fillConversions(fields),
 	}, nil
 }
 
 func getFieldsPair(from, to models.Field, fromModel, toModel models.Struct, pkgPath string, functions models.Functions,
-) (FieldsPair, []ImportType, error) {
+) (FieldsPair, map[models.Package]struct{}, error) {
 
 	// TODO: check package
 	if from.Type.Name == to.Type.Name {
@@ -47,7 +48,12 @@ func getFieldsPair(from, to models.Field, fromModel, toModel models.Struct, pkgP
 		if err != nil {
 			return FieldsPair{}, nil, err
 		}
-		return res, []ImportType{pkg}, nil
+
+		if pkg != nil {
+			return res, map[models.Package]struct{}{*pkg: {}}, nil
+		}
+
+		return res, nil, nil
 	}
 
 	key := models.ConversionFunctionKey{
@@ -82,7 +88,7 @@ func getFieldsPair(from, to models.Field, fromModel, toModel models.Struct, pkgP
 	return fillConversionFunction(res, from, to, fromModel, toModel, cf, pkgPath)
 }
 
-func getFieldsPairBySameTypes(from, to models.Field, fromName, toName string) (FieldsPair, ImportType, error) {
+func getFieldsPairBySameTypes(from, to models.Field, fromName, toName string) (FieldsPair, *models.Package, error) {
 	res := FieldsPair{
 		FromName: from.Name,
 		FromType: from.Type.Name,
@@ -92,12 +98,12 @@ func getFieldsPairBySameTypes(from, to models.Field, fromName, toName string) (F
 
 	if from.Type.Pointer == to.Type.Pointer {
 		res.Assignment = fmt.Sprintf("from.%s", from.Name)
-		return res, "", nil
+		return res, nil, nil
 	}
 
 	if to.Type.Pointer {
 		res.Assignment = fmt.Sprintf("&from.%s", from.Name)
-		return res, "", nil
+		return res, nil, nil
 	}
 
 	res.PointerToValue = true
@@ -105,26 +111,34 @@ func getFieldsPairBySameTypes(from, to models.Field, fromName, toName string) (F
 
 	conversion, err := getPointerCheck(from, to, fromName, toName)
 	if err != nil {
-		return FieldsPair{}, "", err
+		return FieldsPair{}, nil, err
 	}
 
 	res.Conversions = append(res.Conversions, conversion)
 
-	return res, "fmt", nil
+	return res, &models.Package{
+		Name: "fmt",
+		Path: "fmt",
+	}, nil
 }
 
 func fillConversionFunction(pair FieldsPair, fromFiled, toFiled models.Field, fromModel, toModel models.Struct,
-	cf models.ConversionFunction, pkgPath string) (FieldsPair, []ImportType, error) {
-	imports := []ImportType{cf.PackagePath}
+	cf models.ConversionFunction, pkgPath string) (FieldsPair, map[models.Package]struct{}, error) {
+	pkgs := map[models.Package]struct{}{cf.Package: {}}
 
 	ptr := ""
 	if fromFiled.Type.Pointer {
 		ptr = "*"
 	}
 
+	packageName := cf.Package.Name
+	if cf.Package.Alias != "" {
+		packageName = cf.Package.Alias
+	}
+
 	typeParams := getTypeParams(cf, fromFiled.Type, toFiled.Type)
-	conversion := fmt.Sprintf("%s.%s%s(%sfrom.%s)", cf.PackageName, cf.Name, typeParams, ptr, fromFiled.Name)
-	if cf.PackagePath == pkgPath {
+	conversion := fmt.Sprintf("%s.%s%s(%sfrom.%s)", packageName, cf.Name, typeParams, ptr, fromFiled.Name)
+	if cf.Package.Path == pkgPath {
 		conversion = fmt.Sprintf("%s%s(%sfrom.%s)", cf.Name, typeParams, ptr, fromFiled.Name)
 	}
 
@@ -138,13 +152,16 @@ func fillConversionFunction(pair FieldsPair, fromFiled, toFiled models.Field, fr
 		}
 
 		pair.Conversions = append(pair.Conversions, pointerCheck)
-		imports = append(imports, "fmt")
+		pkgs[models.Package{
+			Name: "fmt",
+			Path: "fmt",
+		}] = struct{}{}
 		pair.PointerToValue = true
 	}
 
 	if !toFiled.Type.Pointer && !cf.WithError {
 		pair.Assignment = conversion
-		return pair, imports, nil
+		return pair, pkgs, nil
 	}
 
 	var err error
@@ -164,10 +181,10 @@ func fillConversionFunction(pair FieldsPair, fromFiled, toFiled models.Field, fr
 			return FieldsPair{}, nil, err
 		}
 
-		imports = append(imports, toFiled.Type.PackagePath)
+		pkgs[toFiled.Type.Package] = struct{}{}
 		pair.Conversions = append(pair.Conversions, pointerToPointer)
 		pair.Assignment = valueAssignment
-		return pair, imports, nil
+		return pair, pkgs, nil
 	}
 
 	if toFiled.Type.Pointer && !cf.WithError {
@@ -190,9 +207,9 @@ func fillConversionFunction(pair FieldsPair, fromFiled, toFiled models.Field, fr
 
 	if toFiled.Type.Pointer {
 		pair.Assignment = refAssignment
-		return pair, imports, nil
+		return pair, pkgs, nil
 	}
 
 	pair.Assignment = valueAssignment
-	return pair, imports, nil
+	return pair, pkgs, nil
 }

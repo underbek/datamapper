@@ -27,9 +27,11 @@ func parseFunctions(t *testing.T, source string) models.Functions {
 
 func Test_CreateModelsPair(t *testing.T) {
 	fromModel := models.Struct{
-		Name:        "FromName",
-		PackageName: generatedPackageName,
-		PackagePath: generatedPackagePath,
+		Name: "FromName",
+		Package: models.Package{
+			Name: generatedPackageName,
+			Path: generatedPackagePath,
+		},
 		Fields: []models.Field{
 			{Name: "ID", Type: models.Type{Name: "int"}, Tags: []models.Tag{{Name: "map", Value: "id"}}},
 			{Name: "Name", Type: models.Type{Name: "string"}, Tags: []models.Tag{{Name: "map", Value: "name"}}},
@@ -37,9 +39,11 @@ func Test_CreateModelsPair(t *testing.T) {
 		},
 	}
 	toModel := models.Struct{
-		Name:        "ToName",
-		PackageName: generatedPackageName,
-		PackagePath: generatedPackagePath,
+		Name: "ToName",
+		Package: models.Package{
+			Name: generatedPackageName,
+			Path: generatedPackagePath,
+		},
 		Fields: []models.Field{
 			{Name: "UUID", Type: models.Type{Name: "string"}, Tags: []models.Tag{{Name: "map", Value: "id"}}},
 			{Name: "Name", Type: models.Type{Name: "string"}, Tags: []models.Tag{{Name: "map", Value: "name"}}},
@@ -75,7 +79,12 @@ func Test_CreateModelsPair(t *testing.T) {
 				Assignment: "converts.ConvertOrderedToOrdered[float64,uint8](from.Age)",
 			},
 		},
-		imports: []string{"github.com/underbek/datamapper/converts"},
+		packages: map[models.Package]struct{}{
+			{
+				Name: "converts",
+				Path: "github.com/underbek/datamapper/converts",
+			}: {},
+		},
 	}
 
 	assert.Equal(t, expected, res)
@@ -180,5 +189,32 @@ func Test_GenerateConvertor(t *testing.T) {
 			assert.Equal(t, expected, string(actual))
 		})
 	}
+}
 
+func Test_GenerateConvertorWithAliases(t *testing.T) {
+	modelsFrom, err := parser.ParseModels(testGeneratorPath + "with_aliases/from")
+	require.NoError(t, err)
+
+	modelsTo, err := parser.ParseModels(testGeneratorPath + "with_aliases/to")
+	require.NoError(t, err)
+
+	funcs := parseFunctions(t, testGeneratorPath+"with_aliases/cf")
+	for key, cf := range funcs {
+		cf.Package.Alias = "cfalias"
+		funcs[key] = cf
+	}
+
+	destination := testGeneratorPath + "with_aliases/convertor.go"
+
+	from := modelsFrom["From"]
+	from.Package.Alias = "fromalias"
+
+	to := modelsTo["To"]
+	to.Package.Alias = "toalias"
+
+	actual, err := generateConvertor(from, to, destination, funcs)
+	require.NoError(t, err)
+
+	expected := _test_data.Generator(t, "with_aliases/convertor.go")
+	assert.Equal(t, expected, string(actual))
 }
