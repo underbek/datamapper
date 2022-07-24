@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/underbek/datamapper/generator"
+	"github.com/underbek/datamapper/models"
 	"github.com/underbek/datamapper/options"
 	"github.com/underbek/datamapper/parser"
 	"github.com/underbek/datamapper/utils"
@@ -29,10 +30,6 @@ func MapModels(opts options.Options) error {
 		return fmt.Errorf(" %w: source model %s from %s", ErrNotFoundStruct, opts.FromName, opts.FromSource)
 	}
 
-	if opts.FromPackageAlias != "" {
-		from.Package.Alias = opts.FromPackageAlias
-	}
-
 	structs, err = parser.ParseModelsByPackage(opts.ToSource)
 	if err != nil {
 		return fmt.Errorf("parse models error: %w", err)
@@ -43,9 +40,14 @@ func MapModels(opts options.Options) error {
 		return fmt.Errorf("%w: to model %s from %s", ErrNotFoundStruct, opts.ToName, opts.ToSource)
 	}
 
-	if opts.ToPackageAlias != "" {
-		to.Package.Alias = opts.ToPackageAlias
+	//TODO: add cf aliases
+	aliases := map[string]string{
+		from.Package.Path: opts.FromPackageAlias,
+		to.Package.Path:   opts.ToPackageAlias,
 	}
+
+	setPackageAliasToStruct(&from, aliases)
+	setPackageAliasToStruct(&to, aliases)
 
 	from.Fields = utils.FilterFields(opts.FromTag, from.Fields)
 	if len(from.Fields) == 0 {
@@ -75,14 +77,15 @@ func MapModels(opts options.Options) error {
 				return fmt.Errorf("parse user conversion functions error: %w", err)
 			}
 
-			if opts.UserCFPackageAlias != "" {
-				for key, cf := range userFuncs {
-					cf.Package.Alias = opts.UserCFPackageAlias
-					userFuncs[key] = cf
-				}
+			// TODO: set alias to each cf
+			res := make(models.Functions)
+			for key, cf := range userFuncs {
+				setPackageAliasToCfKey(&key, aliases)
+				setPackageAliasToCf(&cf, aliases)
+				res[key] = cf
 			}
 
-			maps.Copy(funcs, userFuncs)
+			maps.Copy(funcs, res)
 		}
 	}
 
@@ -92,4 +95,22 @@ func MapModels(opts options.Options) error {
 	}
 
 	return nil
+}
+
+func setPackageAliasToStruct(m *models.Struct, aliases map[string]string) {
+	m.Package.Alias = aliases[m.Package.Path]
+	for i := range m.Fields {
+		m.Fields[i].Type.Package.Alias = aliases[m.Fields[i].Type.Package.Path]
+	}
+}
+
+func setPackageAliasToCfKey(key *models.ConversionFunctionKey, aliases map[string]string) {
+	key.FromType.Package.Alias = aliases[key.FromType.Package.Path]
+	key.ToType.Package.Alias = aliases[key.ToType.Package.Path]
+}
+
+func setPackageAliasToCf(cf *models.ConversionFunction, aliases map[string]string) {
+	cf.Package.Alias = aliases[cf.Package.Path]
+	cf.FromType.Package.Alias = aliases[cf.FromType.Package.Path]
+	cf.ToType.Package.Alias = aliases[cf.ToType.Package.Path]
 }

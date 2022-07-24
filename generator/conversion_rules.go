@@ -50,7 +50,7 @@ func isNeedOnlyAssigmentRule(fromField, toField models.Field, cf models.Conversi
 		return true
 	}
 
-	if fromField.Type.Package == toField.Type.Package &&
+	if fromField.Type.Package.Path == toField.Type.Package.Path &&
 		fromField.Type.Name == toField.Type.Name &&
 		!fromField.Type.Pointer && toField.Type.Pointer {
 
@@ -82,11 +82,7 @@ func isPointerPoPointerConversionFunctionsRule(fromField, toField models.Field, 
 }
 
 func isNeedCallConversionFunctionWithErrorRule(fromField, toField models.Field, cf models.ConversionFunction) bool {
-	if cf.WithError {
-		return true
-	}
-
-	return false
+	return cf.WithError
 }
 
 func isNeedCallConversionFunctionSeparatelyRule(fromField, toField models.Field, cf models.ConversionFunction) bool {

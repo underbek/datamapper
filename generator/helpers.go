@@ -55,8 +55,10 @@ func getFullStructName(model models.Struct, pkgPath string) string {
 }
 
 func getFullFieldName(filed models.Field, pkgPath string) string {
-	// TODO: set package alias if names equals
 	if filed.Type.Package.Name != "" && filed.Type.Package.Path != pkgPath {
+		if filed.Type.Package.Alias != "" {
+			return fmt.Sprintf("%s.%s", filed.Type.Package.Alias, filed.Type.Name)
+		}
 		return fmt.Sprintf("%s.%s", filed.Type.Package.Name, filed.Type.Name)
 	}
 

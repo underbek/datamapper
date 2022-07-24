@@ -42,8 +42,7 @@ func createModelsPair(from, to models.Struct, pkgPath string, functions models.F
 func getFieldsPair(from, to models.Field, fromModel, toModel models.Struct, pkgPath string, functions models.Functions,
 ) (FieldsPair, map[models.Package]struct{}, error) {
 
-	// TODO: check package
-	if from.Type.Name == to.Type.Name {
+	if from.Type.Name == to.Type.Name && from.Type.Package.Path == to.Type.Package.Path {
 		res, pkg, err := getFieldsPairBySameTypes(from, to, fromModel.Name, toModel.Name)
 		if err != nil {
 			return FieldsPair{}, nil, err

@@ -146,7 +146,7 @@ func Test_ParseModelWithPointerField(t *testing.T) {
 	assert.Equal(t, expected, res)
 }
 
-func Test_ParseModeByPackage(t *testing.T) {
+func Test_ParseModelByPackage(t *testing.T) {
 	tests := []struct {
 		name   string
 		source string
@@ -173,4 +173,75 @@ func Test_ParseModeByPackage(t *testing.T) {
 			assert.True(t, ok)
 		})
 	}
+}
+
+func Test_ParseModelWithAlias(t *testing.T) {
+	res, err := ParseModels(testPath + "alias_model.go")
+	require.NoError(t, err)
+	assert.Len(t, res, 2)
+
+	expected := models.Struct{
+		Name: "WithAlias", Fields: []models.Field{
+			{
+				Name: "String",
+				Type: models.Type{
+					Name:    "String",
+					Package: models.Package{Name: "parser", Path: "github.com/underbek/datamapper/_test_data/parser"},
+				},
+			},
+			{
+				Name: "StringAlias",
+				Type: models.Type{Name: "string"},
+			},
+			{
+				Name: "Array",
+				Type: models.Type{
+					Name:    "Array",
+					Package: models.Package{Name: "parser", Path: "github.com/underbek/datamapper/_test_data/parser"},
+				},
+			},
+			{
+				Name: "Slice",
+				Type: models.Type{
+					Name:    "Slice",
+					Package: models.Package{Name: "parser", Path: "github.com/underbek/datamapper/_test_data/parser"},
+				},
+			},
+			{
+				Name: "Map",
+				Type: models.Type{
+					Name:    "Map",
+					Package: models.Package{Name: "parser", Path: "github.com/underbek/datamapper/_test_data/parser"},
+				},
+			},
+			{
+				Name: "RawArray",
+				Type: models.Type{Name: "[16]uint"},
+			},
+			{
+				Name: "RawSlice",
+				Type: models.Type{Name: "[]uint"},
+			},
+			{
+				Name: "RawMap",
+				Type: models.Type{Name: "map[int]string"},
+			},
+			{
+				Name: "ModelRedefinition",
+				Type: models.Type{
+					Name:    "ModelRedefinition",
+					Package: models.Package{Name: "parser", Path: "github.com/underbek/datamapper/_test_data/parser"},
+				},
+			},
+			{
+				Name: "UUID",
+				Type: models.Type{
+					Name:    "UUID",
+					Package: models.Package{Name: "uuid", Path: "github.com/google/uuid"},
+				},
+			},
+		}, Package: models.Package{Name: "parser", Path: "github.com/underbek/datamapper/_test_data/parser"},
+	}
+
+	assert.Equal(t, expected, res["WithAlias"])
 }

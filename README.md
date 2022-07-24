@@ -1,6 +1,7 @@
 # datamapper
 
 ### Install
+
 ```shell
 go install github.com/underbek/datamapper@v0.0.2
 ```
@@ -127,10 +128,14 @@ func ConvertStringToDecimal(from string) (decimal.Decimal, error) {
 * [x] Alias package name for (from/to) models and custom cf
 * [x] Use conversion functions with pointers
 * [x] Use some conversion functions sources
-* [ ] Parse type alias
-* [ ] Parse array, slice, map
+* [x] Parse type alias
+* [x] Parse array, slice, map
+* [ ] New alias options (alias to each convertors' path)
+* [ ] Generate convertors with slice fields
 * [ ] Use in my projects
 * [ ] Converts both ways in one source
+* [ ] Generate convertors with map fields
+* [ ] Generate convertors with array fields
 * [ ] Recursive convert by option if not found conversions
 * [ ] Parse user struct in struct
 * [ ] Option for default field value if from field is nil
