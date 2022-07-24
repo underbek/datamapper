@@ -17,6 +17,7 @@ const (
 	mapperDomainSource    = "../_test_data/mapper/domain"
 	mapperTransportSource = "../_test_data/mapper/transport"
 	customCFPath          = "../_test_data/mapper/convertors"
+	otherCFPath           = "../_test_data/mapper/other_convertors"
 
 	destination = "../_test_data/generated/mapper/user_convertor.go"
 )
@@ -104,14 +105,29 @@ func Test_IncorrectOptions(t *testing.T) {
 
 func Test_MapModels(t *testing.T) {
 	opts := options.Options{
-		Destination:  destination,
-		UserCFSource: customCFPath,
-		FromSource:   mapperTransportSource,
-		ToSource:     mapperDomainSource,
-		FromName:     "User",
-		ToName:       "User",
-		FromTag:      modelTag,
-		ToTag:        toModelTag,
+		Destination:   destination,
+		UserCFSources: []string{customCFPath},
+		FromSource:    mapperTransportSource,
+		ToSource:      mapperDomainSource,
+		FromName:      "User",
+		ToName:        "User",
+		FromTag:       modelTag,
+		ToTag:         toModelTag,
+	}
+	err := MapModels(opts)
+	require.NoError(t, err)
+}
+
+func Test_MapModelsWithSomeCFSources(t *testing.T) {
+	opts := options.Options{
+		Destination:   destination,
+		UserCFSources: []string{customCFPath, otherCFPath},
+		FromSource:    mapperTransportSource,
+		ToSource:      mapperDomainSource,
+		FromName:      "User",
+		ToName:        "User",
+		FromTag:       modelTag,
+		ToTag:         toModelTag,
 	}
 	err := MapModels(opts)
 	require.NoError(t, err)

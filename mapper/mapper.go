@@ -68,20 +68,22 @@ func MapModels(opts options.Options) error {
 		return fmt.Errorf("parse internal conversion functions error: %w", err)
 	}
 
-	if opts.UserCFSource != "" {
-		userFuncs, err := parser.ParseConversionFunctionsByPackage(opts.UserCFSource)
-		if err != nil {
-			return fmt.Errorf("parse user conversion functions error: %w", err)
-		}
-
-		if opts.UserCFPackageAlias != "" {
-			for key, cf := range userFuncs {
-				cf.Package.Alias = opts.UserCFPackageAlias
-				userFuncs[key] = cf
+	if len(opts.UserCFSources) != 0 {
+		for _, source := range opts.UserCFSources {
+			userFuncs, err := parser.ParseConversionFunctionsByPackage(source)
+			if err != nil {
+				return fmt.Errorf("parse user conversion functions error: %w", err)
 			}
-		}
 
-		maps.Copy(funcs, userFuncs)
+			if opts.UserCFPackageAlias != "" {
+				for key, cf := range userFuncs {
+					cf.Package.Alias = opts.UserCFPackageAlias
+					userFuncs[key] = cf
+				}
+			}
+
+			maps.Copy(funcs, userFuncs)
+		}
 	}
 
 	err = generator.CreateConvertor(from, to, opts.Destination, funcs)

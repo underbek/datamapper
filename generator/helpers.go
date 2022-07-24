@@ -114,8 +114,8 @@ func generateModelPackage(pkg *packages.Package) (models.Package, error) {
 	}
 
 	return models.Package{
-		Name: pkg.Name,
-		Path: getPackageNameByPath(pkg.PkgPath),
+		Name: getPackageNameByPath(pkg.PkgPath),
+		Path: pkg.PkgPath,
 	}, nil
 }
 

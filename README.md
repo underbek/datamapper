@@ -126,7 +126,7 @@ func ConvertStringToDecimal(from string) (decimal.Decimal, error) {
 * [x] Move main to root
 * [x] Alias package name for (from/to) models and custom cf
 * [x] Use conversion functions with pointers
-* [ ] Use some conversion functions sources
+* [x] Use some conversion functions sources
 * [ ] Parse type alias
 * [ ] Parse array, slice, map
 * [ ] Use in my projects

@@ -495,7 +495,7 @@ func Test_CFParseByPackage(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			res, err := ParseConversionFunctionsByPackage(tt.source)
 			require.NoError(t, err)
-			assert.Len(t, res, 22)
+			assert.Len(t, res, 11)
 		})
 	}
 }
