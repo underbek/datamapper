@@ -16,6 +16,8 @@ type ConversionFunctionKey struct {
 type ConversionFunction struct {
 	Name      string
 	Package   Package
+	FromType  Type
+	ToType    Type
 	TypeParam TypeParamType
 	WithError bool
 }

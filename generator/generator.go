@@ -9,8 +9,9 @@ import (
 )
 
 var (
-	ErrParseError = errors.New("parse error")
-	ErrNotFound   = errors.New("not found error")
+	ErrParseError              = errors.New("parse error")
+	ErrNotFound                = errors.New("not found error")
+	ErrUndefinedConversionRule = errors.New("undefined conversion rule error")
 )
 
 type ConvertorType = string

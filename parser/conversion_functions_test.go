@@ -50,6 +50,8 @@ func Test_CFParseSimpleFunctions(t *testing.T) {
 				Name: "parser",
 				Path: "github.com/underbek/datamapper/_test_data/parser",
 			},
+			FromType: models.Type{Name: "int"},
+			ToType:   models.Type{Name: "string"},
 		},
 		res[models.ConversionFunctionKey{FromType: models.Type{Name: "int"}, ToType: models.Type{Name: "string"}}],
 	)
@@ -61,6 +63,8 @@ func Test_CFParseSimpleFunctions(t *testing.T) {
 				Name: "parser",
 				Path: "github.com/underbek/datamapper/_test_data/parser",
 			},
+			FromType: models.Type{Name: "float32"},
+			ToType:   models.Type{Name: "string"},
 		},
 		res[models.ConversionFunctionKey{FromType: models.Type{Name: "float32"}, ToType: models.Type{Name: "string"}}],
 	)
@@ -104,6 +108,8 @@ func Test_CFParseGenericFrom(t *testing.T) {
 							Path: "github.com/underbek/datamapper/_test_data/parser",
 						},
 						TypeParam: models.FromTypeParam,
+						FromType:  models.Type{Name: name},
+						ToType:    models.Type{Name: "string"},
 					},
 					res[models.ConversionFunctionKey{
 						FromType: models.Type{Name: name},
@@ -152,6 +158,8 @@ func Test_CFParseGenericTo(t *testing.T) {
 							Name: "parser",
 							Path: "github.com/underbek/datamapper/_test_data/parser",
 						},
+						FromType:  models.Type{Name: "string"},
+						ToType:    models.Type{Name: name},
 						TypeParam: models.ToTypeParam,
 					},
 					res[models.ConversionFunctionKey{
@@ -200,6 +208,8 @@ func Test_CFParseGenericFromTo(t *testing.T) {
 						Name: "parser",
 						Path: "github.com/underbek/datamapper/_test_data/parser",
 					},
+					FromType:  models.Type{Name: tt.FromTypeName},
+					ToType:    models.Type{Name: tt.ToTypeName},
 					TypeParam: models.FromToTypeParam,
 				},
 				res[models.ConversionFunctionKey{
@@ -246,6 +256,8 @@ func Test_CFParseGenericStruct(t *testing.T) {
 						Path: "github.com/underbek/datamapper/_test_data/parser",
 					},
 					TypeParam: models.FromTypeParam,
+					FromType:  models.Type{Name: "Model", Package: tt.Package},
+					ToType:    models.Type{Name: "string"},
 				},
 				res[models.ConversionFunctionKey{FromType: models.Type{
 					Name:    "Model",
@@ -299,6 +311,8 @@ func Test_CFParseWithStruct(t *testing.T) {
 						Name: "parser",
 						Path: "github.com/underbek/datamapper/_test_data/parser",
 					},
+					FromType: models.Type{Name: "Model", Package: tt.FromPackage},
+					ToType:   models.Type{Name: "Model", Package: tt.ToPackage},
 				},
 				res[models.ConversionFunctionKey{FromType: models.Type{
 					Name:    "Model",
@@ -348,6 +362,8 @@ func Test_CFParseWithError(t *testing.T) {
 							Name: "parser",
 							Path: "github.com/underbek/datamapper/_test_data/parser",
 						},
+						FromType:  models.Type{Name: "string"},
+						ToType:    models.Type{Name: toTypeName, Package: tt.ToPackage},
 						TypeParam: tt.TypeParam,
 						WithError: true,
 					},
@@ -359,6 +375,99 @@ func Test_CFParseWithError(t *testing.T) {
 					}}],
 				)
 			}
+		})
+	}
+}
+
+func Test_CFParseWithPointers(t *testing.T) {
+	res, err := ParseConversionFunctions(testPath + "with_pointers.go")
+	require.NoError(t, err)
+	assert.Len(t, res, 5)
+
+	tests := []struct {
+		Name      string
+		FromType  models.Type
+		ToType    models.Type
+		TypeParam models.TypeParamType
+	}{
+		{
+			Name: "ConvertIntPtrToString",
+			FromType: models.Type{
+				Name:    "int",
+				Pointer: true,
+			},
+			ToType: models.Type{
+				Name: "string",
+			},
+		},
+		{
+			Name: "ConvertFloatToStringPtr",
+			FromType: models.Type{
+				Name: "float32",
+			},
+			ToType: models.Type{
+				Name:    "string",
+				Pointer: true,
+			},
+		},
+		{
+			Name: "ConvertFloatPtrToStringPtr",
+			FromType: models.Type{
+				Name:    "float32",
+				Pointer: true,
+			},
+			ToType: models.Type{
+				Name:    "string",
+				Pointer: true,
+			},
+		},
+		{
+			Name:      "ConvertXFloatPointerToDecimal",
+			TypeParam: models.FromTypeParam,
+			FromType: models.Type{
+				Name:    "float32",
+				Pointer: true,
+			},
+			ToType: models.Type{
+				Name: "Decimal",
+				Package: models.Package{
+					Name: "decimal",
+					Path: "github.com/shopspring/decimal",
+				},
+			},
+		},
+		{
+			Name:      "ConvertXFloatPointerToDecimal",
+			TypeParam: models.FromTypeParam,
+			FromType: models.Type{
+				Name:    "float64",
+				Pointer: true,
+			},
+			ToType: models.Type{
+				Name: "Decimal",
+				Package: models.Package{
+					Name: "decimal",
+					Path: "github.com/shopspring/decimal",
+				},
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.Name, func(t *testing.T) {
+			cf, ok := res[models.ConversionFunctionKey{FromType: tt.FromType, ToType: tt.ToType}]
+			assert.True(t, ok)
+			assert.Equal(t,
+				models.ConversionFunction{
+					Name:      tt.Name,
+					TypeParam: tt.TypeParam,
+					Package: models.Package{
+						Name: "parser",
+						Path: "github.com/underbek/datamapper/_test_data/parser",
+					},
+					FromType: tt.FromType,
+					ToType:   tt.ToType,
+				}, cf)
 		})
 	}
 }

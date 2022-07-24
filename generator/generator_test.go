@@ -168,6 +168,20 @@ func Test_GenerateConvertor(t *testing.T) {
 			generatePath: "with_filed_pointers_and_errors",
 			cfPath:       cfPath,
 		},
+		{
+			name:         "Conversion functions with pointers",
+			pathFrom:     "cf_with_pointers",
+			pathTo:       "cf_with_pointers",
+			generatePath: "cf_with_pointers",
+			cfPath:       testGeneratorPath + "cf_with_pointers/cf",
+		},
+		{
+			name:         "Conversion functions with pointers and errors",
+			pathFrom:     "cf_with_pointers_and_errors",
+			pathTo:       "cf_with_pointers_and_errors",
+			generatePath: "cf_with_pointers_and_errors",
+			cfPath:       testGeneratorPath + "cf_with_pointers_and_errors/cf",
+		},
 	}
 
 	for _, tt := range tests {

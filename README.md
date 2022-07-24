@@ -125,6 +125,9 @@ func ConvertStringToDecimal(from string) (decimal.Decimal, error) {
 * [x] Get first value by tag
 * [x] Move main to root
 * [x] Alias package name for (from/to) models and custom cf
+* [x] Use conversion functions with pointers
+* [ ] Use some conversion functions sources
+* [ ] Parse type alias
 * [ ] Parse array, slice, map
 * [ ] Use in my projects
 * [ ] Converts both ways in one source
@@ -139,7 +142,6 @@ func ConvertStringToDecimal(from string) (decimal.Decimal, error) {
 * [ ] Warning or error politics if tags is not equals
 * [ ] Fill some conversion functions
 * [ ] Copy using conversion functions from datamapper to target service if flag set
-* [ ] Use conversion functions with pointers
 * [ ] Parse custom error by conversion functions
 * [ ] Fix cyclop linter
 * [ ] Tag for default field value if from field is nil
