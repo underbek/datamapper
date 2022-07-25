@@ -14,11 +14,12 @@ type ConversionFunctionKey struct {
 }
 
 type ConversionFunction struct {
-	Name        string
-	PackageName string
-	PackagePath string
-	TypeParam   TypeParamType
-	WithError   bool
+	Name      string
+	Package   Package
+	FromType  Type
+	ToType    Type
+	TypeParam TypeParamType
+	WithError bool
 }
 
 type Functions = map[ConversionFunctionKey]ConversionFunction

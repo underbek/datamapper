@@ -16,14 +16,26 @@ type Type struct {
 func parseType(t types.Type) ([]Type, error) {
 	switch t := t.(type) {
 	case *types.Named:
-		und := t.Underlying()
-		if _, ok := und.(*types.Struct); ok {
+		switch t.Underlying().(type) {
+		case *types.Basic, *types.Array, *types.Slice, *types.Map:
 			return []Type{{Type: models.Type{
-				Name:        t.Obj().Name(),
-				PackagePath: t.Obj().Pkg().Path(),
+				Name: t.Obj().Name(),
+				Package: models.Package{
+					Name: t.Obj().Pkg().Name(),
+					Path: t.Obj().Pkg().Path(),
+				},
 			}}}, nil
+		case *types.Struct:
+			return []Type{{Type: models.Type{
+				Name: t.Obj().Name(),
+				Package: models.Package{
+					Name: t.Obj().Pkg().Name(),
+					Path: t.Obj().Pkg().Path(),
+				},
+			}}}, nil
+		default:
+			return parseType(t.Underlying())
 		}
-		return parseType(t.Underlying())
 	case *types.Interface:
 		n := t.NumEmbeddeds()
 		if n == 0 {
@@ -65,7 +77,7 @@ func parseType(t types.Type) ([]Type, error) {
 			res[i].generic = true
 		}
 		return res, nil
-	case *types.Array:
+	case *types.Array, *types.Slice, *types.Map:
 		return []Type{{Type: models.Type{Name: t.String()}}}, nil
 	case *types.Pointer:
 		res, err := parseType(t.Elem())
@@ -114,9 +126,11 @@ func parseTag(tag string) []models.Tag {
 			continue
 		}
 
+		valueTag := strings.Trim(textTag[sepIndex+1:], "\"")
+
 		tags = append(tags, models.Tag{
 			Name:  textTag[:sepIndex],
-			Value: strings.Trim(textTag[sepIndex+1:], "\""),
+			Value: strings.Split(valueTag, ",")[0],
 		})
 	}
 
@@ -138,7 +152,7 @@ func isErrorType(t types.Type) (bool, error) {
 	}
 
 	// TODO: parse custom error by errors interface
-	if errTypes[0].PackagePath != "" {
+	if errTypes[0].Package.Path != "" {
 		return false, nil
 	}
 

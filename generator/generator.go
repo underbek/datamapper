@@ -9,8 +9,9 @@ import (
 )
 
 var (
-	ErrParseError = errors.New("parse error")
-	ErrNotFound   = errors.New("not found error")
+	ErrParseError              = errors.New("parse error")
+	ErrNotFound                = errors.New("not found error")
+	ErrUndefinedConversionRule = errors.New("undefined conversion rule error")
 )
 
 type ConvertorType = string
@@ -29,14 +30,13 @@ type FieldsPair struct {
 
 type result struct {
 	convertorName string
-	pkgName       string
-	pkgPath       string
+	pkg           models.Package
 	fromName      string
 	toName        string
 	fromTag       string
 	toTag         string
 	fields        []FieldsPair
-	imports       []string
+	packages      map[models.Package]struct{}
 	conversions   []string
 	withError     bool
 }
@@ -73,18 +73,17 @@ func generateConvertor(from, to models.Struct, dest string, functions models.Fun
 		return nil, err
 	}
 
-	imports := append(res.imports, from.PackagePath, to.PackagePath)
+	res.packages[from.Type.Package] = struct{}{}
+	res.packages[to.Type.Package] = struct{}{}
 
-	res.imports = filterAndSortImports(pkg.PkgPath, imports)
-	res.pkgPath = pkg.PkgPath
 	res.convertorName = generateConvertorName(from, to, pkg.PkgPath)
-	res.pkgName, err = generatePackageName(pkg)
+	res.pkg, err = generateModelPackage(pkg)
 	if err != nil {
 		return nil, err
 	}
 
-	res.fromName = getFullStructName(from, pkg.PkgPath)
-	res.toName = getFullStructName(to, pkg.PkgPath)
+	res.fromName = from.Type.FullName(pkg.PkgPath)
+	res.toName = to.Type.FullName(pkg.PkgPath)
 
 	res.fromTag = from.Fields[0].Tags[0].Name
 	res.toTag = to.Fields[0].Tags[0].Name

@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/underbek/datamapper/generator"
+	"github.com/underbek/datamapper/models"
 	"github.com/underbek/datamapper/options"
 	"github.com/underbek/datamapper/parser"
 	"github.com/underbek/datamapper/utils"
@@ -39,6 +40,15 @@ func MapModels(opts options.Options) error {
 		return fmt.Errorf("%w: to model %s from %s", ErrNotFoundStruct, opts.ToName, opts.ToSource)
 	}
 
+	//TODO: add cf aliases
+	aliases := map[string]string{
+		from.Type.Package.Path: opts.FromPackageAlias,
+		to.Type.Package.Path:   opts.ToPackageAlias,
+	}
+
+	setPackageAliasToStruct(&from, aliases)
+	setPackageAliasToStruct(&to, aliases)
+
 	from.Fields = utils.FilterFields(opts.FromTag, from.Fields)
 	if len(from.Fields) == 0 {
 		return fmt.Errorf(
@@ -60,13 +70,17 @@ func MapModels(opts options.Options) error {
 		return fmt.Errorf("parse internal conversion functions error: %w", err)
 	}
 
-	if opts.UserCFSource != "" {
-		userFuncs, err := parser.ParseConversionFunctionsByPackage(opts.UserCFSource)
-		if err != nil {
-			return fmt.Errorf("parse user conversion functions error: %w", err)
-		}
+	if len(opts.UserCFSources) != 0 {
+		for _, source := range opts.UserCFSources {
+			userFuncs, err := parser.ParseConversionFunctionsByPackage(source)
+			if err != nil {
+				return fmt.Errorf("parse user conversion functions error: %w", err)
+			}
 
-		maps.Copy(funcs, userFuncs)
+			// TODO: set alias to each cf
+			res := setPackageAliasToFunctions(userFuncs, aliases)
+			maps.Copy(funcs, res)
+		}
 	}
 
 	err = generator.CreateConvertor(from, to, opts.Destination, funcs)
@@ -75,4 +89,38 @@ func MapModels(opts options.Options) error {
 	}
 
 	return nil
+}
+
+func setPackageAlias(p *models.Package, aliases map[string]string) {
+	p.Alias = aliases[p.Path]
+}
+
+func setPackageAliasToStruct(m *models.Struct, aliases map[string]string) {
+	setPackageAlias(&m.Type.Package, aliases)
+	for i := range m.Fields {
+		setPackageAlias(&m.Fields[i].Type.Package, aliases)
+	}
+}
+
+func setPackageAliasToCfKey(key models.ConversionFunctionKey, aliases map[string]string) models.ConversionFunctionKey {
+	setPackageAlias(&key.FromType.Package, aliases)
+	setPackageAlias(&key.ToType.Package, aliases)
+
+	return key
+}
+
+func setPackageAliasToCf(cf models.ConversionFunction, aliases map[string]string) models.ConversionFunction {
+	setPackageAlias(&cf.Package, aliases)
+	setPackageAlias(&cf.FromType.Package, aliases)
+	setPackageAlias(&cf.ToType.Package, aliases)
+
+	return cf
+}
+
+func setPackageAliasToFunctions(funcs models.Functions, aliases map[string]string) models.Functions {
+	res := make(models.Functions)
+	for key, cf := range funcs {
+		res[setPackageAliasToCfKey(key, aliases)] = setPackageAliasToCf(cf, aliases)
+	}
+	return res
 }

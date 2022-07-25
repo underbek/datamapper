@@ -22,6 +22,15 @@ var (
 )
 
 func ParseConversionFunctionsByPackage(source string) (models.Functions, error) {
+	_, err := os.Stat(source)
+	if err == nil {
+		return ParseConversionFunctions(source)
+	}
+
+	if !os.IsNotExist(err) {
+		return nil, err
+	}
+
 	wd, err := os.Getwd()
 	if err != nil {
 		return nil, err
@@ -29,7 +38,7 @@ func ParseConversionFunctionsByPackage(source string) (models.Functions, error) 
 
 	p, err := build.Import(source, wd, build.FindOnly)
 	if err != nil {
-		return ParseConversionFunctions(source)
+		return nil, err
 	}
 
 	return ParseConversionFunctions(p.Dir)
@@ -130,22 +139,20 @@ func parseFunction(pkg *packages.Package, f *types.Func) (models.Functions, erro
 	for _, fromType := range fromTypes {
 		for _, toType := range toTypes {
 			key := models.ConversionFunctionKey{
-				FromType: models.Type{
-					Name:        fromType.Name,
-					PackagePath: fromType.PackagePath,
-				},
-				ToType: models.Type{
-					Name:        toType.Name,
-					PackagePath: toType.PackagePath,
-				},
+				FromType: fromType.Type,
+				ToType:   toType.Type,
 			}
 
 			cv := models.ConversionFunction{
-				Name:        f.Name(),
-				PackageName: pkg.Name,
-				PackagePath: pkg.PkgPath,
-				TypeParam:   getTypeParam(fromType.generic, toType.generic),
-				WithError:   withError,
+				Name: f.Name(),
+				Package: models.Package{
+					Name: pkg.Name,
+					Path: pkg.PkgPath,
+				},
+				FromType:  fromType.Type,
+				ToType:    toType.Type,
+				TypeParam: getTypeParam(fromType.generic, toType.generic),
+				WithError: withError,
 			}
 
 			funcs[key] = cv

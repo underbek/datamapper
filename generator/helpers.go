@@ -43,32 +43,12 @@ func isReturnError(fields []FieldsPair) bool {
 	return false
 }
 
-func getFullStructName(model models.Struct, pkgPath string) string {
-	if model.PackagePath != pkgPath {
-		return fmt.Sprintf("%s.%s", model.PackageName, model.Name)
-	}
+func filterAndSortImports(currentPkg models.Package, imports []ImportType) []ImportType {
+	currentPkgPath := currentPkg.Import()
 
-	return model.Name
-}
-
-func getFullFieldName(filed models.Field, pkgPath string) string {
-	if filed.Type.PackagePath != "" && filed.Type.PackagePath != pkgPath {
-		pkgName := getPackageNameByPath(filed.Type.PackagePath)
-		return fmt.Sprintf("%s.%s", pkgName, filed.Type.Name)
-	}
-
-	return filed.Type.Name
-}
-
-func getPackageNameByPath(path string) string {
-	names := strings.Split(path, "/")
-	return names[len(names)-1]
-}
-
-func filterAndSortImports(currentPkgPath string, imports []ImportType) []ImportType {
 	set := make(map[ImportType]struct{})
 	for _, imp := range imports {
-		if imp != "" && imp != currentPkgPath {
+		if imp != "\"\"" && imp != currentPkgPath {
 			set[imp] = struct{}{}
 		}
 	}
@@ -80,28 +60,46 @@ func filterAndSortImports(currentPkgPath string, imports []ImportType) []ImportT
 }
 
 func generateConvertorName(from, to models.Struct, pkgPath string) string {
-	convertorName := "Convert"
-	if from.PackagePath != pkgPath {
-		convertorName += cases.Title(language.Und, cases.NoLower).String(from.PackageName)
-	}
-	convertorName += from.Name
-	convertorName += "To"
-	if to.PackagePath != pkgPath {
-		convertorName += cases.Title(language.Und, cases.NoLower).String(to.PackageName)
-	}
-	convertorName += to.Name
+	structNameGenerator := func(model models.Struct, pkgPath string) string {
+		name := model.Type.Name
 
-	return convertorName
+		if model.Type.Package.Path == pkgPath {
+			return name
+		}
+
+		pkgName := model.Type.Package.Name
+		if model.Type.Package.Alias != "" {
+			pkgName = model.Type.Package.Alias
+		}
+		return cases.Title(language.Und, cases.NoLower).String(pkgName) + name
+	}
+
+	return fmt.Sprintf(
+		"Convert%sTo%s",
+		structNameGenerator(from, pkgPath),
+		structNameGenerator(to, pkgPath),
+	)
 }
 
-func generatePackageName(pkg *packages.Package) (string, error) {
+func generateModelPackage(pkg *packages.Package) (models.Package, error) {
 	if pkg.Name != "" {
-		return pkg.Name, nil
+		return models.Package{
+			Name: pkg.Name,
+			Path: pkg.PkgPath,
+		}, nil
 	}
 
 	if pkg.PkgPath == "" {
-		return "", fmt.Errorf("incorrect parsed destination package: %w", ErrParseError)
+		return models.Package{}, fmt.Errorf("incorrect parsed destination package: %w", ErrParseError)
 	}
 
-	return getPackageNameByPath(pkg.PkgPath), nil
+	return models.Package{
+		Name: getPackageNameByPath(pkg.PkgPath),
+		Path: pkg.PkgPath,
+	}, nil
+}
+
+func getPackageNameByPath(path string) string {
+	names := strings.Split(path, "/")
+	return names[len(names)-1]
 }
