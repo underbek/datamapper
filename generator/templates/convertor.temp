@@ -19,7 +19,7 @@ import (
 // {{.convertorName}} convert {{.fromName}} by tag {{.fromTag}} to {{.toName}} by tag {{.toTag}}
 {{ if .withError -}}
 func {{.convertorName}}(from {{.fromName}}) ({{.toName}}, error) {
-{{- else -}}
+{{else -}}
 func {{.convertorName}}(from {{.fromName}}) {{.toName}} {
 {{ end -}}
 {{- range $conversion := .conversions -}}

@@ -94,12 +94,14 @@ func ParseModels(source string) (map[string]models.Struct, error) {
 		}
 
 		structs[currType.Name()] = models.Struct{
-			Name:   currType.Name(),
-			Fields: fields,
-			Package: models.Package{
-				Name: pkg.Name,
-				Path: pkg.PkgPath,
+			Type: models.Type{
+				Name: currType.Name(),
+				Package: models.Package{
+					Name: pkg.Name,
+					Path: pkg.PkgPath,
+				},
 			},
+			Fields: fields,
 		}
 	}
 	return structs, nil

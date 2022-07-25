@@ -27,10 +27,12 @@ func parseFunctions(t *testing.T, source string) models.Functions {
 
 func Test_CreateModelsPair(t *testing.T) {
 	fromModel := models.Struct{
-		Name: "FromName",
-		Package: models.Package{
-			Name: generatedPackageName,
-			Path: generatedPackagePath,
+		Type: models.Type{
+			Name: "FromName",
+			Package: models.Package{
+				Name: generatedPackageName,
+				Path: generatedPackagePath,
+			},
 		},
 		Fields: []models.Field{
 			{Name: "ID", Type: models.Type{Name: "int"}, Tags: []models.Tag{{Name: "map", Value: "id"}}},
@@ -39,10 +41,12 @@ func Test_CreateModelsPair(t *testing.T) {
 		},
 	}
 	toModel := models.Struct{
-		Name: "ToName",
-		Package: models.Package{
-			Name: generatedPackageName,
-			Path: generatedPackagePath,
+		Type: models.Type{
+			Name: "ToName",
+			Package: models.Package{
+				Name: generatedPackageName,
+				Path: generatedPackagePath,
+			},
 		},
 		Fields: []models.Field{
 			{Name: "UUID", Type: models.Type{Name: "string"}, Tags: []models.Tag{{Name: "map", Value: "id"}}},
@@ -221,10 +225,10 @@ func Test_GenerateConvertorWithAliases(t *testing.T) {
 	destination := testGeneratorPath + "with_aliases/convertor.go"
 
 	from := modelsFrom["From"]
-	from.Package.Alias = "fromalias"
+	from.Type.Package.Alias = "fromalias"
 
 	to := modelsTo["To"]
-	to.Package.Alias = "toalias"
+	to.Type.Package.Alias = "toalias"
 
 	actual, err := generateConvertor(from, to, destination, funcs)
 	require.NoError(t, err)

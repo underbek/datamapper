@@ -42,8 +42,8 @@ func MapModels(opts options.Options) error {
 
 	//TODO: add cf aliases
 	aliases := map[string]string{
-		from.Package.Path: opts.FromPackageAlias,
-		to.Package.Path:   opts.ToPackageAlias,
+		from.Type.Package.Path: opts.FromPackageAlias,
+		to.Type.Package.Path:   opts.ToPackageAlias,
 	}
 
 	setPackageAliasToStruct(&from, aliases)
@@ -78,13 +78,7 @@ func MapModels(opts options.Options) error {
 			}
 
 			// TODO: set alias to each cf
-			res := make(models.Functions)
-			for key, cf := range userFuncs {
-				setPackageAliasToCfKey(&key, aliases)
-				setPackageAliasToCf(&cf, aliases)
-				res[key] = cf
-			}
-
+			res := setPackageAliasToFunctions(userFuncs, aliases)
 			maps.Copy(funcs, res)
 		}
 	}
@@ -97,20 +91,34 @@ func MapModels(opts options.Options) error {
 	return nil
 }
 
+func setPackageAlias(p *models.Package, aliases map[string]string) {
+	p.Alias = aliases[p.Path]
+}
+
 func setPackageAliasToStruct(m *models.Struct, aliases map[string]string) {
-	m.Package.Alias = aliases[m.Package.Path]
+	setPackageAlias(&m.Type.Package, aliases)
 	for i := range m.Fields {
-		m.Fields[i].Type.Package.Alias = aliases[m.Fields[i].Type.Package.Path]
+		setPackageAlias(&m.Fields[i].Type.Package, aliases)
 	}
 }
 
 func setPackageAliasToCfKey(key *models.ConversionFunctionKey, aliases map[string]string) {
-	key.FromType.Package.Alias = aliases[key.FromType.Package.Path]
-	key.ToType.Package.Alias = aliases[key.ToType.Package.Path]
+	setPackageAlias(&key.FromType.Package, aliases)
+	setPackageAlias(&key.ToType.Package, aliases)
 }
 
 func setPackageAliasToCf(cf *models.ConversionFunction, aliases map[string]string) {
-	cf.Package.Alias = aliases[cf.Package.Path]
-	cf.FromType.Package.Alias = aliases[cf.FromType.Package.Path]
-	cf.ToType.Package.Alias = aliases[cf.ToType.Package.Path]
+	setPackageAlias(&cf.Package, aliases)
+	setPackageAlias(&cf.FromType.Package, aliases)
+	setPackageAlias(&cf.ToType.Package, aliases)
+}
+
+func setPackageAliasToFunctions(funcs models.Functions, aliases map[string]string) models.Functions {
+	res := make(models.Functions)
+	for key, cf := range funcs {
+		setPackageAliasToCfKey(&key, aliases)
+		setPackageAliasToCf(&cf, aliases)
+		res[key] = cf
+	}
+	return res
 }

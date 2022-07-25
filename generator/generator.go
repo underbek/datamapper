@@ -73,8 +73,8 @@ func generateConvertor(from, to models.Struct, dest string, functions models.Fun
 		return nil, err
 	}
 
-	res.packages[from.Package] = struct{}{}
-	res.packages[to.Package] = struct{}{}
+	res.packages[from.Type.Package] = struct{}{}
+	res.packages[to.Type.Package] = struct{}{}
 
 	res.convertorName = generateConvertorName(from, to, pkg.PkgPath)
 	res.pkg, err = generateModelPackage(pkg)
@@ -82,8 +82,8 @@ func generateConvertor(from, to models.Struct, dest string, functions models.Fun
 		return nil, err
 	}
 
-	res.fromName = getFullStructName(from, pkg.PkgPath)
-	res.toName = getFullStructName(to, pkg.PkgPath)
+	res.fromName = from.Type.FullName(pkg.PkgPath)
+	res.toName = to.Type.FullName(pkg.PkgPath)
 
 	res.fromTag = from.Fields[0].Tags[0].Name
 	res.toTag = to.Fields[0].Tags[0].Name

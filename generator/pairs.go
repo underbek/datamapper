@@ -43,7 +43,7 @@ func getFieldsPair(from, to models.Field, fromModel, toModel models.Struct, pkgP
 ) (FieldsPair, map[models.Package]struct{}, error) {
 
 	if from.Type.Name == to.Type.Name && from.Type.Package.Path == to.Type.Package.Path {
-		res, pkg, err := getFieldsPairBySameTypes(from, to, fromModel.Name, toModel.Name)
+		res, pkg, err := getFieldsPairBySameTypes(from, to, fromModel.Type.Name, toModel.Type.Name)
 		if err != nil {
 			return FieldsPair{}, nil, err
 		}
@@ -150,8 +150,8 @@ func fillConversionFunction(pair FieldsPair, fromField, toField models.Field, fr
 
 	if isNeedPointerCheckAndReturnError(fromField, toField, cf) {
 		conversion, err := getPointerCheck(fromField, toField,
-			getFullStructName(fromModel, pkgPath),
-			getFullStructName(toModel, pkgPath),
+			fromModel.Type.FullName(pkgPath),
+			toModel.Type.FullName(pkgPath),
 		)
 		if err != nil {
 			return FieldsPair{}, nil, err
@@ -183,8 +183,8 @@ func fillConversionFunction(pair FieldsPair, fromField, toField models.Field, fr
 	case PointerPoPointerConversionFunctionsRule:
 		conversion, err := getPointerToPointerConversion(
 			fromField.Name,
-			getFullStructName(toModel, pkgPath),
-			getFullFieldName(toField, pkgPath),
+			toModel.Type.FullName(pkgPath),
+			toField.Type.FullName(pkgPath),
 			cfCall,
 			cf.WithError,
 		)
@@ -201,7 +201,7 @@ func fillConversionFunction(pair FieldsPair, fromField, toField models.Field, fr
 		return pair, pkgs, nil
 
 	case NeedCallConversionFunctionWithErrorRule:
-		conversion, err := getErrorConversion(fromField.Name, getFullStructName(toModel, pkgPath), cfCall)
+		conversion, err := getErrorConversion(fromField.Name, toModel.Type.FullName(pkgPath), cfCall)
 		if err != nil {
 			return FieldsPair{}, nil, err
 		}

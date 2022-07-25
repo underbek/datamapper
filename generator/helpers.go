@@ -43,28 +43,6 @@ func isReturnError(fields []FieldsPair) bool {
 	return false
 }
 
-func getFullStructName(model models.Struct, pkgPath string) string {
-	if model.Package.Path != pkgPath {
-		if model.Package.Alias != "" {
-			return fmt.Sprintf("%s.%s", model.Package.Alias, model.Name)
-		}
-		return fmt.Sprintf("%s.%s", model.Package.Name, model.Name)
-	}
-
-	return model.Name
-}
-
-func getFullFieldName(filed models.Field, pkgPath string) string {
-	if filed.Type.Package.Name != "" && filed.Type.Package.Path != pkgPath {
-		if filed.Type.Package.Alias != "" {
-			return fmt.Sprintf("%s.%s", filed.Type.Package.Alias, filed.Type.Name)
-		}
-		return fmt.Sprintf("%s.%s", filed.Type.Package.Name, filed.Type.Name)
-	}
-
-	return filed.Type.Name
-}
-
 func filterAndSortImports(currentPkg models.Package, imports []ImportType) []ImportType {
 	currentPkgPath := currentPkg.Import()
 
@@ -83,15 +61,15 @@ func filterAndSortImports(currentPkg models.Package, imports []ImportType) []Imp
 
 func generateConvertorName(from, to models.Struct, pkgPath string) string {
 	structNameGenerator := func(model models.Struct, pkgPath string) string {
-		name := model.Name
+		name := model.Type.Name
 
-		if model.Package.Path == pkgPath {
+		if model.Type.Package.Path == pkgPath {
 			return name
 		}
 
-		pkgName := model.Package.Name
-		if model.Package.Alias != "" {
-			pkgName = model.Package.Alias
+		pkgName := model.Type.Package.Name
+		if model.Type.Package.Alias != "" {
+			pkgName = model.Type.Package.Alias
 		}
 		return cases.Title(language.Und, cases.NoLower).String(pkgName) + name
 	}
