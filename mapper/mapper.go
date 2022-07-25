@@ -102,23 +102,25 @@ func setPackageAliasToStruct(m *models.Struct, aliases map[string]string) {
 	}
 }
 
-func setPackageAliasToCfKey(key *models.ConversionFunctionKey, aliases map[string]string) {
+func setPackageAliasToCfKey(key models.ConversionFunctionKey, aliases map[string]string) models.ConversionFunctionKey {
 	setPackageAlias(&key.FromType.Package, aliases)
 	setPackageAlias(&key.ToType.Package, aliases)
+
+	return key
 }
 
-func setPackageAliasToCf(cf *models.ConversionFunction, aliases map[string]string) {
+func setPackageAliasToCf(cf models.ConversionFunction, aliases map[string]string) models.ConversionFunction {
 	setPackageAlias(&cf.Package, aliases)
 	setPackageAlias(&cf.FromType.Package, aliases)
 	setPackageAlias(&cf.ToType.Package, aliases)
+
+	return cf
 }
 
 func setPackageAliasToFunctions(funcs models.Functions, aliases map[string]string) models.Functions {
 	res := make(models.Functions)
 	for key, cf := range funcs {
-		setPackageAliasToCfKey(&key, aliases)
-		setPackageAliasToCf(&cf, aliases)
-		res[key] = cf
+		res[setPackageAliasToCfKey(key, aliases)] = setPackageAliasToCf(cf, aliases)
 	}
 	return res
 }
