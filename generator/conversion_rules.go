@@ -11,48 +11,53 @@ const (
 	NeedCallConversionFunctionSeparatelyRule
 	NeedCallConversionFunctionWithErrorRule
 	PointerPoPointerConversionFunctionsRule
+	NeedRangeBySlice
 )
 
-func getConversionRule(fromField, toField models.Field, cf models.ConversionFunction) ConversionRule {
-	if isNeedOnlyAssigmentRule(fromField, toField, cf) {
+func getConversionRule(fromType, toType models.Type, cf models.ConversionFunction) ConversionRule {
+	if isNeedRangeBySlice(fromType, toType, cf) {
+		return NeedRangeBySlice
+	}
+
+	if isNeedOnlyAssigmentRule(fromType, toType, cf) {
 		return NeedOnlyAssigmentRule
 	}
 
-	if isNeedCallConversionFunctionRule(fromField, toField, cf) {
+	if isNeedCallConversionFunctionRule(fromType, toType, cf) {
 		return NeedCallConversionFunctionRule
 	}
 
-	if isPointerPoPointerConversionFunctionsRule(fromField, toField, cf) {
+	if isPointerPoPointerConversionFunctionsRule(fromType, toType, cf) {
 		return PointerPoPointerConversionFunctionsRule
 	}
 
-	if isNeedCallConversionFunctionWithErrorRule(fromField, toField, cf) {
+	if isNeedCallConversionFunctionWithErrorRule(fromType, toType, cf) {
 		return NeedCallConversionFunctionWithErrorRule
 	}
 
-	if isNeedCallConversionFunctionSeparatelyRule(fromField, toField, cf) {
+	if isNeedCallConversionFunctionSeparatelyRule(fromType, toType, cf) {
 		return NeedCallConversionFunctionSeparatelyRule
 	}
 
 	return UndefinedRule
 }
 
-func isNeedPointerCheckAndReturnError(fromField, toField models.Field, cf models.ConversionFunction) bool {
-	if fromField.Type.Pointer && !cf.FromType.Pointer {
+func isNeedPointerCheckAndReturnError(fromType, toType models.Type, cf models.ConversionFunction) bool {
+	if fromType.Pointer && !cf.FromType.Pointer {
 		return true
 	}
 
 	return false
 }
 
-func isNeedOnlyAssigmentRule(fromField, toField models.Field, cf models.ConversionFunction) bool {
-	if fromField.Type == toField.Type {
+func isNeedOnlyAssigmentRule(fromType, toType models.Type, cf models.ConversionFunction) bool {
+	if fromType == toType {
 		return true
 	}
 
-	if fromField.Type.Package.Path == toField.Type.Package.Path &&
-		fromField.Type.Name == toField.Type.Name &&
-		!fromField.Type.Pointer && toField.Type.Pointer {
+	if fromType.Package.Path == toType.Package.Path &&
+		fromType.Name == toType.Name &&
+		!fromType.Pointer && toType.Pointer {
 
 		return true
 	}
@@ -60,39 +65,59 @@ func isNeedOnlyAssigmentRule(fromField, toField models.Field, cf models.Conversi
 	return false
 }
 
-func isNeedCallConversionFunctionRule(fromField, toField models.Field, cf models.ConversionFunction) bool {
+func isNeedCallConversionFunctionRule(fromType, toType models.Type, cf models.ConversionFunction) bool {
 	if cf.WithError {
 		return false
 	}
 
-	if toField.Type.Pointer == cf.ToType.Pointer {
+	if toType.Pointer == cf.ToType.Pointer {
 		return true
 	}
 
-	//TODO: if !fromField.Type.Pointer && cf.FromType.Pointer
+	//TODO: if !fromType.Pointer && cf.FromType.Pointer
 	return false
 }
 
-func isPointerPoPointerConversionFunctionsRule(fromField, toField models.Field, cf models.ConversionFunction) bool {
-	if fromField.Type.Pointer && toField.Type.Pointer && !cf.FromType.Pointer && !cf.ToType.Pointer {
+func isPointerPoPointerConversionFunctionsRule(fromType, toType models.Type, cf models.ConversionFunction) bool {
+	if fromType.Pointer && toType.Pointer && !cf.FromType.Pointer && !cf.ToType.Pointer {
 		return true
 	}
 
 	return false
 }
 
-func isNeedCallConversionFunctionWithErrorRule(fromField, toField models.Field, cf models.ConversionFunction) bool {
+func isNeedCallConversionFunctionWithErrorRule(fromType, toType models.Type, cf models.ConversionFunction) bool {
 	return cf.WithError
 }
 
-func isNeedCallConversionFunctionSeparatelyRule(fromField, toField models.Field, cf models.ConversionFunction) bool {
+func isNeedCallConversionFunctionSeparatelyRule(fromType, toType models.Type, cf models.ConversionFunction) bool {
 	if cf.WithError {
 		return false
 	}
 
-	if !cf.ToType.Pointer && toField.Type.Pointer {
+	if !cf.ToType.Pointer && toType.Pointer {
 		return true
 	}
 
 	return false
+}
+
+func isNeedRangeBySlice(fromType, toType models.Type, cf models.ConversionFunction) bool {
+	if fromType.Kind != models.SliceType {
+		return false
+	}
+
+	if toType.Kind != models.SliceType {
+		return false
+	}
+
+	if cf.FromType.Kind == models.SliceType {
+		return false
+	}
+
+	if cf.ToType.Kind == models.SliceType {
+		return false
+	}
+
+	return true
 }

@@ -186,6 +186,21 @@ func Test_GenerateConvertor(t *testing.T) {
 			generatePath: "cf_with_pointers_and_errors",
 			cfPath:       testGeneratorPath + "cf_with_pointers_and_errors/cf",
 		},
+		{
+			name:         "With slice",
+			pathFrom:     "cf_with_slice",
+			pathTo:       "cf_with_slice",
+			generatePath: "cf_with_slice",
+			cfPath:       testGeneratorPath + "cf_with_slice/cf",
+		},
+		{
+			name:         "With slice and errors",
+			pathFrom:     "cf_with_slice_and_errors",
+			pathTo:       "cf_with_slice_and_errors",
+			generatePath: "cf_with_slice_and_errors",
+			cfPath:       testGeneratorPath + "cf_with_slice_and_errors/cf",
+		},
+		//TODO: add slices pointers and pointer slices
 	}
 
 	for _, tt := range tests {

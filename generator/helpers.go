@@ -103,3 +103,10 @@ func getPackageNameByPath(path string) string {
 	names := strings.Split(path, "/")
 	return names[len(names)-1]
 }
+
+func isSameTypesWithoutPointer(from, to models.Type) bool {
+	from.Pointer = false
+	to.Pointer = false
+
+	return from == to
+}

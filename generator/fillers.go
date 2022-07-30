@@ -5,7 +5,6 @@ import (
 	"embed"
 	"text/template"
 
-	"github.com/underbek/datamapper/models"
 	"golang.org/x/tools/imports"
 )
 
@@ -15,6 +14,7 @@ const (
 	pointerCheckFilePath               = "templates/pointer_check.temp"
 	pointerConversionFilePath          = "templates/pointer_conversion.temp"
 	pointerToPointerConversionFilePath = "templates/pointer_to_pointer_conversion.temp"
+	sliceConversionFilePath            = "templates/slice_conversion.temp"
 )
 
 //go:embed templates
@@ -69,12 +69,12 @@ func createConvertor(res result) ([]byte, error) {
 	return content, nil
 }
 
-func getPointerCheck(from, to models.Field, fromName, toName string) (string, error) {
+func getPointerCheck(fromFieldName, toFieldName, fromName, toName string) (string, error) {
 	data := map[string]any{
 		"fromModelName": fromName,
 		"toModelName":   toName,
-		"fromFieldName": from.Name,
-		"toFieldName":   to.Name,
+		"fromFieldName": fromFieldName,
+		"toFieldName":   toFieldName,
 	}
 
 	return fillTemplate[string](pointerCheckFilePath, data)
@@ -110,4 +110,17 @@ func getPointerToPointerConversion(fromFieldName, toModelName, toFullFieldType, 
 	}
 
 	return fillTemplate[string](pointerToPointerConversionFilePath, data)
+}
+
+func getSliceConversion(fromFieldName, toModelName, toItemTypeName, conversionFunction string, isError bool,
+) (string, error) {
+	data := map[string]any{
+		"fromFieldName":      fromFieldName,
+		"toModelName":        toModelName,
+		"toItemTypeName":     toItemTypeName,
+		"conversionFunction": conversionFunction,
+		"isError":            isError,
+	}
+
+	return fillTemplate[string](sliceConversionFilePath, data)
 }
