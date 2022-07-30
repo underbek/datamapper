@@ -11,7 +11,6 @@ import (
 
 	"github.com/underbek/datamapper/models"
 	"github.com/underbek/datamapper/utils"
-	"golang.org/x/exp/maps"
 	"golang.org/x/tools/go/packages"
 )
 
@@ -83,7 +82,10 @@ func ParseConversionFunctions(source string) (models.Functions, error) {
 		if err != nil {
 			return nil, err
 		}
-		maps.Copy(funcs, currentFuncs)
+
+		for key, function := range currentFuncs {
+			funcs[key] = function
+		}
 	}
 
 	return funcs, nil

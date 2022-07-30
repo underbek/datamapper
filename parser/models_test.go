@@ -48,6 +48,7 @@ func Test_ParseModels(t *testing.T) {
 			Type: models.Type{
 				Name:    "Model",
 				Package: models.Package{Name: "parser", Path: "github.com/underbek/datamapper/_test_data/parser"},
+				Kind:    models.StructType,
 			},
 			Fields: []models.Field{
 				{Name: "ID", Type: models.Type{Name: "string"}},
@@ -56,6 +57,7 @@ func Test_ParseModels(t *testing.T) {
 			Type: models.Type{
 				Name:    "TestModel",
 				Package: models.Package{Name: "parser", Path: "github.com/underbek/datamapper/_test_data/parser"},
+				Kind:    models.StructType,
 			}, Fields: []models.Field{
 				{Name: "ID", Type: models.Type{Name: "int"}, Tags: []models.Tag{
 					{Name: "json", Value: "id"},
@@ -71,6 +73,7 @@ func Test_ParseModels(t *testing.T) {
 			Type: models.Type{
 				Name:    "TestModelTo",
 				Package: models.Package{Name: "parser", Path: "github.com/underbek/datamapper/_test_data/parser"},
+				Kind:    models.StructType,
 			},
 			Fields: []models.Field{
 				{Name: "UUID", Type: models.Type{Name: "string"}, Tags: []models.Tag{
@@ -96,6 +99,7 @@ func Test_ParseComplexModel(t *testing.T) {
 			Type: models.Type{
 				Name:    "ComplexModel",
 				Package: models.Package{Name: "parser", Path: "github.com/underbek/datamapper/_test_data/parser"},
+				Kind:    models.StructType,
 			},
 			Fields: []models.Field{
 				{
@@ -105,6 +109,7 @@ func Test_ParseComplexModel(t *testing.T) {
 							Name: "parser",
 							Path: "github.com/underbek/datamapper/_test_data/parser",
 						},
+						Kind: models.StructType,
 					},
 					Tags: []models.Tag{
 						{Name: "json", Value: "id"},
@@ -119,6 +124,7 @@ func Test_ParseComplexModel(t *testing.T) {
 							Name: "decimal",
 							Path: "github.com/shopspring/decimal",
 						},
+						Kind: models.StructType,
 					},
 					Tags: []models.Tag{
 						{Name: "json", Value: "age"},
@@ -140,6 +146,7 @@ func Test_ParseModelWithPointerField(t *testing.T) {
 			Type: models.Type{
 				Name:    "PointerModel",
 				Package: models.Package{Name: "parser", Path: "github.com/underbek/datamapper/_test_data/parser"},
+				Kind:    models.StructType,
 			}, Fields: []models.Field{
 				{
 					Name: "ID",
@@ -159,6 +166,7 @@ func Test_ParseModelWithPointerField(t *testing.T) {
 							Name: "decimal",
 							Path: "github.com/shopspring/decimal",
 						},
+						Kind:    models.StructType,
 						Pointer: true,
 					},
 					Tags: []models.Tag{{Name: "map", Value: "age"}},
@@ -207,6 +215,7 @@ func Test_ParseModelWithAlias(t *testing.T) {
 		Type: models.Type{
 			Name:    "WithAlias",
 			Package: models.Package{Name: "parser", Path: "github.com/underbek/datamapper/_test_data/parser"},
+			Kind:    models.StructType,
 		},
 		Fields: []models.Field{
 			{
@@ -214,6 +223,7 @@ func Test_ParseModelWithAlias(t *testing.T) {
 				Type: models.Type{
 					Name:    "String",
 					Package: models.Package{Name: "parser", Path: "github.com/underbek/datamapper/_test_data/parser"},
+					Kind:    models.RedefinedType,
 				},
 			},
 			{
@@ -225,6 +235,7 @@ func Test_ParseModelWithAlias(t *testing.T) {
 				Type: models.Type{
 					Name:    "Array",
 					Package: models.Package{Name: "parser", Path: "github.com/underbek/datamapper/_test_data/parser"},
+					Kind:    models.RedefinedType,
 				},
 			},
 			{
@@ -232,6 +243,7 @@ func Test_ParseModelWithAlias(t *testing.T) {
 				Type: models.Type{
 					Name:    "Slice",
 					Package: models.Package{Name: "parser", Path: "github.com/underbek/datamapper/_test_data/parser"},
+					Kind:    models.RedefinedType,
 				},
 			},
 			{
@@ -239,25 +251,52 @@ func Test_ParseModelWithAlias(t *testing.T) {
 				Type: models.Type{
 					Name:    "Map",
 					Package: models.Package{Name: "parser", Path: "github.com/underbek/datamapper/_test_data/parser"},
+					Kind:    models.RedefinedType,
 				},
 			},
 			{
 				Name: "RawArray",
-				Type: models.Type{Name: "[16]uint"},
+				Type: models.Type{
+					Kind: models.ArrayType,
+					Additional: models.ArrayAdditional{
+						InType: models.Type{
+							Name: "uint",
+						},
+						Len: 16,
+					},
+				},
 			},
 			{
 				Name: "RawSlice",
-				Type: models.Type{Name: "[]uint"},
+				Type: models.Type{
+					Kind: models.SliceType,
+					Additional: models.SliceAdditional{
+						InType: models.Type{
+							Name: "uint",
+						},
+					},
+				},
 			},
 			{
 				Name: "RawMap",
-				Type: models.Type{Name: "map[int]string"},
+				Type: models.Type{
+					Kind: models.MapType,
+					Additional: models.MapAdditional{
+						KeyType: models.Type{
+							Name: "int",
+						},
+						ValueType: models.Type{
+							Name: "string",
+						},
+					},
+				},
 			},
 			{
 				Name: "ModelRedefinition",
 				Type: models.Type{
 					Name:    "ModelRedefinition",
 					Package: models.Package{Name: "parser", Path: "github.com/underbek/datamapper/_test_data/parser"},
+					Kind:    models.StructType,
 				},
 			},
 			{
@@ -265,10 +304,204 @@ func Test_ParseModelWithAlias(t *testing.T) {
 				Type: models.Type{
 					Name:    "UUID",
 					Package: models.Package{Name: "uuid", Path: "github.com/google/uuid"},
+					Kind:    models.RedefinedType,
 				},
 			},
 		},
 	}
 
 	assert.Equal(t, expected, res["WithAlias"])
+}
+
+func Test_ParseModelWithCollections(t *testing.T) {
+	res, err := ParseModels(testPath + "model_with_collections.go")
+	require.NoError(t, err)
+	assert.Len(t, res, 1)
+
+	expected := models.Struct{
+		Type: models.Type{
+			Name:    "ModelWithCollections",
+			Package: models.Package{Name: "parser", Path: "github.com/underbek/datamapper/_test_data/parser"},
+			Kind:    models.StructType,
+		},
+		Fields: []models.Field{
+			{
+				Name: "Array",
+				Type: models.Type{
+					Kind: models.ArrayType,
+					Additional: models.ArrayAdditional{
+						InType: models.Type{
+							Name: "uint64",
+						},
+						Len: 12,
+					},
+				},
+			},
+			{
+				Name: "Slice",
+				Type: models.Type{
+					Kind: models.SliceType,
+					Additional: models.SliceAdditional{
+						InType: models.Type{
+							Name: "string",
+						},
+					},
+				},
+			},
+			{
+				Name: "Map",
+				Type: models.Type{
+					Kind: models.MapType,
+					Additional: models.MapAdditional{
+						KeyType: models.Type{
+							Name: "int",
+						},
+						ValueType: models.Type{
+							Name: "string",
+						},
+					},
+				},
+			},
+			{
+				Name: "PointerArray",
+				Type: models.Type{
+					Kind:    models.ArrayType,
+					Pointer: true,
+					Additional: models.ArrayAdditional{
+						InType: models.Type{
+							Name: "uint64",
+						},
+						Len: 12,
+					},
+				},
+			},
+			{
+				Name: "PointerSlice",
+				Type: models.Type{
+					Kind:    models.SliceType,
+					Pointer: true,
+					Additional: models.SliceAdditional{
+						InType: models.Type{
+							Name: "string",
+						},
+					},
+				},
+			},
+			{
+				Name: "PointerMap",
+				Type: models.Type{
+					Kind:    models.MapType,
+					Pointer: true,
+					Additional: models.MapAdditional{
+						KeyType: models.Type{
+							Name: "int",
+						},
+						ValueType: models.Type{
+							Name: "string",
+						},
+					},
+				},
+			},
+			{
+				Name: "ArrayPointers",
+				Type: models.Type{
+					Kind: models.ArrayType,
+					Additional: models.ArrayAdditional{
+						InType: models.Type{
+							Name:    "uint64",
+							Pointer: true,
+						},
+						Len: 12,
+					},
+				},
+			},
+			{
+				Name: "SlicePointers",
+				Type: models.Type{
+					Kind: models.SliceType,
+					Additional: models.SliceAdditional{
+						InType: models.Type{
+							Name:    "string",
+							Pointer: true,
+						},
+					},
+				},
+			},
+			{
+				Name: "MapPointers",
+				Type: models.Type{
+					Kind: models.MapType,
+					Additional: models.MapAdditional{
+						KeyType: models.Type{
+							Name:    "int",
+							Pointer: true,
+						},
+						ValueType: models.Type{
+							Name:    "string",
+							Pointer: true,
+						},
+					},
+				},
+			},
+			{
+				Name: "ArrayModel",
+				Type: models.Type{
+					Kind: models.ArrayType,
+					Additional: models.ArrayAdditional{
+						InType: models.Type{
+							Name: "Model",
+							Package: models.Package{
+								Name: "parser",
+								Path: "github.com/underbek/datamapper/_test_data/parser",
+							},
+							Kind: models.StructType,
+						},
+						Len: 12,
+					},
+				},
+			},
+			{
+				Name: "SliceModel",
+				Type: models.Type{
+					Kind: models.SliceType,
+					Additional: models.SliceAdditional{
+						InType: models.Type{
+							Name: "Model",
+							Package: models.Package{
+								Name: "parser",
+								Path: "github.com/underbek/datamapper/_test_data/parser",
+							},
+							Kind: models.StructType,
+						},
+					},
+				},
+			},
+			{
+				Name: "MapModel",
+				Type: models.Type{
+					Kind: models.MapType,
+					Additional: models.MapAdditional{
+						KeyType: models.Type{
+							Name: "Model",
+							Package: models.Package{
+								Name: "parser",
+								Path: "github.com/underbek/datamapper/_test_data/parser",
+							},
+							Kind: models.StructType,
+						},
+						ValueType: models.Type{
+							Name: "Model",
+							Package: models.Package{
+								Name: "parser",
+								Path: "github.com/underbek/datamapper/_test_data/parser",
+							},
+							Kind: models.StructType,
+						},
+					},
+				},
+			},
+		},
+	}
+
+	assert.Equal(t, expected, res["ModelWithCollections"])
 }

@@ -100,9 +100,11 @@ func ParseModels(source string) (map[string]models.Struct, error) {
 					Name: pkg.Name,
 					Path: pkg.PkgPath,
 				},
+				Kind: models.StructType,
 			},
 			Fields: fields,
 		}
 	}
+
 	return structs, nil
 }

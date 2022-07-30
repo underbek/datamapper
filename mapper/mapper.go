@@ -9,7 +9,6 @@ import (
 	"github.com/underbek/datamapper/options"
 	"github.com/underbek/datamapper/parser"
 	"github.com/underbek/datamapper/utils"
-	"golang.org/x/exp/maps"
 )
 
 const internalConvertsPackagePath = "github.com/underbek/datamapper/converts"
@@ -79,7 +78,9 @@ func MapModels(opts options.Options) error {
 
 			// TODO: set alias to each cf
 			res := setPackageAliasToFunctions(userFuncs, aliases)
-			maps.Copy(funcs, res)
+			for key, function := range res {
+				funcs[key] = function
+			}
 		}
 	}
 

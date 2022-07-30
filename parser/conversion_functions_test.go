@@ -78,10 +78,12 @@ func Test_CFParseGenericFrom(t *testing.T) {
 	tests := []struct {
 		Name          string
 		FromTypeNames []string
+		FromKind      models.KindOfType
 	}{
 		{
 			Name:          "ConvertAnyToString",
 			FromTypeNames: []string{"any"},
+			FromKind:      models.InterfaceType,
 		},
 		{
 			Name:          "ConvertIntUintToString",
@@ -108,11 +110,11 @@ func Test_CFParseGenericFrom(t *testing.T) {
 							Path: "github.com/underbek/datamapper/_test_data/parser",
 						},
 						TypeParam: models.FromTypeParam,
-						FromType:  models.Type{Name: name},
+						FromType:  models.Type{Name: name, Kind: tt.FromKind},
 						ToType:    models.Type{Name: "string"},
 					},
 					res[models.ConversionFunctionKey{
-						FromType: models.Type{Name: name},
+						FromType: models.Type{Name: name, Kind: tt.FromKind},
 						ToType:   models.Type{Name: "string"},
 					}],
 				)
@@ -129,10 +131,12 @@ func Test_CFParseGenericTo(t *testing.T) {
 	tests := []struct {
 		Name        string
 		ToTypeNames []string
+		ToKind      models.KindOfType
 	}{
 		{
 			Name:        "ConvertStringToAny",
 			ToTypeNames: []string{"any"},
+			ToKind:      models.InterfaceType,
 		},
 		{
 			Name:        "ConvertStringToIntUint",
@@ -159,12 +163,12 @@ func Test_CFParseGenericTo(t *testing.T) {
 							Path: "github.com/underbek/datamapper/_test_data/parser",
 						},
 						FromType:  models.Type{Name: "string"},
-						ToType:    models.Type{Name: name},
+						ToType:    models.Type{Name: name, Kind: tt.ToKind},
 						TypeParam: models.ToTypeParam,
 					},
 					res[models.ConversionFunctionKey{
 						FromType: models.Type{Name: "string"},
-						ToType:   models.Type{Name: name},
+						ToType:   models.Type{Name: name, Kind: tt.ToKind},
 					}],
 				)
 			}
@@ -256,12 +260,13 @@ func Test_CFParseGenericStruct(t *testing.T) {
 						Path: "github.com/underbek/datamapper/_test_data/parser",
 					},
 					TypeParam: models.FromTypeParam,
-					FromType:  models.Type{Name: "Model", Package: tt.Package},
+					FromType:  models.Type{Name: "Model", Package: tt.Package, Kind: models.StructType},
 					ToType:    models.Type{Name: "string"},
 				},
 				res[models.ConversionFunctionKey{FromType: models.Type{
 					Name:    "Model",
 					Package: tt.Package,
+					Kind:    models.StructType,
 				}, ToType: models.Type{Name: "string"}}],
 			)
 		})
@@ -311,15 +316,17 @@ func Test_CFParseWithStruct(t *testing.T) {
 						Name: "parser",
 						Path: "github.com/underbek/datamapper/_test_data/parser",
 					},
-					FromType: models.Type{Name: "Model", Package: tt.FromPackage},
-					ToType:   models.Type{Name: "Model", Package: tt.ToPackage},
+					FromType: models.Type{Name: "Model", Package: tt.FromPackage, Kind: models.StructType},
+					ToType:   models.Type{Name: "Model", Package: tt.ToPackage, Kind: models.StructType},
 				},
 				res[models.ConversionFunctionKey{FromType: models.Type{
 					Name:    "Model",
 					Package: tt.FromPackage,
+					Kind:    models.StructType,
 				}, ToType: models.Type{
 					Name:    "Model",
 					Package: tt.ToPackage,
+					Kind:    models.StructType,
 				}}],
 			)
 		})
@@ -336,6 +343,7 @@ func Test_CFParseWithError(t *testing.T) {
 		TypeParam models.TypeParamType
 		ToTypes   []string
 		ToPackage models.Package
+		ToKind    models.KindOfType
 	}{
 		{
 			Name:      "ConvertStringToSigned",
@@ -349,6 +357,7 @@ func Test_CFParseWithError(t *testing.T) {
 				Name: "decimal",
 				Path: "github.com/shopspring/decimal",
 			},
+			ToKind: models.StructType,
 		},
 	}
 
@@ -363,7 +372,7 @@ func Test_CFParseWithError(t *testing.T) {
 							Path: "github.com/underbek/datamapper/_test_data/parser",
 						},
 						FromType:  models.Type{Name: "string"},
-						ToType:    models.Type{Name: toTypeName, Package: tt.ToPackage},
+						ToType:    models.Type{Name: toTypeName, Package: tt.ToPackage, Kind: tt.ToKind},
 						TypeParam: tt.TypeParam,
 						WithError: true,
 					},
@@ -372,6 +381,7 @@ func Test_CFParseWithError(t *testing.T) {
 					}, ToType: models.Type{
 						Name:    toTypeName,
 						Package: tt.ToPackage,
+						Kind:    tt.ToKind,
 					}}],
 				)
 			}
@@ -388,6 +398,7 @@ func Test_CFParseWithPointers(t *testing.T) {
 		Name      string
 		FromType  models.Type
 		ToType    models.Type
+		ToKind    models.KindOfType
 		TypeParam models.TypeParamType
 	}{
 		{
@@ -434,6 +445,7 @@ func Test_CFParseWithPointers(t *testing.T) {
 					Name: "decimal",
 					Path: "github.com/shopspring/decimal",
 				},
+				Kind: models.StructType,
 			},
 		},
 		{
@@ -449,6 +461,7 @@ func Test_CFParseWithPointers(t *testing.T) {
 					Name: "decimal",
 					Path: "github.com/shopspring/decimal",
 				},
+				Kind: models.StructType,
 			},
 		},
 	}
