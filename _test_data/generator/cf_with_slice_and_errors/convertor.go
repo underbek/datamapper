@@ -17,6 +17,7 @@ func ConvertFromToTo(from From) (To, error) {
 		if err != nil {
 			return To{}, err
 		}
+
 		fromIDs = append(fromIDs, res)
 	}
 

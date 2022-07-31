@@ -72,19 +72,24 @@ type Struct struct {
 }
 
 func (t Type) FullName(basePackage string) string {
+	ptr := ""
+	if t.Pointer {
+		ptr = "*"
+	}
+
 	if t.Package.Path == basePackage {
-		return t.Name
+		return ptr + t.Name
 	}
 
 	if t.Package.Name == "" {
-		return t.Name
+		return ptr + t.Name
 	}
 
 	if t.Package.Alias == "" {
-		return fmt.Sprintf("%s.%s", t.Package.Name, t.Name)
+		return fmt.Sprintf("%s%s.%s", ptr, t.Package.Name, t.Name)
 	}
 
-	return fmt.Sprintf("%s.%s", t.Package.Alias, t.Name)
+	return fmt.Sprintf("%s%s.%s", ptr, t.Package.Alias, t.Name)
 }
 
 func (p Package) Import() string {

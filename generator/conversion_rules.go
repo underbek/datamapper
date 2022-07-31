@@ -15,12 +15,12 @@ const (
 )
 
 func getConversionRule(fromType, toType models.Type, cf models.ConversionFunction) ConversionRule {
-	if isNeedRangeBySlice(fromType, toType, cf) {
-		return NeedRangeBySlice
+	if isSameTypesWithoutPointer(fromType, toType) {
+		return NeedOnlyAssigmentRule
 	}
 
-	if isNeedOnlyAssigmentRule(fromType, toType, cf) {
-		return NeedOnlyAssigmentRule
+	if isNeedRangeBySlice(fromType, toType, cf) {
+		return NeedRangeBySlice
 	}
 
 	if isNeedCallConversionFunctionRule(fromType, toType, cf) {
@@ -43,22 +43,13 @@ func getConversionRule(fromType, toType models.Type, cf models.ConversionFunctio
 }
 
 func isNeedPointerCheckAndReturnError(fromType, toType models.Type, cf models.ConversionFunction) bool {
+	// if conversion by same types
+	defaultCf := models.ConversionFunction{}
+	if cf == defaultCf {
+		return fromType.Pointer && !toType.Pointer
+	}
+
 	if fromType.Pointer && !cf.FromType.Pointer {
-		return true
-	}
-
-	return false
-}
-
-func isNeedOnlyAssigmentRule(fromType, toType models.Type, cf models.ConversionFunction) bool {
-	if fromType == toType {
-		return true
-	}
-
-	if fromType.Package.Path == toType.Package.Path &&
-		fromType.Name == toType.Name &&
-		!fromType.Pointer && toType.Pointer {
-
 		return true
 	}
 

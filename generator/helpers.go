@@ -110,3 +110,80 @@ func isSameTypesWithoutPointer(from, to models.Type) bool {
 
 	return from == to
 }
+
+func getConversionFunction(fromType, toType models.Type, fromName string, functions models.Functions,
+) (models.ConversionFunction, error) {
+
+	if isSameTypesWithoutPointer(fromType, toType) {
+		return models.ConversionFunction{}, nil
+	}
+
+	key := models.ConversionFunctionKey{
+		FromType: fromType,
+		ToType:   toType,
+	}
+
+	cf, ok := functions[key]
+	if ok {
+		return cf, nil
+	}
+
+	key.FromType.Pointer = false
+	key.ToType.Pointer = false
+
+	cf, ok = functions[key]
+	if ok {
+		return cf, nil
+	}
+
+	if !ok && fromType.Kind == models.SliceType && toType.Kind == models.SliceType {
+		return getConversionFunction(
+			fromType.Additional.(models.SliceAdditional).InType,
+			toType.Additional.(models.SliceAdditional).InType,
+			fromName,
+			functions,
+		)
+	}
+
+	return models.ConversionFunction{}, fmt.Errorf(
+		"not found convertor function for types %s -> %s by %s field: %w",
+		key.FromType.Name,
+		key.ToType.Name,
+		fromName,
+		ErrNotFound,
+	)
+}
+
+func isPointerToValue(fromType, fromCfType models.Type) bool {
+	if fromType.Pointer && !fromCfType.Pointer {
+		return true
+	}
+
+	return false
+}
+
+func getPointerSymbol(fromFieldType, cfFromType models.Type) string {
+	if fromFieldType.Pointer && !cfFromType.Pointer {
+		return "*"
+	}
+
+	return ""
+}
+
+func getConversionFunctionCall(cf models.ConversionFunction, fromFieldType, toFieldType models.Type, pkgPath,
+	arg string) string {
+
+	packageName := cf.Package.Name
+	if cf.Package.Alias != "" {
+		packageName = cf.Package.Alias
+	}
+
+	ptr := getPointerSymbol(fromFieldType, cf.FromType)
+	typeParams := getTypeParams(cf, fromFieldType, toFieldType)
+
+	if cf.Package.Path == pkgPath {
+		return fmt.Sprintf("%s%s(%s%s)", cf.Name, typeParams, ptr, arg)
+	}
+
+	return fmt.Sprintf("%s.%s%s(%s%s)", packageName, cf.Name, typeParams, ptr, arg)
+}

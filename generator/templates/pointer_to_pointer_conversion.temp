@@ -1,5 +1,5 @@
-var from{{.fromFieldName}} *{{.toFullFieldType}}
-if from.{{.fromFieldName}} != nil {
+var {{.fromFieldResName}} {{.toFullFieldType}}
+if {{.fromFieldFullName}} != nil {
     {{- if .isError -}}
     res, err := {{.conversionFunction}}
     if err != nil {
@@ -8,5 +8,5 @@ if from.{{.fromFieldName}} != nil {
     {{else}}
     res := {{.conversionFunction}}
     {{- end}}
-    from{{.fromFieldName}} = &res
+    {{.fromFieldResName}} = &res
 }

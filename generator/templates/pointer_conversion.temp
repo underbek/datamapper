@@ -1,1 +1,1 @@
-from{{.fromFieldName}} := {{.conversionFunction}}
+{{.fromFieldFullName}} := {{.conversionFunction}}

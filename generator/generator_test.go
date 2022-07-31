@@ -200,7 +200,14 @@ func Test_GenerateConvertor(t *testing.T) {
 			generatePath: "cf_with_slice_and_errors",
 			cfPath:       testGeneratorPath + "cf_with_slice_and_errors/cf",
 		},
-		//TODO: add slices pointers and pointer slices
+		{
+			name:         "With slice and pointers",
+			pathFrom:     "cf_with_slice_and_pointers",
+			pathTo:       "cf_with_slice_and_pointers",
+			generatePath: "cf_with_slice_and_pointers",
+			cfPath:       testGeneratorPath + "cf_with_slice_and_pointers/cf",
+		},
+		//TODO: slices with pinter and errors add pointer slices
 	}
 
 	for _, tt := range tests {
