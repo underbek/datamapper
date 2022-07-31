@@ -100,6 +100,12 @@ func setPackageAliasToStruct(m *models.Struct, aliases map[string]string) {
 	setPackageAlias(&m.Type.Package, aliases)
 	for i := range m.Fields {
 		setPackageAlias(&m.Fields[i].Type.Package, aliases)
+		switch m.Fields[i].Type.Kind {
+		case models.SliceType:
+			additional := m.Fields[i].Type.Additional.(models.SliceAdditional)
+			setPackageAlias(&additional.InType.Package, aliases)
+			m.Fields[i].Type.Additional = additional
+		}
 	}
 }
 

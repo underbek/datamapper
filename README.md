@@ -133,10 +133,11 @@ func ConvertStringToDecimal(from string) (decimal.Decimal, error) {
 * [x] Use some conversion functions sources
 * [x] Parse type alias
 * [x] Parse array, slice, map
-* [ ] Generate convertors with slice fields
+* [x] Generate convertors by slice fields
 * [ ] New alias options (alias to each convertors' path)
-* [ ] Use in my projects
+* [ ] Update readme
 * [ ] Converts both ways in one source
+* [ ] Use in my projects
 * [ ] Generate convertors with map fields
 * [ ] Generate convertors with array fields
 * [ ] Recursive convert by option if not found conversions

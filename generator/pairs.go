@@ -169,6 +169,7 @@ func fillConversionFunction(pair FieldsPair, fromField, toField models.Field, fr
 
 		pair.Conversions = append(pair.Conversions, conversion)
 		pair.Assignment = valueAssignment
+		pair.WithError = true
 		if toField.Type.Pointer && !cf.ToType.Pointer {
 			pair.Assignment = refAssignment
 		}
@@ -278,6 +279,9 @@ func fillConversionFunctionBySlice(pair FieldsPair, fromField, toField models.Fi
 		conversions = append(conversions, conversion)
 		assigment = valueAssignment
 		pair.WithError = true
+		if toField.Type.Additional.(models.SliceAdditional).InType.Pointer && !cf.ToType.Pointer {
+			assigment = refAssignment
+		}
 
 	case NeedCallConversionFunctionSeparatelyRule:
 		conversion, err := getPointerConversion(
