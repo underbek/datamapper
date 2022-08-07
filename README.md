@@ -3,7 +3,7 @@
 ### Install
 
 ```shell
-go install github.com/underbek/datamapper@v0.0.3
+go install github.com/underbek/datamapper@v0.0.4
 ```
 
 ### Usage
@@ -21,6 +21,7 @@ Application Options:
       --to=          Model to name
       --to-tag=      Model to tag (default: map)
       --to-source=   To model source/package. Can add package alias like {package_path}:{alias) (default: .)
+  -i, --inverse      Create direct and inverse conversions
 
 Help Options:
   -h, --help         Show this help message
@@ -131,9 +132,10 @@ func ConvertStringToDecimal(from string) (decimal.Decimal, error) {
 * [x] Parse type alias
 * [x] Parse array, slice, map
 * [x] Generate convertors by slice fields
-* [ ] New alias options (alias to each convertors' path)
+* [x] New alias options (alias to each convertors' path)
+* [x] Converts both ways in one source
+* [ ] Generate convertor with from/to pointer
 * [ ] Update readme
-* [ ] Converts both ways in one source
 * [ ] Use in my projects
 * [ ] Generate convertors with map fields
 * [ ] Generate convertors with array fields

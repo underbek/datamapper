@@ -233,9 +233,13 @@ func Test_GenerateConvertor(t *testing.T) {
 
 			funcs := parseFunctions(t, tt.cfPath)
 
-			destination := testGeneratorPath + tt.generatePath + "/convertor.go"
+			pkg, err := parser.ParseDestinationPackage(testGeneratorPath + tt.generatePath)
+			require.NoError(t, err)
 
-			actual, err := generateConvertor(modelsFrom["From"], modelsTo["To"], destination, funcs)
+			pkgs, convertor, err := GenerateConvertor(modelsFrom["From"], modelsTo["To"], pkg, funcs)
+			require.NoError(t, err)
+
+			actual, err := fillConvertorsSource(pkg, pkgs, []string{convertor})
 			require.NoError(t, err)
 
 			expected := _test_data.Generator(t, tt.generatePath+"/convertor.go")
@@ -257,15 +261,19 @@ func Test_GenerateConvertorWithAliases(t *testing.T) {
 		funcs[key] = cf
 	}
 
-	destination := testGeneratorPath + "with_aliases/convertor.go"
-
 	from := modelsFrom["From"]
 	from.Type.Package.Alias = "fromalias"
 
 	to := modelsTo["To"]
 	to.Type.Package.Alias = "toalias"
 
-	actual, err := generateConvertor(from, to, destination, funcs)
+	pkg, err := parser.ParseDestinationPackage(testGeneratorPath + "with_aliases")
+	require.NoError(t, err)
+
+	pkgs, convertor, err := GenerateConvertor(from, to, pkg, funcs)
+	require.NoError(t, err)
+
+	actual, err := fillConvertorsSource(pkg, pkgs, []string{convertor})
 	require.NoError(t, err)
 
 	expected := _test_data.Generator(t, "with_aliases/convertor.go")

@@ -3,6 +3,8 @@ package mapper
 import (
 	"errors"
 	"fmt"
+	"os"
+	"path"
 	"strings"
 
 	"github.com/underbek/datamapper/generator"
@@ -94,9 +96,38 @@ func MapModels(opts options.Options) error {
 		funcs[key] = function
 	}
 
-	err = generator.CreateConvertor(from, to, opts.Destination, funcs)
+	err = os.MkdirAll(path.Dir(opts.Destination), os.ModePerm)
+	if err != nil {
+		return fmt.Errorf("create destination dir %s error: %w", path.Dir(opts.Destination), err)
+	}
+
+	pkg, err := parser.ParseDestinationPackage(opts.Destination)
+	if err != nil {
+		return fmt.Errorf("parse destination package %s error: %w", opts.Destination, err)
+	}
+
+	var convertors []string
+	pkgs, convertor, err := generator.GenerateConvertor(from, to, pkg, funcs)
 	if err != nil {
 		return fmt.Errorf("generate convertor error: %w", err)
+	}
+	convertors = append(convertors, convertor)
+
+	if opts.Invert {
+		invertPkgs, convertor, err := generator.GenerateConvertor(to, from, pkg, funcs)
+		if err != nil {
+			return fmt.Errorf("generate convertor error: %w", err)
+		}
+		convertors = append(convertors, convertor)
+
+		for key := range invertPkgs {
+			pkgs[key] = struct{}{}
+		}
+	}
+
+	err = generator.CreateConvertorSource(pkg, pkgs, convertors, opts.Destination)
+	if err != nil {
+		return fmt.Errorf("create convertor source error: %w", err)
 	}
 
 	return nil

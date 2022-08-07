@@ -16,10 +16,14 @@ lint:
 local-test: build
 	mkdir -p _test_data/local_test
 
-	./bin/datamapper --from User --from-source github.com/underbek/datamapper/_test_data/mapper/domain \
+	./bin/datamapper -i --from User --from-source github.com/underbek/datamapper/_test_data/mapper/domain \
 		--to User --to-source github.com/underbek/datamapper/_test_data/mapper/transport \
 		-d _test_data/local_test/domain_to_dto_user_converter.go \
 		--cf github.com/underbek/datamapper/_test_data/mapper/convertors \
 		--cf github.com/underbek/datamapper/_test_data/mapper/other_convertors
 
 	$(GOENV) go generate ./_test_data/mapper/domain
+
+.PHONY: help
+help: build
+	./bin/datamapper --help

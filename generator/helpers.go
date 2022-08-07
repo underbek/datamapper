@@ -2,14 +2,12 @@ package generator
 
 import (
 	"fmt"
-	"strings"
 
 	"github.com/underbek/datamapper/models"
 	"golang.org/x/exp/maps"
 	"golang.org/x/exp/slices"
 	"golang.org/x/text/cases"
 	"golang.org/x/text/language"
-	"golang.org/x/tools/go/packages"
 )
 
 func getTypeParams(cf models.ConversionFunction, fromType, toType models.Type) string {
@@ -43,9 +41,7 @@ func isReturnError(fields []FieldsPair) bool {
 	return false
 }
 
-func filterAndSortImports(currentPkg models.Package, imports []ImportType) []ImportType {
-	currentPkgPath := currentPkg.Import()
-
+func filterAndSortImports(currentPkgPath string, imports []ImportType) []ImportType {
 	set := make(map[ImportType]struct{})
 	for _, imp := range imports {
 		if imp != "\"\"" && imp != currentPkgPath {
@@ -79,29 +75,6 @@ func generateConvertorName(from, to models.Struct, pkgPath string) string {
 		structNameGenerator(from, pkgPath),
 		structNameGenerator(to, pkgPath),
 	)
-}
-
-func generateModelPackage(pkg *packages.Package) (models.Package, error) {
-	if pkg.Name != "" {
-		return models.Package{
-			Name: pkg.Name,
-			Path: pkg.PkgPath,
-		}, nil
-	}
-
-	if pkg.PkgPath == "" {
-		return models.Package{}, fmt.Errorf("incorrect parsed destination package: %w", ErrParseError)
-	}
-
-	return models.Package{
-		Name: getPackageNameByPath(pkg.PkgPath),
-		Path: pkg.PkgPath,
-	}, nil
-}
-
-func getPackageNameByPath(path string) string {
-	names := strings.Split(path, "/")
-	return names[len(names)-1]
 }
 
 func isSameTypesWithoutPointer(from, to models.Type) bool {
