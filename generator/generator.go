@@ -3,6 +3,7 @@ package generator
 import (
 	"errors"
 	"os"
+	"path"
 
 	"github.com/underbek/datamapper/models"
 	"github.com/underbek/datamapper/utils"
@@ -42,6 +43,11 @@ type result struct {
 }
 
 func CreateConvertor(from, to models.Struct, dest string, functions models.Functions) error {
+	err := os.MkdirAll(path.Dir(dest), os.ModePerm)
+	if err != nil {
+		return err
+	}
+
 	content, err := generateConvertor(from, to, dest, functions)
 	if err != nil {
 		return err
