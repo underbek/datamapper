@@ -1,0 +1,7 @@
+from{{.fromFieldName}} := make([]{{.toItemTypeName}}, 0, len(from.{{.fromFieldName}}))
+for _, item := range from.{{.fromFieldName}} {
+  {{- range $conversion := .conversions -}}
+    {{$conversion}}
+  {{end -}}
+  from{{.fromFieldName}} = append(from{{.fromFieldName}}, {{.assigment}})
+}

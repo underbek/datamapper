@@ -1,4 +1,4 @@
-package with_filed_pointers_and_errors
+package with_field_pointers_and_convertors
 
 import (
 	"testing"
@@ -8,19 +8,19 @@ import (
 )
 
 func Test_Convertor(t *testing.T) {
-	idInt := 123
-	ageString := "12.58"
-	childrenString := "5"
+	idStr := "123"
+	ageFloat := 12.58
+	childrenInt := 5
 	childrenDec := decimal.NewFromInt(5)
 
 	from := From{
-		ID:       "123",
-		Age:      &ageString,
-		Children: &childrenString,
+		ID:       123,
+		Age:      &ageFloat,
+		Children: &childrenInt,
 	}
 
 	expected := To{
-		UUID:     &idInt,
+		UUID:     &idStr,
 		Age:      decimal.NewFromFloat(12.58),
 		Children: &childrenDec,
 	}

@@ -1,4 +1,4 @@
-package with_filed_pointers_and_convertors
+package with_field_pointers_and_convertors
 
 import "github.com/shopspring/decimal"
 

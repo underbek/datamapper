@@ -5,7 +5,6 @@ import (
 	"embed"
 	"text/template"
 
-	"github.com/underbek/datamapper/models"
 	"golang.org/x/tools/imports"
 )
 
@@ -15,6 +14,7 @@ const (
 	pointerCheckFilePath               = "templates/pointer_check.temp"
 	pointerConversionFilePath          = "templates/pointer_conversion.temp"
 	pointerToPointerConversionFilePath = "templates/pointer_to_pointer_conversion.temp"
+	sliceConversionFilePath            = "templates/slice_conversion.temp"
 )
 
 //go:embed templates
@@ -69,40 +69,43 @@ func createConvertor(res result) ([]byte, error) {
 	return content, nil
 }
 
-func getPointerCheck(from, to models.Field, fromName, toName string) (string, error) {
+func getPointerCheck(fromFieldFullName, fromFieldName, toFieldName, fromName, toName string) (string, error) {
 	data := map[string]any{
-		"fromModelName": fromName,
-		"toModelName":   toName,
-		"fromFieldName": from.Name,
-		"toFieldName":   to.Name,
+		"fromModelName":     fromName,
+		"fromFieldName":     fromFieldName,
+		"toModelName":       toName,
+		"fromFieldFullName": fromFieldFullName,
+		"toFieldName":       toFieldName,
 	}
 
 	return fillTemplate[string](pointerCheckFilePath, data)
 }
 
-func getErrorConversion(fromFiledName, toModelName, conversionFunction string) (string, error) {
+func getErrorConversion(fromFieldFullName, toModelName, conversionFunction string) (string, error) {
 	data := map[string]any{
 		"toModelName":        toModelName,
-		"fromFieldName":      fromFiledName,
+		"fromFieldFullName":  fromFieldFullName,
 		"conversionFunction": conversionFunction,
 	}
 
 	return fillTemplate[string](errorConversionFilePath, data)
 }
 
-func getPointerConversion(fromFieldName string, conversionFunction string) (string, error) {
+func getPointerConversion(fromFieldFullName string, conversionFunction string) (string, error) {
 	data := map[string]any{
-		"fromFieldName":      fromFieldName,
+		"fromFieldFullName":  fromFieldFullName,
 		"conversionFunction": conversionFunction,
 	}
 
 	return fillTemplate[string](pointerConversionFilePath, data)
 }
 
-func getPointerToPointerConversion(fromFieldName, toModelName, toFullFieldType, conversionFunction string, isError bool,
-) (string, error) {
+func getPointerToPointerConversion(fromFieldResName, fromFieldFullName, toModelName, toFullFieldType,
+	conversionFunction string, isError bool) (string, error) {
+
 	data := map[string]any{
-		"fromFieldName":      fromFieldName,
+		"fromFieldResName":   fromFieldResName,
+		"fromFieldFullName":  fromFieldFullName,
 		"toModelName":        toModelName,
 		"toFullFieldType":    toFullFieldType,
 		"conversionFunction": conversionFunction,
@@ -110,4 +113,15 @@ func getPointerToPointerConversion(fromFieldName, toModelName, toFullFieldType, 
 	}
 
 	return fillTemplate[string](pointerToPointerConversionFilePath, data)
+}
+
+func getSliceConversion(fromFieldName, toItemTypeName, assigment string, conversions []string) (string, error) {
+	data := map[string]any{
+		"fromFieldName":  fromFieldName,
+		"toItemTypeName": toItemTypeName,
+		"assigment":      assigment,
+		"conversions":    conversions,
+	}
+
+	return fillTemplate[string](sliceConversionFilePath, data)
 }

@@ -42,40 +42,9 @@ func createModelsPair(from, to models.Struct, pkgPath string, functions models.F
 func getFieldsPair(from, to models.Field, fromModel, toModel models.Struct, pkgPath string, functions models.Functions,
 ) (FieldsPair, map[models.Package]struct{}, error) {
 
-	if from.Type.Name == to.Type.Name && from.Type.Package.Path == to.Type.Package.Path {
-		res, pkg, err := getFieldsPairBySameTypes(from, to, fromModel.Type.Name, toModel.Type.Name)
-		if err != nil {
-			return FieldsPair{}, nil, err
-		}
-
-		if pkg != nil {
-			return res, map[models.Package]struct{}{*pkg: {}}, nil
-		}
-
-		return res, nil, nil
-	}
-
-	key := models.ConversionFunctionKey{
-		FromType: from.Type,
-		ToType:   to.Type,
-	}
-
-	cf, ok := functions[key]
-
-	if !ok {
-		key.FromType.Pointer = false
-		key.ToType.Pointer = false
-		cf, ok = functions[key]
-	}
-
-	if !ok {
-		return FieldsPair{}, nil, fmt.Errorf(
-			"not found convertor function for types %s -> %s by %s field: %w",
-			from.Type.Name,
-			to.Type.Name,
-			from.Name,
-			ErrNotFound,
-		)
+	cf, err := getConversionFunction(from.Type, to.Type, from.Name, functions)
+	if err != nil {
+		return FieldsPair{}, nil, err
 	}
 
 	res := FieldsPair{
@@ -89,67 +58,41 @@ func getFieldsPair(from, to models.Field, fromModel, toModel models.Struct, pkgP
 	return fillConversionFunction(res, from, to, fromModel, toModel, cf, pkgPath)
 }
 
-func getFieldsPairBySameTypes(from, to models.Field, fromName, toName string) (FieldsPair, *models.Package, error) {
-	res := FieldsPair{
-		FromName: from.Name,
-		FromType: from.Type.Name,
-		ToName:   to.Name,
-		ToType:   to.Type.Name,
+func getAssigmentBySameTypes(fromFieldFullName string, fromType, toType models.Type) string {
+	if fromType.Pointer == toType.Pointer {
+		return fromFieldFullName
 	}
 
-	if from.Type.Pointer == to.Type.Pointer {
-		res.Assignment = fmt.Sprintf("from.%s", from.Name)
-		return res, nil, nil
+	if toType.Pointer {
+		return fmt.Sprintf("&%s", fromFieldFullName)
 	}
 
-	if to.Type.Pointer {
-		res.Assignment = fmt.Sprintf("&from.%s", from.Name)
-		return res, nil, nil
-	}
-
-	res.PointerToValue = true
-	res.Assignment = fmt.Sprintf("*from.%s", from.Name)
-
-	conversion, err := getPointerCheck(from, to, fromName, toName)
-	if err != nil {
-		return FieldsPair{}, nil, err
-	}
-
-	res.Conversions = append(res.Conversions, conversion)
-
-	return res, &models.Package{
-		Name: "fmt",
-		Path: "fmt",
-	}, nil
+	return fmt.Sprintf("*%s", fromFieldFullName)
 }
 
 func fillConversionFunction(pair FieldsPair, fromField, toField models.Field, fromModel, toModel models.Struct,
 	cf models.ConversionFunction, pkgPath string) (FieldsPair, map[models.Package]struct{}, error) {
-	pkgs := map[models.Package]struct{}{cf.Package: {}}
-
-	packageName := cf.Package.Name
-	if cf.Package.Alias != "" {
-		packageName = cf.Package.Alias
+	pkgs := make(map[models.Package]struct{})
+	if cf.Package.Path != "" {
+		pkgs[cf.Package] = struct{}{}
 	}
 
-	ptr := ""
-	if fromField.Type.Pointer && !cf.FromType.Pointer {
-		ptr = "*"
-		pair.PointerToValue = true
-	}
-
-	typeParams := getTypeParams(cf, fromField.Type, toField.Type)
-
-	cfCall := fmt.Sprintf("%s.%s%s(%sfrom.%s)", packageName, cf.Name, typeParams, ptr, fromField.Name)
-	if cf.Package.Path == pkgPath {
-		cfCall = fmt.Sprintf("%s%s(%sfrom.%s)", cf.Name, typeParams, ptr, fromField.Name)
-	}
+	cfCall := getConversionFunctionCall(
+		cf,
+		fromField.Type,
+		toField.Type,
+		pkgPath,
+		fmt.Sprintf("from.%s", fromField.Name),
+	)
 
 	refAssignment := fmt.Sprintf("&from%s", fromField.Name)
 	valueAssignment := fmt.Sprintf("from%s", fromField.Name)
 
-	if isNeedPointerCheckAndReturnError(fromField, toField, cf) {
-		conversion, err := getPointerCheck(fromField, toField,
+	if isNeedPointerCheckAndReturnError(fromField.Type, toField.Type, cf) {
+		conversion, err := getPointerCheck(
+			fmt.Sprintf("from.%s", fromField.Name),
+			fromField.Name,
+			toField.Name,
 			fromModel.Type.FullName(pkgPath),
 			toModel.Type.FullName(pkgPath),
 		)
@@ -166,13 +109,25 @@ func fillConversionFunction(pair FieldsPair, fromField, toField models.Field, fr
 		pair.Conversions = []string{conversion}
 	}
 
-	switch getConversionRule(fromField, toField, cf) {
+	switch getConversionRule(fromField.Type, toField.Type, cf) {
+	case NeedOnlyAssigmentRule:
+		pair.Assignment = getAssigmentBySameTypes(
+			fmt.Sprintf("from.%s", fromField.Name),
+			fromField.Type,
+			toField.Type,
+		)
+
+		return pair, pkgs, nil
+
 	case NeedCallConversionFunctionRule:
 		pair.Assignment = cfCall
 		return pair, pkgs, nil
 
 	case NeedCallConversionFunctionSeparatelyRule:
-		conversion, err := getPointerConversion(fromField.Name, cfCall)
+		conversion, err := getPointerConversion(
+			fmt.Sprintf("from%s", fromField.Name),
+			cfCall,
+		)
 		if err != nil {
 			return FieldsPair{}, nil, err
 		}
@@ -182,7 +137,8 @@ func fillConversionFunction(pair FieldsPair, fromField, toField models.Field, fr
 
 	case PointerPoPointerConversionFunctionsRule:
 		conversion, err := getPointerToPointerConversion(
-			fromField.Name,
+			fmt.Sprintf("from%s", fromField.Name),
+			fmt.Sprintf("from.%s", fromField.Name),
 			toModel.Type.FullName(pkgPath),
 			toField.Type.FullName(pkgPath),
 			cfCall,
@@ -196,22 +152,160 @@ func fillConversionFunction(pair FieldsPair, fromField, toField models.Field, fr
 
 		// not use pointer check
 		pair.Conversions = []string{conversion}
-		pair.PointerToValue = false
 		pair.Assignment = valueAssignment
 		return pair, pkgs, nil
 
 	case NeedCallConversionFunctionWithErrorRule:
-		conversion, err := getErrorConversion(fromField.Name, toModel.Type.FullName(pkgPath), cfCall)
+		conversion, err := getErrorConversion(
+			fmt.Sprintf("from%s", fromField.Name),
+			toModel.Type.FullName(pkgPath),
+			cfCall,
+		)
 		if err != nil {
 			return FieldsPair{}, nil, err
 		}
 
 		pair.Conversions = append(pair.Conversions, conversion)
 		pair.Assignment = valueAssignment
+		pair.WithError = true
 		if toField.Type.Pointer && !cf.ToType.Pointer {
 			pair.Assignment = refAssignment
 		}
 		return pair, pkgs, nil
+	case NeedRangeBySlice:
+		resPair, resPkgs, err := fillConversionFunctionBySlice(pair, fromField, toField, fromModel, toModel, cf, pkgPath)
+		if err != nil {
+			return FieldsPair{}, nil, err
+		}
+		maps.Copy(pkgs, resPkgs)
+
+		resPair.Assignment = valueAssignment
+
+		return resPair, pkgs, nil
+	}
+
+	return FieldsPair{}, nil, fmt.Errorf(
+		"%w: from field %s to field %s",
+		ErrUndefinedConversionRule,
+		fromField.Name,
+		toField.Name,
+	)
+}
+
+func fillConversionFunctionBySlice(pair FieldsPair, fromField, toField models.Field, fromModel, toModel models.Struct,
+	cf models.ConversionFunction, pkgPath string) (FieldsPair, map[models.Package]struct{}, error) {
+
+	pkgs := make(map[models.Package]struct{})
+
+	cfCall := getConversionFunctionCall(
+		cf,
+		fromField.Type.Additional.(models.SliceAdditional).InType,
+		toField.Type.Additional.(models.SliceAdditional).InType,
+		pkgPath,
+		"item",
+	)
+
+	rule := getConversionRule(
+		fromField.Type.Additional.(models.SliceAdditional).InType,
+		toField.Type.Additional.(models.SliceAdditional).InType,
+		cf,
+	)
+
+	refAssignment := "&res"
+	valueAssignment := "res"
+
+	var conversions []string
+	var assigment string
+
+	if isNeedPointerCheckAndReturnError(
+		fromField.Type.Additional.(models.SliceAdditional).InType,
+		toField.Type.Additional.(models.SliceAdditional).InType,
+		cf,
+	) {
+		conversion, err := getPointerCheck(
+			"item",
+			fromField.Name,
+			toField.Name,
+			fromModel.Type.FullName(pkgPath),
+			toModel.Type.FullName(pkgPath),
+		)
+		if err != nil {
+			return FieldsPair{}, nil, err
+		}
+
+		pkgs[models.Package{
+			Name: "fmt",
+			Path: "fmt",
+		}] = struct{}{}
+
+		pair.PointerToValue = true
+		conversions = []string{conversion}
+	}
+
+	switch rule {
+	case NeedOnlyAssigmentRule:
+		fromFieldFullName := "item"
+		if !fromField.Type.Additional.(models.SliceAdditional).InType.Pointer &&
+			toField.Type.Additional.(models.SliceAdditional).InType.Pointer {
+
+			// cannot use reference by range element
+			conversions = append(conversions, "res := item")
+			fromFieldFullName = "res"
+		}
+
+		assigment = getAssigmentBySameTypes(
+			fromFieldFullName,
+			fromField.Type.Additional.(models.SliceAdditional).InType,
+			toField.Type.Additional.(models.SliceAdditional).InType,
+		)
+
+	case NeedCallConversionFunctionRule:
+		assigment = cfCall
+
+	case NeedCallConversionFunctionWithErrorRule:
+		conversion, err := getErrorConversion(
+			"res",
+			toModel.Type.FullName(pkgPath),
+			cfCall,
+		)
+		if err != nil {
+			return FieldsPair{}, nil, err
+		}
+
+		conversions = append(conversions, conversion)
+		assigment = valueAssignment
+		pair.WithError = true
+		if toField.Type.Additional.(models.SliceAdditional).InType.Pointer && !cf.ToType.Pointer {
+			assigment = refAssignment
+		}
+
+	case NeedCallConversionFunctionSeparatelyRule:
+		conversion, err := getPointerConversion(
+			"res",
+			cfCall,
+		)
+		if err != nil {
+			return FieldsPair{}, nil, err
+		}
+		conversions = append(conversions, conversion)
+		assigment = refAssignment
+
+	case PointerPoPointerConversionFunctionsRule:
+		conversion, err := getPointerToPointerConversion(
+			"resPtr",
+			"item",
+			toModel.Type.FullName(pkgPath),
+			toField.Type.Additional.(models.SliceAdditional).InType.FullName(pkgPath),
+			cfCall,
+			cf.WithError,
+		)
+		if err != nil {
+			return FieldsPair{}, nil, err
+		}
+
+		// not use pointer check
+		conversions = []string{conversion}
+		assigment = "resPtr"
 
 	default:
 		return FieldsPair{}, nil, fmt.Errorf(
@@ -221,4 +315,19 @@ func fillConversionFunction(pair FieldsPair, fromField, toField models.Field, fr
 			toField.Name,
 		)
 	}
+
+	conversion, err := getSliceConversion(
+		fromField.Name,
+		toField.Type.Additional.(models.SliceAdditional).InType.FullName(pkgPath),
+		assigment,
+		conversions,
+	)
+	if err != nil {
+		return FieldsPair{}, nil, err
+	}
+
+	pair.Conversions = append(pair.Conversions, conversion)
+	pkgs[toField.Type.Additional.(models.SliceAdditional).InType.Package] = struct{}{}
+
+	return pair, pkgs, nil
 }

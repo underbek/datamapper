@@ -1,4 +1,4 @@
-from{{.fromFieldName}}, err := {{.conversionFunction}}
+{{.fromFieldFullName}}, err := {{.conversionFunction}}
 if err != nil {
   return {{.toModelName}}{}, err
 }

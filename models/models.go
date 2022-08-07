@@ -1,10 +1,63 @@
 package models
 
-import "fmt"
+import (
+	"fmt"
+)
 
-type Struct struct {
-	Type   Type
-	Fields []Field
+type KindOfType int
+
+const (
+	BaseType = KindOfType(iota)
+	StructType
+	InterfaceType
+	RedefinedType
+	SliceType
+	ArrayType
+	MapType
+)
+
+type Package struct {
+	Path  string
+	Name  string
+	Alias string
+}
+
+// slice -> embed_type
+// array -> size, embed_type
+// map -> key/value
+
+// struct -> fields
+
+// 1- global map
+// 2- write info into string
+// 3- difference types from cf key and type
+// 4- use kustom map comparable
+
+type Type struct {
+	Name       string
+	Package    Package
+	Pointer    bool
+	Kind       KindOfType
+	Additional any
+}
+
+type ArrayAdditional struct {
+	InType Type
+	Len    int64
+}
+
+type SliceAdditional struct {
+	InType Type
+}
+
+type MapAdditional struct {
+	KeyType   Type
+	ValueType Type
+}
+
+type Tag struct {
+	Name  string
+	Value string
 }
 
 type Field struct {
@@ -13,37 +66,30 @@ type Field struct {
 	Tags []Tag
 }
 
-type Tag struct {
-	Name  string
-	Value string
-}
-
-type Type struct {
-	Name    string
-	Package Package
-	Pointer bool
-}
-
-type Package struct {
-	Path  string
-	Name  string
-	Alias string
+type Struct struct {
+	Type   Type
+	Fields []Field
 }
 
 func (t Type) FullName(basePackage string) string {
+	ptr := ""
+	if t.Pointer {
+		ptr = "*"
+	}
+
 	if t.Package.Path == basePackage {
-		return t.Name
+		return ptr + t.Name
 	}
 
 	if t.Package.Name == "" {
-		return t.Name
+		return ptr + t.Name
 	}
 
 	if t.Package.Alias == "" {
-		return fmt.Sprintf("%s.%s", t.Package.Name, t.Name)
+		return fmt.Sprintf("%s%s.%s", ptr, t.Package.Name, t.Name)
 	}
 
-	return fmt.Sprintf("%s.%s", t.Package.Alias, t.Name)
+	return fmt.Sprintf("%s%s.%s", ptr, t.Package.Alias, t.Name)
 }
 
 func (p Package) Import() string {
@@ -53,25 +99,3 @@ func (p Package) Import() string {
 
 	return fmt.Sprintf("\"%s\"", p.Path)
 }
-
-//func getFullStructName(model models.Struct, pkgPath string) string {
-//	if model.Package.Path != pkgPath {
-//		if model.Package.Alias != "" {
-//			return fmt.Sprintf("%s.%s", model.Package.Alias, model.Name)
-//		}
-//		return fmt.Sprintf("%s.%s", model.Package.Name, model.Name)
-//	}
-//
-//	return model.Name
-//}
-//
-//func getFullFieldName(filed models.Field, pkgPath string) string {
-//	if filed.Type.Package.Name != "" && filed.Type.Package.Path != pkgPath {
-//		if filed.Type.Package.Alias != "" {
-//			return fmt.Sprintf("%s.%s", filed.Type.Package.Alias, filed.Type.Name)
-//		}
-//		return fmt.Sprintf("%s.%s", filed.Type.Package.Name, filed.Type.Name)
-//	}
-//
-//	return filed.Type.Name
-//}

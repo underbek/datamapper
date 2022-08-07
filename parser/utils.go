@@ -24,6 +24,7 @@ func parseType(t types.Type) ([]Type, error) {
 					Name: t.Obj().Pkg().Name(),
 					Path: t.Obj().Pkg().Path(),
 				},
+				Kind: models.RedefinedType,
 			}}}, nil
 		case *types.Struct:
 			return []Type{{Type: models.Type{
@@ -32,6 +33,7 @@ func parseType(t types.Type) ([]Type, error) {
 					Name: t.Obj().Pkg().Name(),
 					Path: t.Obj().Pkg().Path(),
 				},
+				Kind: models.StructType,
 			}}}, nil
 		default:
 			return parseType(t.Underlying())
@@ -39,7 +41,10 @@ func parseType(t types.Type) ([]Type, error) {
 	case *types.Interface:
 		n := t.NumEmbeddeds()
 		if n == 0 {
-			return []Type{{Type: models.Type{Name: t.String()}}}, nil
+			return []Type{{Type: models.Type{
+				Name: t.String(),
+				Kind: models.InterfaceType,
+			}}}, nil
 		}
 
 		res := make([]Type, 0, n)
@@ -65,8 +70,16 @@ func parseType(t types.Type) ([]Type, error) {
 			res = append(res, names...)
 		}
 		return res, nil
-	case *types.Basic, *types.Struct:
-		return []Type{{Type: models.Type{Name: t.String()}}}, nil
+	case *types.Basic:
+		return []Type{{Type: models.Type{
+			Name: t.String(),
+			Kind: models.BaseType,
+		}}}, nil
+	case *types.Struct:
+		return []Type{{Type: models.Type{
+			Name: t.String(),
+			Kind: models.StructType,
+		}}}, nil
 	case *types.TypeParam:
 		res, err := parseType(t.Underlying())
 		if err != nil {
@@ -77,8 +90,78 @@ func parseType(t types.Type) ([]Type, error) {
 			res[i].generic = true
 		}
 		return res, nil
-	case *types.Array, *types.Slice, *types.Map:
-		return []Type{{Type: models.Type{Name: t.String()}}}, nil
+	case *types.Array:
+		inTypes, err := parseType(t.Elem())
+		if err != nil {
+			return nil, err
+		}
+
+		res := make([]Type, 0, len(inTypes))
+		for _, inType := range inTypes {
+
+			//TODO: add generic info into embed type
+			res = append(res, Type{
+				Type: models.Type{
+					Kind: models.ArrayType,
+					Additional: models.ArrayAdditional{
+						Len:    t.Len(),
+						InType: inType.Type,
+					},
+				},
+			})
+		}
+		return res, nil
+
+	case *types.Slice:
+		inTypes, err := parseType(t.Elem())
+		if err != nil {
+			return nil, err
+		}
+
+		res := make([]Type, 0, len(inTypes))
+		for _, inType := range inTypes {
+
+			//TODO: add generic info into embed type
+			res = append(res, Type{
+				Type: models.Type{
+					Kind: models.SliceType,
+					Additional: models.SliceAdditional{
+						InType: inType.Type,
+					},
+				},
+			})
+		}
+		return res, nil
+
+	case *types.Map:
+		keyTypes, err := parseType(t.Key())
+		if err != nil {
+			return nil, err
+		}
+
+		valueTypes, err := parseType(t.Elem())
+		if err != nil {
+			return nil, err
+		}
+
+		res := make([]Type, 0, len(keyTypes)*len(valueTypes))
+		for _, keyType := range keyTypes {
+			for _, valueType := range valueTypes {
+
+				//TODO: add generic info into embed type
+				res = append(res, Type{
+					Type: models.Type{
+						Kind: models.MapType,
+						Additional: models.MapAdditional{
+							KeyType:   keyType.Type,
+							ValueType: valueType.Type,
+						},
+					},
+				})
+			}
+		}
+		return res, nil
+
 	case *types.Pointer:
 		res, err := parseType(t.Elem())
 		if err != nil {
