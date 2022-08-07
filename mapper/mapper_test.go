@@ -1,9 +1,13 @@
 package mapper
 
 import (
+	"fmt"
+	"os"
 	"testing"
 
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"github.com/underbek/datamapper/_test_data"
 	"github.com/underbek/datamapper/options"
 )
 
@@ -21,6 +25,13 @@ const (
 
 	destination = "../_test_data/generated/mapper/user_convertor.go"
 )
+
+func readActual(t *testing.T) string {
+	data, err := os.ReadFile(destination)
+	require.NoError(t, err)
+
+	return string(data)
+}
 
 func Test_IncorrectOptions(t *testing.T) {
 	tests := []struct {
@@ -104,31 +115,66 @@ func Test_IncorrectOptions(t *testing.T) {
 }
 
 func Test_MapModels(t *testing.T) {
-	opts := options.Options{
-		Destination:   destination,
-		UserCFSources: []string{customCFPath},
-		FromSource:    mapperTransportSource,
-		ToSource:      mapperDomainSource,
-		FromName:      "User",
-		ToName:        "User",
-		FromTag:       modelTag,
-		ToTag:         toModelTag,
+	tests := []struct {
+		name         string
+		opts         options.Options
+		expectedPath string
+	}{
+		{
+			name: "Map models",
+			opts: options.Options{
+				Destination:   destination,
+				UserCFSources: []string{customCFPath},
+				FromSource:    mapperTransportSource,
+				ToSource:      mapperDomainSource,
+				FromName:      "User",
+				ToName:        "User",
+				FromTag:       modelTag,
+				ToTag:         toModelTag,
+			},
+			expectedPath: "map_models",
+		},
+		{
+			name: "With some cf sources",
+			opts: options.Options{
+				Destination:   destination,
+				UserCFSources: []string{customCFPath, otherCFPath},
+				FromSource:    mapperTransportSource,
+				ToSource:      mapperDomainSource,
+				FromName:      "User",
+				ToName:        "User",
+				FromTag:       modelTag,
+				ToTag:         toModelTag,
+			},
+			expectedPath: "with_some_cf_sources",
+		},
+		{
+			name: "With aliases",
+			opts: options.Options{
+				Destination: destination,
+				UserCFSources: []string{
+					fmt.Sprintf("%s:%s", customCFPath, "customCf"),
+					fmt.Sprintf("%s:%s", otherCFPath, "otherCf"),
+				},
+				FromSource: fmt.Sprintf("%s:%s", mapperTransportSource, "from"),
+				ToSource:   fmt.Sprintf("%s:%s", mapperDomainSource, "to"),
+				FromName:   "User",
+				ToName:     "User",
+				FromTag:    modelTag,
+				ToTag:      toModelTag,
+			},
+			expectedPath: "with_aliases",
+		},
 	}
-	err := MapModels(opts)
-	require.NoError(t, err)
-}
 
-func Test_MapModelsWithSomeCFSources(t *testing.T) {
-	opts := options.Options{
-		Destination:   destination,
-		UserCFSources: []string{customCFPath, otherCFPath},
-		FromSource:    mapperTransportSource,
-		ToSource:      mapperDomainSource,
-		FromName:      "User",
-		ToName:        "User",
-		FromTag:       modelTag,
-		ToTag:         toModelTag,
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			err := MapModels(tt.opts)
+			require.NoError(t, err)
+
+			actual := readActual(t)
+			expected := _test_data.MapperExpected(t, tt.expectedPath)
+			assert.Equal(t, expected, actual)
+		})
 	}
-	err := MapModels(opts)
-	require.NoError(t, err)
 }

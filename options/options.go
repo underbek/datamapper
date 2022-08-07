@@ -4,6 +4,7 @@ import (
 	"github.com/jessevdk/go-flags"
 )
 
+//nolint:lll
 type Options struct {
 	Destination   string   `short:"d" long:"destination" description:"Destination file path" required:"true"`
 	UserCFSources []string `long:"cf" description:"User conversion functions sources/packages. Can add package alias like {package_path}:{alias)" required:"false"`

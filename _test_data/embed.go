@@ -12,8 +12,15 @@ import (
 //go:embed generator
 var generatorExpected embed.FS
 
+//go:embed mapper/expected
+var mapperExpected embed.FS
+
 func Generator(t *testing.T, fileName string) string {
 	return readFile(t, generatorExpected, "generator/"+fileName)
+}
+
+func MapperExpected(t *testing.T, expectedPath string) string {
+	return readFile(t, mapperExpected, "mapper/expected/"+expectedPath+"/expected.go")
 }
 
 func readFile(t *testing.T, fs fs.FS, path string) string {
