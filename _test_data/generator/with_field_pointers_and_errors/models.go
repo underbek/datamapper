@@ -1,4 +1,4 @@
-package with_filed_pointers_and_errors
+package with_field_pointers_and_errors
 
 import "github.com/shopspring/decimal"
 

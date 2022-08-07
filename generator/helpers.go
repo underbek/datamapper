@@ -154,14 +154,6 @@ func getConversionFunction(fromType, toType models.Type, fromName string, functi
 	)
 }
 
-func isPointerToValue(fromType, fromCfType models.Type) bool {
-	if fromType.Pointer && !fromCfType.Pointer {
-		return true
-	}
-
-	return false
-}
-
 func getPointerSymbol(fromFieldType, cfFromType models.Type) string {
 	if fromFieldType.Pointer && !cfFromType.Pointer {
 		return "*"

@@ -14,16 +14,13 @@ Usage:
 
 Application Options:
   -d, --destination= Destination file path
-      --cf=          User conversion functions sources/packages
-      --cf-alias=    User conversion functions package alias
+      --cf=          User conversion functions sources/packages. Can add package alias like {package_path}:{alias)
       --from=        Model from name
       --from-tag=    Model from tag (default: map)
-      --from-source= From model source/package (default: .)
-      --from-alias=  From model package alias
+      --from-source= From model source/package. Can add package alias like {package_path}:{alias) (default: .)
       --to=          Model to name
       --to-tag=      Model to tag (default: map)
-      --to-source=   To model source/package (default: .)
-      --to-alias=    To model package alias
+      --to-source=   To model source/package. Can add package alias like {package_path}:{alias) (default: .)
 
 Help Options:
   -h, --help         Show this help message

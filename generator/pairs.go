@@ -84,7 +84,6 @@ func fillConversionFunction(pair FieldsPair, fromField, toField models.Field, fr
 		pkgPath,
 		fmt.Sprintf("from.%s", fromField.Name),
 	)
-	pair.PointerToValue = isPointerToValue(fromField.Type, cf.FromType)
 
 	refAssignment := fmt.Sprintf("&from%s", fromField.Name)
 	valueAssignment := fmt.Sprintf("from%s", fromField.Name)
@@ -153,7 +152,6 @@ func fillConversionFunction(pair FieldsPair, fromField, toField models.Field, fr
 
 		// not use pointer check
 		pair.Conversions = []string{conversion}
-		pair.PointerToValue = false
 		pair.Assignment = valueAssignment
 		return pair, pkgs, nil
 
@@ -206,8 +204,6 @@ func fillConversionFunctionBySlice(pair FieldsPair, fromField, toField models.Fi
 		pkgPath,
 		"item",
 	)
-
-	pair.PointerToValue = isPointerToValue(fromField.Type, cf.FromType)
 
 	rule := getConversionRule(
 		fromField.Type.Additional.(models.SliceAdditional).InType,
@@ -309,7 +305,6 @@ func fillConversionFunctionBySlice(pair FieldsPair, fromField, toField models.Fi
 
 		// not use pointer check
 		conversions = []string{conversion}
-		pair.PointerToValue = false
 		assigment = "resPtr"
 
 	default:

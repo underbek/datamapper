@@ -44,6 +44,10 @@ func getConversionRule(fromType, toType models.Type, cf models.ConversionFunctio
 
 func isNeedPointerCheckAndReturnError(fromType, toType models.Type, cf models.ConversionFunction) bool {
 	// if conversion by same types
+	if fromType.Pointer == toType.Pointer {
+		return false
+	}
+
 	defaultCf := models.ConversionFunction{}
 	if cf == defaultCf {
 		return fromType.Pointer && !toType.Pointer

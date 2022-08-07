@@ -3,6 +3,7 @@ package mapper
 import (
 	"errors"
 	"fmt"
+	"strings"
 
 	"github.com/underbek/datamapper/generator"
 	"github.com/underbek/datamapper/models"
@@ -19,7 +20,9 @@ var (
 )
 
 func MapModels(opts options.Options) error {
-	structs, err := parser.ParseModelsByPackage(opts.FromSource)
+	fromSource, fromAlias := parseSourceOption(opts.FromSource)
+
+	structs, err := parser.ParseModelsByPackage(fromSource)
 	if err != nil {
 		return fmt.Errorf("parse models error: %w", err)
 	}
@@ -29,7 +32,8 @@ func MapModels(opts options.Options) error {
 		return fmt.Errorf(" %w: source model %s from %s", ErrNotFoundStruct, opts.FromName, opts.FromSource)
 	}
 
-	structs, err = parser.ParseModelsByPackage(opts.ToSource)
+	toSource, toAlias := parseSourceOption(opts.ToSource)
+	structs, err = parser.ParseModelsByPackage(toSource)
 	if err != nil {
 		return fmt.Errorf("parse models error: %w", err)
 	}
@@ -39,14 +43,10 @@ func MapModels(opts options.Options) error {
 		return fmt.Errorf("%w: to model %s from %s", ErrNotFoundStruct, opts.ToName, opts.ToSource)
 	}
 
-	//TODO: add cf aliases
 	aliases := map[string]string{
-		from.Type.Package.Path: opts.FromPackageAlias,
-		to.Type.Package.Path:   opts.ToPackageAlias,
+		from.Type.Package.Path: fromAlias,
+		to.Type.Package.Path:   toAlias,
 	}
-
-	setPackageAliasToStruct(&from, aliases)
-	setPackageAliasToStruct(&to, aliases)
 
 	from.Fields = utils.FilterFields(opts.FromTag, from.Fields)
 	if len(from.Fields) == 0 {
@@ -69,19 +69,29 @@ func MapModels(opts options.Options) error {
 		return fmt.Errorf("parse internal conversion functions error: %w", err)
 	}
 
+	userFuncs := make(models.Functions)
+
 	if len(opts.UserCFSources) != 0 {
-		for _, source := range opts.UserCFSources {
-			userFuncs, err := parser.ParseConversionFunctionsByPackage(source)
+		for _, optSource := range opts.UserCFSources {
+			source, cfAlias := parseSourceOption(optSource)
+			res, err := parser.ParseConversionFunctionsByPackage(source)
 			if err != nil {
 				return fmt.Errorf("parse user conversion functions error: %w", err)
 			}
 
-			// TODO: set alias to each cf
-			res := setPackageAliasToFunctions(userFuncs, aliases)
 			for key, function := range res {
-				funcs[key] = function
+				aliases[function.Package.Path] = cfAlias
+				userFuncs[key] = function
 			}
 		}
+	}
+
+	// set aliases
+	setPackageAliasToStruct(&from, aliases)
+	setPackageAliasToStruct(&to, aliases)
+	userFuncs = setPackageAliasToFunctions(userFuncs, aliases)
+	for key, function := range userFuncs {
+		funcs[key] = function
 	}
 
 	err = generator.CreateConvertor(from, to, opts.Destination, funcs)
@@ -130,4 +140,17 @@ func setPackageAliasToFunctions(funcs models.Functions, aliases map[string]strin
 		res[setPackageAliasToCfKey(key, aliases)] = setPackageAliasToCf(cf, aliases)
 	}
 	return res
+}
+
+func parseSourceOption(optSource string) (string, string) {
+	res := strings.Split(optSource, ":")
+	if len(res) == 0 {
+		return "", ""
+	}
+
+	if len(res) == 1 {
+		return res[0], ""
+	}
+
+	return res[0], res[1]
 }
