@@ -5,7 +5,7 @@
 package with_field_pointers_and_errors
 
 import (
-	"fmt"
+	"errors"
 
 	"github.com/shopspring/decimal"
 	"github.com/underbek/datamapper/converts"
@@ -19,7 +19,7 @@ func ConvertFromToTo(from From) (To, error) {
 	}
 
 	if from.Age == nil {
-		return To{}, fmt.Errorf("cannot convert From.Age -> To.Age, field is nil")
+		return To{}, errors.New("cannot convert From.Age -> To.Age, field is nil")
 	}
 
 	fromAge, err := converts.ConvertStringToDecimal(*from.Age)

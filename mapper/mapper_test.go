@@ -165,6 +165,35 @@ func Test_MapModels(t *testing.T) {
 			},
 			expectedPath: "with_aliases",
 		},
+		{
+			name: "With invert",
+			opts: options.Options{
+				Destination:   destination,
+				UserCFSources: []string{customCFPath},
+				FromSource:    mapperTransportSource,
+				ToSource:      mapperDomainSource,
+				FromName:      "User",
+				ToName:        "User",
+				FromTag:       modelTag,
+				ToTag:         toModelTag,
+				Invert:        true,
+			},
+			expectedPath: "with_invert",
+		},
+		{
+			name: "With pointers",
+			opts: options.Options{
+				Destination:   destination,
+				UserCFSources: []string{customCFPath},
+				FromSource:    mapperTransportSource,
+				ToSource:      mapperDomainSource,
+				FromName:      "*User",
+				ToName:        "*User",
+				FromTag:       modelTag,
+				ToTag:         toModelTag,
+			},
+			expectedPath: "with_pointers",
+		},
 	}
 
 	for _, tt := range tests {

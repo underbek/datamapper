@@ -14,6 +14,7 @@ type Options struct {
 	ToName        string   `long:"to" description:"Model to name" required:"true"`
 	ToTag         string   `long:"to-tag" description:"Model to tag" default:"map" required:"false"`
 	ToSource      string   `long:"to-source" description:"To model source/package. Can add package alias like {package_path}:{alias)" default:"." required:"false"`
+	Invert        bool     `short:"i" long:"inverse" description:"Create direct and inverse conversions" required:"false"`
 }
 
 func ParseOptions() (Options, error) {

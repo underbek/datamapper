@@ -3,12 +3,16 @@ package generator
 import (
 	"bytes"
 	"embed"
+	"fmt"
+	"strings"
 	"text/template"
 
+	"github.com/underbek/datamapper/models"
 	"golang.org/x/tools/imports"
 )
 
 const (
+	convertorSourceFilePath            = "templates/convertor_source.temp"
 	convertorFilePath                  = "templates/convertor.temp"
 	errorConversionFilePath            = "templates/error_conversion.temp"
 	pointerCheckFilePath               = "templates/pointer_check.temp"
@@ -37,31 +41,26 @@ func fillTemplate[T []byte | string](tempPath string, data map[string]any) (T, e
 	return T(buf.Bytes()), nil
 }
 
-func createConvertor(res result) ([]byte, error) {
-	imps := make([]string, 0, len(res.packages))
-	for pkg := range res.packages {
+func fillConvertorsSource(pkg models.Package, packages map[models.Package]struct{}, convertors []string,
+) ([]byte, error) {
+
+	imps := make([]string, 0, len(packages))
+	for pkg := range packages {
 		imps = append(imps, pkg.Import())
 	}
 
 	data := map[string]any{
-		"packageName":   res.pkg.Name,
-		"fromName":      res.fromName,
-		"toName":        res.toName,
-		"fromTag":       res.fromTag,
-		"toTag":         res.toTag,
-		"convertorName": res.convertorName,
-		"fields":        res.fields,
-		"imports":       filterAndSortImports(res.pkg, imps),
-		"withError":     res.withError,
-		"conversions":   res.conversions,
+		"packageName": pkg.Name,
+		"imports":     filterAndSortImports(pkg.Import(), imps),
+		"convertors":  convertors,
 	}
 
-	body, err := fillTemplate[[]byte](convertorFilePath, data)
+	body, err := fillTemplate[[]byte](convertorSourceFilePath, data)
 	if err != nil {
 		return nil, err
 	}
 
-	content, err := imports.Process(res.pkg.Path, body, nil)
+	content, err := imports.Process(pkg.Path, body, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -69,21 +68,43 @@ func createConvertor(res result) ([]byte, error) {
 	return content, nil
 }
 
-func getPointerCheck(fromFieldFullName, fromFieldName, toFieldName, fromName, toName string) (string, error) {
+func fillConvertor(res result) (string, error) {
 	data := map[string]any{
-		"fromModelName":     fromName,
-		"fromFieldName":     fromFieldName,
-		"toModelName":       toName,
-		"fromFieldFullName": fromFieldFullName,
-		"toFieldName":       toFieldName,
+		"fromName":      res.fromName,
+		"toName":        res.toName,
+		"fromTag":       res.fromTag,
+		"toTag":         res.toTag,
+		"convertorName": res.convertorName,
+		"fields":        res.fields,
+		"withError":     res.withError,
+		"conversions":   res.conversions,
+		"resName":       strings.Replace(res.toName, "*", "&", 1),
+	}
+
+	return fillTemplate[string](convertorFilePath, data)
+}
+
+func getPointerCheck(fromFullName, toModelName, err string) (string, error) {
+	data := map[string]any{
+		"fromFullName": fromFullName,
+		"resValue":     nilOrDefault(toModelName),
+		"error":        err,
 	}
 
 	return fillTemplate[string](pointerCheckFilePath, data)
 }
 
+func nilOrDefault(fullName string) string {
+	if strings.HasPrefix(fullName, "*") {
+		return "nil"
+	}
+
+	return fmt.Sprintf("%s{}", fullName)
+}
+
 func getErrorConversion(fromFieldFullName, toModelName, conversionFunction string) (string, error) {
 	data := map[string]any{
-		"toModelName":        toModelName,
+		"resValue":           nilOrDefault(toModelName),
 		"fromFieldFullName":  fromFieldFullName,
 		"conversionFunction": conversionFunction,
 	}
@@ -106,7 +127,7 @@ func getPointerToPointerConversion(fromFieldResName, fromFieldFullName, toModelN
 	data := map[string]any{
 		"fromFieldResName":   fromFieldResName,
 		"fromFieldFullName":  fromFieldFullName,
-		"toModelName":        toModelName,
+		"resValue":           nilOrDefault(toModelName),
 		"toFullFieldType":    toFullFieldType,
 		"conversionFunction": conversionFunction,
 		"isError":            isError,

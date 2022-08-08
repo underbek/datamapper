@@ -3,6 +3,8 @@ package mapper
 import (
 	"errors"
 	"fmt"
+	"os"
+	"path"
 	"strings"
 
 	"github.com/underbek/datamapper/generator"
@@ -27,10 +29,12 @@ func MapModels(opts options.Options) error {
 		return fmt.Errorf("parse models error: %w", err)
 	}
 
-	from, ok := structs[opts.FromName]
+	fromName, isFromPointer := parseModelName(opts.FromName)
+	from, ok := structs[fromName]
 	if !ok {
 		return fmt.Errorf(" %w: source model %s from %s", ErrNotFoundStruct, opts.FromName, opts.FromSource)
 	}
+	from.Type.Pointer = isFromPointer
 
 	toSource, toAlias := parseSourceOption(opts.ToSource)
 	structs, err = parser.ParseModelsByPackage(toSource)
@@ -38,10 +42,12 @@ func MapModels(opts options.Options) error {
 		return fmt.Errorf("parse models error: %w", err)
 	}
 
-	to, ok := structs[opts.ToName]
+	toName, isToPointer := parseModelName(opts.ToName)
+	to, ok := structs[toName]
 	if !ok {
 		return fmt.Errorf("%w: to model %s from %s", ErrNotFoundStruct, opts.ToName, opts.ToSource)
 	}
+	to.Type.Pointer = isToPointer
 
 	aliases := map[string]string{
 		from.Type.Package.Path: fromAlias,
@@ -94,9 +100,38 @@ func MapModels(opts options.Options) error {
 		funcs[key] = function
 	}
 
-	err = generator.CreateConvertor(from, to, opts.Destination, funcs)
+	err = os.MkdirAll(path.Dir(opts.Destination), os.ModePerm)
+	if err != nil {
+		return fmt.Errorf("create destination dir %s error: %w", path.Dir(opts.Destination), err)
+	}
+
+	pkg, err := parser.ParseDestinationPackage(opts.Destination)
+	if err != nil {
+		return fmt.Errorf("parse destination package %s error: %w", opts.Destination, err)
+	}
+
+	var convertors []string
+	pkgs, convertor, err := generator.GenerateConvertor(from, to, pkg, funcs)
 	if err != nil {
 		return fmt.Errorf("generate convertor error: %w", err)
+	}
+	convertors = append(convertors, convertor)
+
+	if opts.Invert {
+		invertPkgs, convertor, err := generator.GenerateConvertor(to, from, pkg, funcs)
+		if err != nil {
+			return fmt.Errorf("generate convertor error: %w", err)
+		}
+		convertors = append(convertors, convertor)
+
+		for key := range invertPkgs {
+			pkgs[key] = struct{}{}
+		}
+	}
+
+	err = generator.CreateConvertorSource(pkg, pkgs, convertors, opts.Destination)
+	if err != nil {
+		return fmt.Errorf("create convertor source error: %w", err)
 	}
 
 	return nil
@@ -153,4 +188,12 @@ func parseSourceOption(optSource string) (string, string) {
 	}
 
 	return res[0], res[1]
+}
+
+func parseModelName(modelName string) (string, bool) {
+	if strings.HasPrefix(modelName, "*") {
+		return strings.TrimPrefix(modelName, "*"), true
+	}
+
+	return modelName, false
 }

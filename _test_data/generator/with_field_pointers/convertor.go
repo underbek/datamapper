@@ -4,12 +4,12 @@
 // Package with_filed_pointers is a generated datamapper package.
 package with_filed_pointers
 
-import "fmt"
+import "errors"
 
 // ConvertFromToTo convert From by tag map to To by tag map
 func ConvertFromToTo(from From) (To, error) {
 	if from.Age == nil {
-		return To{}, fmt.Errorf("cannot convert From.Age -> To.Age, field is nil")
+		return To{}, errors.New("cannot convert From.Age -> To.Age, field is nil")
 	}
 
 	return To{
