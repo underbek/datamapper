@@ -8,7 +8,7 @@ func {{.convertorName}}(from {{.fromName}}) {{.toName}} {
 {{$conversion}}
 {{ end -}}
 
-  return {{.toName}}{ {{range $field := .fields}}
+  return {{.resName}}{ {{range $field := .fields}}
       {{$field.ToName}}: {{$field.Assignment}},
   {{- end}}
   }{{ if .withError }}, nil{{end}}

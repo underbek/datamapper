@@ -96,11 +96,13 @@ func Test_CreateModelsPair(t *testing.T) {
 
 func Test_GenerateConvertor(t *testing.T) {
 	tests := []struct {
-		name         string
-		pathFrom     string
-		pathTo       string
-		generatePath string
-		cfPath       string
+		name          string
+		pathFrom      string
+		pathTo        string
+		generatePath  string
+		cfPath        string
+		isFromPointer bool
+		isToPointer   bool
 	}{
 		{
 			name:         "Without imports",
@@ -221,6 +223,31 @@ func Test_GenerateConvertor(t *testing.T) {
 			generatePath: "cf_with_slice_pointers_and_errors",
 			cfPath:       testGeneratorPath + "cf_with_slice_pointers_and_errors/cf",
 		},
+		{
+			name:          "With from pointer",
+			pathFrom:      "with_from_pointer",
+			pathTo:        "with_from_pointer",
+			generatePath:  "with_from_pointer",
+			cfPath:        cfPath,
+			isFromPointer: true,
+		},
+		{
+			name:         "With to pointer",
+			pathFrom:     "with_to_pointer",
+			pathTo:       "with_to_pointer",
+			generatePath: "with_to_pointer",
+			cfPath:       cfPath,
+			isToPointer:  true,
+		},
+		{
+			name:          "With from and to pointers",
+			pathFrom:      "with_from_and_to_pointers",
+			pathTo:        "with_from_and_to_pointers",
+			generatePath:  "with_from_and_to_pointers",
+			cfPath:        cfPath,
+			isFromPointer: true,
+			isToPointer:   true,
+		},
 	}
 
 	for _, tt := range tests {
@@ -236,7 +263,13 @@ func Test_GenerateConvertor(t *testing.T) {
 			pkg, err := parser.ParseDestinationPackage(testGeneratorPath + tt.generatePath)
 			require.NoError(t, err)
 
-			pkgs, convertor, err := GenerateConvertor(modelsFrom["From"], modelsTo["To"], pkg, funcs)
+			from := modelsFrom["From"]
+			from.Type.Pointer = tt.isFromPointer
+
+			to := modelsTo["To"]
+			to.Type.Pointer = tt.isToPointer
+
+			pkgs, convertor, err := GenerateConvertor(from, to, pkg, funcs)
 			require.NoError(t, err)
 
 			actual, err := fillConvertorsSource(pkg, pkgs, []string{convertor})

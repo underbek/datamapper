@@ -3,6 +3,8 @@ package generator
 import (
 	"bytes"
 	"embed"
+	"fmt"
+	"strings"
 	"text/template"
 
 	"github.com/underbek/datamapper/models"
@@ -76,26 +78,33 @@ func fillConvertor(res result) (string, error) {
 		"fields":        res.fields,
 		"withError":     res.withError,
 		"conversions":   res.conversions,
+		"resName":       strings.Replace(res.toName, "*", "&", 1),
 	}
 
 	return fillTemplate[string](convertorFilePath, data)
 }
 
-func getPointerCheck(fromFieldFullName, fromFieldName, toFieldName, fromName, toName string) (string, error) {
+func getPointerCheck(fromFullName, toModelName, err string) (string, error) {
 	data := map[string]any{
-		"fromModelName":     fromName,
-		"fromFieldName":     fromFieldName,
-		"toModelName":       toName,
-		"fromFieldFullName": fromFieldFullName,
-		"toFieldName":       toFieldName,
+		"fromFullName": fromFullName,
+		"resValue":     nilOrDefault(toModelName),
+		"error":        err,
 	}
 
 	return fillTemplate[string](pointerCheckFilePath, data)
 }
 
+func nilOrDefault(fullName string) string {
+	if strings.HasPrefix(fullName, "*") {
+		return "nil"
+	}
+
+	return fmt.Sprintf("%s{}", fullName)
+}
+
 func getErrorConversion(fromFieldFullName, toModelName, conversionFunction string) (string, error) {
 	data := map[string]any{
-		"toModelName":        toModelName,
+		"resValue":           nilOrDefault(toModelName),
 		"fromFieldFullName":  fromFieldFullName,
 		"conversionFunction": conversionFunction,
 	}
@@ -118,7 +127,7 @@ func getPointerToPointerConversion(fromFieldResName, fromFieldFullName, toModelN
 	data := map[string]any{
 		"fromFieldResName":   fromFieldResName,
 		"fromFieldFullName":  fromFieldFullName,
-		"toModelName":        toModelName,
+		"resValue":           nilOrDefault(toModelName),
 		"toFullFieldType":    toFullFieldType,
 		"conversionFunction": conversionFunction,
 		"isError":            isError,

@@ -5,7 +5,7 @@
 package cf_with_slice_pointers_and_errors
 
 import (
-	"fmt"
+	"errors"
 
 	"github.com/shopspring/decimal"
 	"github.com/underbek/datamapper/_test_data/generator/cf_with_slice_pointers_and_errors/cf"
@@ -26,7 +26,7 @@ func ConvertFromToTo(from From) (To, error) {
 	fromAges := make([]int, 0, len(from.Ages))
 	for _, item := range from.Ages {
 		if item == nil {
-			return To{}, fmt.Errorf("cannot convert From.Ages -> To.Ages, field is nil")
+			return To{}, errors.New("cannot convert From.Ages -> To.Ages, field is nil")
 		}
 
 		res, err := cf.ConvertDecimalToInt(*item)

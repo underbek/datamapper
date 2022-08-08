@@ -152,3 +152,12 @@ func getConversionFunctionCall(cf models.ConversionFunction, fromFieldType, toFi
 
 	return fmt.Sprintf("%s.%s%s(%s%s)", packageName, cf.Name, typeParams, ptr, arg)
 }
+
+func getFieldPointerCheckError(fromModelName, toModelName, fromFieldName, toFieldName string) string {
+	return fmt.Sprintf(`errors.New("cannot convert %s.%s -> %s.%s, field is nil")`,
+		fromModelName,
+		fromFieldName,
+		toModelName,
+		toFieldName,
+	)
+}

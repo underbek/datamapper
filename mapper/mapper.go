@@ -29,10 +29,12 @@ func MapModels(opts options.Options) error {
 		return fmt.Errorf("parse models error: %w", err)
 	}
 
-	from, ok := structs[opts.FromName]
+	fromName, isFromPointer := parseModelName(opts.FromName)
+	from, ok := structs[fromName]
 	if !ok {
 		return fmt.Errorf(" %w: source model %s from %s", ErrNotFoundStruct, opts.FromName, opts.FromSource)
 	}
+	from.Type.Pointer = isFromPointer
 
 	toSource, toAlias := parseSourceOption(opts.ToSource)
 	structs, err = parser.ParseModelsByPackage(toSource)
@@ -40,10 +42,12 @@ func MapModels(opts options.Options) error {
 		return fmt.Errorf("parse models error: %w", err)
 	}
 
-	to, ok := structs[opts.ToName]
+	toName, isToPointer := parseModelName(opts.ToName)
+	to, ok := structs[toName]
 	if !ok {
 		return fmt.Errorf("%w: to model %s from %s", ErrNotFoundStruct, opts.ToName, opts.ToSource)
 	}
+	to.Type.Pointer = isToPointer
 
 	aliases := map[string]string{
 		from.Type.Package.Path: fromAlias,
@@ -184,4 +188,12 @@ func parseSourceOption(optSource string) (string, string) {
 	}
 
 	return res[0], res[1]
+}
+
+func parseModelName(modelName string) (string, bool) {
+	if strings.HasPrefix(modelName, "*") {
+		return strings.TrimPrefix(modelName, "*"), true
+	}
+
+	return modelName, false
 }

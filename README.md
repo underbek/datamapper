@@ -134,7 +134,7 @@ func ConvertStringToDecimal(from string) (decimal.Decimal, error) {
 * [x] Generate convertors by slice fields
 * [x] New alias options (alias to each convertors' path)
 * [x] Converts both ways in one source
-* [ ] Generate convertor with from/to pointer
+* [x] Generate convertor with from/to pointer
 * [ ] Update readme
 * [ ] Use in my projects
 * [ ] Generate convertors with map fields
