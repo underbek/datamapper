@@ -135,7 +135,9 @@ func ConvertStringToDecimal(from string) (decimal.Decimal, error) {
 * [x] New alias options (alias to each convertors' path)
 * [x] Converts both ways in one source
 * [x] Generate convertor with from/to pointer
+* [x] Fix error by parsing function as member
 * [ ] Update readme
+* [ ] Map field without tag
 * [ ] Use in my projects
 * [ ] Generate convertors with map fields
 * [ ] Generate convertors with array fields
@@ -146,7 +148,6 @@ func ConvertStringToDecimal(from string) (decimal.Decimal, error) {
 * [ ] Use generated convertors in convertor like conversion function
 * [ ] Parse embed struct
 * [ ] Parse func aliases
-* [ ] Map field without tag
 * [ ] Warning or error politics if tags is not equals
 * [ ] Fill some conversion functions
 * [ ] Copy using conversion functions from datamapper to target service if flag set

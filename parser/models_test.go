@@ -39,6 +39,37 @@ func Test_ParseEmptyFile(t *testing.T) {
 	}
 }
 
+func Test_ParseModelsWithFunc(t *testing.T) {
+	tests := []struct {
+		name     string
+		fileName string
+		expected map[string]models.Struct
+	}{
+		{
+			name:     "With function",
+			fileName: "with_func.go",
+			expected: map[string]models.Struct{
+				"StructWithFunc": {
+					Type: models.Type{
+						Name:    "StructWithFunc",
+						Package: models.Package{Name: "parser", Path: "github.com/underbek/datamapper/_test_data/parser"},
+						Kind:    models.StructType,
+					},
+					Fields: []models.Field{},
+				},
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			res, err := ParseModels(testPath + tt.fileName)
+			assert.NoError(t, err)
+			assert.Equal(t, tt.expected, res)
+		})
+	}
+}
+
 func Test_ParseModels(t *testing.T) {
 	res, err := ParseModels(testPath + "models.go")
 	assert.NoError(t, err)

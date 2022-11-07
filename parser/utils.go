@@ -173,6 +173,9 @@ func parseType(t types.Type) ([]Type, error) {
 		}
 
 		return res, nil
+	case *types.Signature:
+		// function member is not convert
+		return nil, nil
 	default:
 		return nil, fmt.Errorf("%w: %s", ErrUndefinedType, t.String())
 	}
