@@ -17,7 +17,7 @@ func createModelsPair(from, to models.Struct, pkgPath string, functions models.F
 		conversion, err := getPointerCheck(
 			"from",
 			to.Type.FullName(pkgPath),
-			`errors.New("from is nil")`,
+			fmt.Sprintf("errors.New(\"%s is nil\")", from.Type.Name),
 		)
 		if err != nil {
 			return result{}, err
@@ -176,12 +176,28 @@ func fillConversionFunction(pair FieldsPair, fromField, toField models.Field, fr
 		return pair, pkgs, nil
 
 	case PointerPoPointerConversionFunctionsRule:
+		errString, err := getConvertError(
+			fromModel.Type.Name,
+			fromField.Name,
+			toModel.Type.Name,
+			toField.Name,
+		)
+		if err != nil {
+			return FieldsPair{}, nil, err
+		}
+
+		pkgs[models.Package{
+			Name: "fmt",
+			Path: "fmt",
+		}] = struct{}{}
+
 		conversion, err := getPointerToPointerConversion(
 			fmt.Sprintf("from%s", fromField.Name),
 			fmt.Sprintf("from.%s", fromField.Name),
 			toModel.Type.FullName(pkgPath),
 			toField.Type.FullName(pkgPath),
 			cfCall,
+			errString,
 			cf.WithError,
 		)
 		if err != nil {
@@ -196,10 +212,26 @@ func fillConversionFunction(pair FieldsPair, fromField, toField models.Field, fr
 		return pair, pkgs, nil
 
 	case NeedCallConversionFunctionWithErrorRule:
+		errString, err := getConvertError(
+			fromModel.Type.Name,
+			fromField.Name,
+			toModel.Type.Name,
+			toField.Name,
+		)
+		if err != nil {
+			return FieldsPair{}, nil, err
+		}
+
+		pkgs[models.Package{
+			Name: "fmt",
+			Path: "fmt",
+		}] = struct{}{}
+
 		conversion, err := getErrorConversion(
 			fmt.Sprintf("from%s", fromField.Name),
 			toModel.Type.FullName(pkgPath),
 			cfCall,
+			errString,
 		)
 		if err != nil {
 			return FieldsPair{}, nil, err
@@ -306,10 +338,26 @@ func fillConversionFunctionBySlice(pair FieldsPair, fromField, toField models.Fi
 		assigment = cfCall
 
 	case NeedCallConversionFunctionWithErrorRule:
+		errString, err := getConvertError(
+			fromModel.Type.Name,
+			fromField.Name,
+			toModel.Type.Name,
+			toField.Name,
+		)
+		if err != nil {
+			return FieldsPair{}, nil, err
+		}
+
+		pkgs[models.Package{
+			Name: "fmt",
+			Path: "fmt",
+		}] = struct{}{}
+
 		conversion, err := getErrorConversion(
 			"res",
 			toModel.Type.FullName(pkgPath),
 			cfCall,
+			errString,
 		)
 		if err != nil {
 			return FieldsPair{}, nil, err
@@ -334,12 +382,28 @@ func fillConversionFunctionBySlice(pair FieldsPair, fromField, toField models.Fi
 		assigment = refAssignment
 
 	case PointerPoPointerConversionFunctionsRule:
+		errString, err := getConvertError(
+			fromModel.Type.Name,
+			fromField.Name,
+			toModel.Type.Name,
+			toField.Name,
+		)
+		if err != nil {
+			return FieldsPair{}, nil, err
+		}
+
+		pkgs[models.Package{
+			Name: "fmt",
+			Path: "fmt",
+		}] = struct{}{}
+
 		conversion, err := getPointerToPointerConversion(
 			"resPtr",
 			"item",
 			toModel.Type.FullName(pkgPath),
 			toField.Type.Additional.(models.SliceAdditional).InType.FullName(pkgPath),
 			cfCall,
+			errString,
 			cf.WithError,
 		)
 		if err != nil {

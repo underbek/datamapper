@@ -6,6 +6,7 @@ package with_field_pointers_and_errors
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/shopspring/decimal"
 	"github.com/underbek/datamapper/converts"
@@ -15,7 +16,7 @@ import (
 func ConvertFromToTo(from From) (To, error) {
 	fromID, err := converts.ConvertStringToSigned[int](from.ID)
 	if err != nil {
-		return To{}, err
+		return To{}, fmt.Errorf("convert From.ID -> To.UUID failed: %w", err)
 	}
 
 	if from.Age == nil {
@@ -24,14 +25,14 @@ func ConvertFromToTo(from From) (To, error) {
 
 	fromAge, err := converts.ConvertStringToDecimal(*from.Age)
 	if err != nil {
-		return To{}, err
+		return To{}, fmt.Errorf("convert From.Age -> To.Age failed: %w", err)
 	}
 
 	var fromChildren *decimal.Decimal
 	if from.Children != nil {
 		res, err := converts.ConvertStringToDecimal(*from.Children)
 		if err != nil {
-			return To{}, err
+			return To{}, fmt.Errorf("convert From.Children -> To.Children failed: %w", err)
 		}
 
 		fromChildren = &res

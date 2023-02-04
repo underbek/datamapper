@@ -19,6 +19,7 @@ const (
 	pointerConversionFilePath          = "templates/pointer_conversion.temp"
 	pointerToPointerConversionFilePath = "templates/pointer_to_pointer_conversion.temp"
 	sliceConversionFilePath            = "templates/slice_conversion.temp"
+	convertErrorFilePath               = "templates/convert_error.temp"
 )
 
 //go:embed templates
@@ -102,11 +103,12 @@ func nilOrDefault(fullName string) string {
 	return fmt.Sprintf("%s{}", fullName)
 }
 
-func getErrorConversion(fromFieldFullName, toModelName, conversionFunction string) (string, error) {
+func getErrorConversion(fromFieldFullName, toModelName, conversionFunction, err string) (string, error) {
 	data := map[string]any{
 		"resValue":           nilOrDefault(toModelName),
 		"fromFieldFullName":  fromFieldFullName,
 		"conversionFunction": conversionFunction,
+		"error":              err,
 	}
 
 	return fillTemplate[string](errorConversionFilePath, data)
@@ -122,7 +124,7 @@ func getPointerConversion(fromFieldFullName string, conversionFunction string) (
 }
 
 func getPointerToPointerConversion(fromFieldResName, fromFieldFullName, toModelName, toFullFieldType,
-	conversionFunction string, isError bool) (string, error) {
+	conversionFunction, err string, isError bool) (string, error) {
 
 	data := map[string]any{
 		"fromFieldResName":   fromFieldResName,
@@ -130,6 +132,7 @@ func getPointerToPointerConversion(fromFieldResName, fromFieldFullName, toModelN
 		"resValue":           nilOrDefault(toModelName),
 		"toFullFieldType":    toFullFieldType,
 		"conversionFunction": conversionFunction,
+		"error":              err,
 		"isError":            isError,
 	}
 
@@ -145,4 +148,15 @@ func getSliceConversion(fromFieldName, toItemTypeName, assigment string, convers
 	}
 
 	return fillTemplate[string](sliceConversionFilePath, data)
+}
+
+func getConvertError(fromTypeName, fromFieldName, toTypeName, toFieldName string) (string, error) {
+	data := map[string]any{
+		"fromTypeName":  fromTypeName,
+		"fromFieldName": fromFieldName,
+		"toTypeName":    toTypeName,
+		"toFieldName":   toFieldName,
+	}
+
+	return fillTemplate[string](convertErrorFilePath, data)
 }

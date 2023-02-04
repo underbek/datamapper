@@ -5,6 +5,8 @@
 package mapper
 
 import (
+	"fmt"
+
 	customCf "github.com/underbek/datamapper/_test_data/mapper/convertors"
 	to "github.com/underbek/datamapper/_test_data/mapper/domain"
 	from "github.com/underbek/datamapper/_test_data/mapper/transport"
@@ -15,14 +17,14 @@ import (
 func ConvertFromUserToToUser(from from.User) (to.User, error) {
 	fromAge, err := converts.ConvertStringToDecimal(from.Age)
 	if err != nil {
-		return to.User{}, err
+		return to.User{}, fmt.Errorf("convert User.Age -> User.Age failed: %w", err)
 	}
 
 	var fromChildCount *int
 	if from.ChildCount != nil {
 		res, err := converts.ConvertStringToSigned[int](*from.ChildCount)
 		if err != nil {
-			return to.User{}, err
+			return to.User{}, fmt.Errorf("convert User.ChildCount -> User.ChildCount failed: %w", err)
 		}
 
 		fromChildCount = &res

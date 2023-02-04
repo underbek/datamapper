@@ -3,7 +3,7 @@ if {{.fromFieldFullName}} != nil {
     {{- if .isError -}}
     res, err := {{.conversionFunction}}
     if err != nil {
-        return {{.resValue}}, err
+        return {{.resValue}},  {{.error}}
     }
     {{else}}
     res := {{.conversionFunction}}

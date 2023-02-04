@@ -4,7 +4,11 @@
 // Package with_from_and_to_pointers is a generated datamapper package.
 package with_from_and_to_pointers
 
-import "github.com/underbek/datamapper/converts"
+import (
+	"fmt"
+
+	"github.com/underbek/datamapper/converts"
+)
 
 // ConvertFromToTo convert *From by tag map to *To by tag map
 func ConvertFromToTo(from *From) (*To, error) {
@@ -14,12 +18,12 @@ func ConvertFromToTo(from *From) (*To, error) {
 
 	fromUUID, err := converts.ConvertStringToDecimal(from.UUID)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("convert From.UUID -> To.ID failed: %w", err)
 	}
 
 	fromAge, err := converts.ConvertStringToSigned[int8](from.Age)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("convert From.Age -> To.Age failed: %w", err)
 	}
 
 	return &To{

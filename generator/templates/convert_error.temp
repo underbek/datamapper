@@ -1,0 +1,1 @@
+fmt.Errorf("convert {{.fromTypeName}}.{{.fromFieldName}} -> {{.toTypeName}}.{{.toFieldName}} failed: %w", err)

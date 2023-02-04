@@ -136,6 +136,8 @@ func ConvertStringToDecimal(from string) (decimal.Decimal, error) {
 * [x] Converts both ways in one source
 * [x] Generate convertor with from/to pointer
 * [x] Fix error by parsing function as member
+* [ ] Generate intelligent errors
+* [ ] Parse files in crashed packages ???
 * [ ] Update readme
 * [ ] Map field without tag
 * [ ] Use in my projects

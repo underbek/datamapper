@@ -6,6 +6,7 @@ package cf_with_slice_pointers_and_errors
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/shopspring/decimal"
 	"github.com/underbek/datamapper/_test_data/generator/cf_with_slice_pointers_and_errors/cf"
@@ -17,7 +18,7 @@ func ConvertFromToTo(from From) (To, error) {
 	for _, item := range from.IDs {
 		res, err := cf.ConvertDecimalToInt(item)
 		if err != nil {
-			return To{}, err
+			return To{}, fmt.Errorf("convert From.IDs -> To.UUIDs failed: %w", err)
 		}
 
 		fromIDs = append(fromIDs, &res)
@@ -31,7 +32,7 @@ func ConvertFromToTo(from From) (To, error) {
 
 		res, err := cf.ConvertDecimalToInt(*item)
 		if err != nil {
-			return To{}, err
+			return To{}, fmt.Errorf("convert From.Ages -> To.Ages failed: %w", err)
 		}
 
 		fromAges = append(fromAges, res)
@@ -43,7 +44,7 @@ func ConvertFromToTo(from From) (To, error) {
 		if item != nil {
 			res, err := cf.ConvertIntegerToDecimal(*item)
 			if err != nil {
-				return To{}, err
+				return To{}, fmt.Errorf("convert From.Counts -> To.Counts failed: %w", err)
 			}
 
 			resPtr = &res
@@ -56,7 +57,7 @@ func ConvertFromToTo(from From) (To, error) {
 	for _, item := range from.Origins {
 		res, err := cf.ConvertFloatPtrToDecimalPtr(item)
 		if err != nil {
-			return To{}, err
+			return To{}, fmt.Errorf("convert From.Origins -> To.Origins failed: %w", err)
 		}
 
 		fromOrigins = append(fromOrigins, res)
