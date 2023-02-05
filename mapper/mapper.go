@@ -136,6 +136,7 @@ func MapModels(lg logger.Logger, opts options.Options) error {
 		if err != nil {
 			return fmt.Errorf("create convertor source error: %w", err)
 		}
+		lg.Infof("generated convertor source: \"%s\"", opt.Destination)
 
 		// parse generated functions
 		res, err := parser.ParseConversionFunctionsByPackage(lg, opt.Destination)
