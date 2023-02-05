@@ -22,63 +22,17 @@ var (
 )
 
 func MapModels(opts options.Options) error {
-	fromSource, fromAlias := parseSourceOption(opts.FromSource)
-
-	structs, err := parser.ParseModelsByPackage(fromSource)
-	if err != nil {
-		return fmt.Errorf("parse models error: %w", err)
-	}
-
-	fromName, isFromPointer := parseModelName(opts.FromName)
-	from, ok := structs[fromName]
-	if !ok {
-		return fmt.Errorf(" %w: source model %s from %s", ErrNotFoundStruct, opts.FromName, opts.FromSource)
-	}
-	from.Type.Pointer = isFromPointer
-
-	toSource, toAlias := parseSourceOption(opts.ToSource)
-	structs, err = parser.ParseModelsByPackage(toSource)
-	if err != nil {
-		return fmt.Errorf("parse models error: %w", err)
-	}
-
-	toName, isToPointer := parseModelName(opts.ToName)
-	to, ok := structs[toName]
-	if !ok {
-		return fmt.Errorf("%w: to model %s from %s", ErrNotFoundStruct, opts.ToName, opts.ToSource)
-	}
-	to.Type.Pointer = isToPointer
-
-	aliases := map[string]string{
-		from.Type.Package.Path: fromAlias,
-		to.Type.Package.Path:   toAlias,
-	}
-
-	from.Fields = utils.FilterFields(opts.FromTag, from.Fields)
-	if len(from.Fields) == 0 {
-		return fmt.Errorf(
-			"%w: source model %s does not contain tag %s",
-			ErrNotFoundTag,
-			opts.FromName,
-			opts.FromTag,
-		)
-	}
-
-	to.Fields = utils.FilterFields(opts.ToTag, to.Fields)
-	if len(to.Fields) == 0 {
-		return fmt.Errorf("%w: to model %s does not contain tag %s", ErrNotFoundTag, opts.ToName, opts.ToTag)
-	}
-
 	//TODO: parse or copy embed sources
 	funcs, err := parser.ParseConversionFunctionsByPackage(internalConvertsPackagePath)
 	if err != nil {
 		return fmt.Errorf("parse internal conversion functions error: %w", err)
 	}
 
+	cfAliases := map[string]string{}
 	userFuncs := make(models.Functions)
 
-	if len(opts.UserCFSources) != 0 {
-		for _, optSource := range opts.UserCFSources {
+	if len(opts.CFSources) != 0 {
+		for _, optSource := range opts.CFSources {
 			source, cfAlias := parseSourceOption(optSource)
 			res, err := parser.ParseConversionFunctionsByPackage(source)
 			if err != nil {
@@ -86,52 +40,105 @@ func MapModels(opts options.Options) error {
 			}
 
 			for key, function := range res {
-				aliases[function.Package.Path] = cfAlias
+				cfAliases[function.Package.Path] = cfAlias
 				userFuncs[key] = function
 			}
 		}
 	}
 
-	// set aliases
-	setPackageAliasToStruct(&from, aliases)
-	setPackageAliasToStruct(&to, aliases)
-	userFuncs = setPackageAliasToFunctions(userFuncs, aliases)
-	for key, function := range userFuncs {
-		funcs[key] = function
-	}
+	for _, opt := range opts.Options {
+		fromSource, fromAlias := parseSourceOption(opt.FromSource)
 
-	err = os.MkdirAll(path.Dir(opts.Destination), os.ModePerm)
-	if err != nil {
-		return fmt.Errorf("create destination dir %s error: %w", path.Dir(opts.Destination), err)
-	}
+		structs, err := parser.ParseModelsByPackage(fromSource)
+		if err != nil {
+			return fmt.Errorf("parse models error: %w", err)
+		}
 
-	pkg, err := parser.ParseDestinationPackage(opts.Destination)
-	if err != nil {
-		return fmt.Errorf("parse destination package %s error: %w", opts.Destination, err)
-	}
+		fromName, isFromPointer := parseModelName(opt.FromName)
+		from, ok := structs[fromName]
+		if !ok {
+			return fmt.Errorf(" %w: source model %s from %s", ErrNotFoundStruct, opt.FromName, opt.FromSource)
+		}
+		from.Type.Pointer = isFromPointer
 
-	var convertors []string
-	pkgs, convertor, err := generator.GenerateConvertor(from, to, pkg, funcs)
-	if err != nil {
-		return fmt.Errorf("generate convertor error: %w", err)
-	}
-	convertors = append(convertors, convertor)
+		toSource, toAlias := parseSourceOption(opt.ToSource)
+		structs, err = parser.ParseModelsByPackage(toSource)
+		if err != nil {
+			return fmt.Errorf("parse models error: %w", err)
+		}
 
-	if opts.Invert {
-		invertPkgs, convertor, err := generator.GenerateConvertor(to, from, pkg, funcs)
+		toName, isToPointer := parseModelName(opt.ToName)
+		to, ok := structs[toName]
+		if !ok {
+			return fmt.Errorf("%w: to model %s from %s", ErrNotFoundStruct, opt.ToName, opt.ToSource)
+		}
+		to.Type.Pointer = isToPointer
+
+		aliases := map[string]string{
+			from.Type.Package.Path: fromAlias,
+			to.Type.Package.Path:   toAlias,
+		}
+
+		from.Fields = utils.FilterFields(opt.FromTag, from.Fields)
+		if len(from.Fields) == 0 {
+			return fmt.Errorf(
+				"%w: source model %s does not contain tag %s",
+				ErrNotFoundTag,
+				opt.FromName,
+				opt.FromTag,
+			)
+		}
+
+		to.Fields = utils.FilterFields(opt.ToTag, to.Fields)
+		if len(to.Fields) == 0 {
+			return fmt.Errorf("%w: to model %s does not contain tag %s", ErrNotFoundTag, opt.ToName, opt.ToTag)
+		}
+
+		for cfPath, alias := range cfAliases {
+			aliases[cfPath] = alias
+		}
+
+		// set aliases
+		setPackageAliasToStruct(&from, aliases)
+		setPackageAliasToStruct(&to, aliases)
+		userFuncs = setPackageAliasToFunctions(userFuncs, aliases)
+		for key, function := range userFuncs {
+			funcs[key] = function
+		}
+
+		err = os.MkdirAll(path.Dir(opt.Destination), os.ModePerm)
+		if err != nil {
+			return fmt.Errorf("create destination dir %s error: %w", path.Dir(opt.Destination), err)
+		}
+
+		pkg, err := parser.ParseDestinationPackage(opt.Destination)
+		if err != nil {
+			return fmt.Errorf("parse destination package %s error: %w", opt.Destination, err)
+		}
+
+		var convertors []string
+		pkgs, convertor, err := generator.GenerateConvertor(from, to, pkg, funcs)
 		if err != nil {
 			return fmt.Errorf("generate convertor error: %w", err)
 		}
 		convertors = append(convertors, convertor)
 
-		for key := range invertPkgs {
-			pkgs[key] = struct{}{}
-		}
-	}
+		if opt.Invert {
+			invertPkgs, convertor, err := generator.GenerateConvertor(to, from, pkg, funcs)
+			if err != nil {
+				return fmt.Errorf("generate convertor error: %w", err)
+			}
+			convertors = append(convertors, convertor)
 
-	err = generator.CreateConvertorSource(pkg, pkgs, convertors, opts.Destination)
-	if err != nil {
-		return fmt.Errorf("create convertor source error: %w", err)
+			for key := range invertPkgs {
+				pkgs[key] = struct{}{}
+			}
+		}
+
+		err = generator.CreateConvertorSource(pkg, pkgs, convertors, opt.Destination)
+		if err != nil {
+			return fmt.Errorf("create convertor source error: %w", err)
+		}
 	}
 
 	return nil

@@ -5,7 +5,12 @@ import (
 )
 
 //nolint:lll
-type Options struct {
+type Config struct {
+	Config string `short:"c" long:"config" description:"Yaml config path" required:"false"`
+}
+
+//nolint:lll
+type Flags struct {
 	Destination   string   `short:"d" long:"destination" description:"Destination file path" required:"true"`
 	UserCFSources []string `long:"cf" description:"User conversion functions sources/packages. Can add package alias like {package_path}:{alias)" required:"false"`
 	FromName      string   `long:"from" description:"Model from name" required:"true"`
@@ -17,8 +22,52 @@ type Options struct {
 	Invert        bool     `short:"i" long:"inverse" description:"Create direct and inverse conversions" required:"false"`
 }
 
+type Option struct {
+	Destination string
+	FromName    string
+	FromTag     string
+	FromSource  string
+	ToName      string
+	ToTag       string
+	ToSource    string
+	Invert      bool
+}
+
+type Options struct {
+	CFSources []string
+	Options   []Option
+}
+
+func parseConfig() (string, error) {
+	var config Config
+	_, err := flags.Parse(&config)
+	return config.Config, err
+}
+
+func parseOptions() (Options, error) {
+	var params Flags
+	_, err := flags.Parse(&params)
+	if err != nil {
+		return Options{}, err
+	}
+
+	return Options{
+		CFSources: params.UserCFSources,
+		Options: []Option{
+			{
+				Destination: params.Destination,
+				FromName:    params.FromName,
+				FromTag:     params.FromTag,
+				FromSource:  params.FromSource,
+				ToName:      params.ToName,
+				ToTag:       params.ToTag,
+				ToSource:    params.ToSource,
+				Invert:      params.Invert,
+			},
+		},
+	}, nil
+}
+
 func ParseOptions() (Options, error) {
-	var options Options
-	_, err := flags.Parse(&options)
-	return options, err
+	return parseOptions()
 }
