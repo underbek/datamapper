@@ -6,6 +6,7 @@ package with_from_pointer
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/underbek/datamapper/converts"
 )
@@ -13,17 +14,17 @@ import (
 // ConvertFromToTo convert *From by tag map to To by tag map
 func ConvertFromToTo(from *From) (To, error) {
 	if from == nil {
-		return To{}, errors.New("from is nil")
+		return To{}, errors.New("From is nil")
 	}
 
 	fromUUID, err := converts.ConvertStringToDecimal(from.UUID)
 	if err != nil {
-		return To{}, err
+		return To{}, fmt.Errorf("convert From.UUID -> To.ID failed: %w", err)
 	}
 
 	fromAge, err := converts.ConvertStringToSigned[int8](from.Age)
 	if err != nil {
-		return To{}, err
+		return To{}, fmt.Errorf("convert From.Age -> To.Age failed: %w", err)
 	}
 
 	return To{

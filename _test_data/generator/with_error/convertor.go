@@ -4,13 +4,17 @@
 // Package with_error is a generated datamapper package.
 package with_error
 
-import "github.com/underbek/datamapper/converts"
+import (
+	"fmt"
+
+	"github.com/underbek/datamapper/converts"
+)
 
 // ConvertFromToTo convert From by tag map to To by tag map
 func ConvertFromToTo(from From) (To, error) {
 	fromUUID, err := converts.ConvertStringToDecimal(from.UUID)
 	if err != nil {
-		return To{}, err
+		return To{}, fmt.Errorf("convert From.UUID -> To.ID failed: %w", err)
 	}
 
 	return To{

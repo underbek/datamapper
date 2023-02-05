@@ -4,28 +4,32 @@
 // Package cf_with_pointers_and_erros is a generated datamapper package.
 package cf_with_pointers_and_erros
 
-import "github.com/underbek/datamapper/_test_data/generator/cf_with_pointers_and_errors/cf"
+import (
+	"fmt"
+
+	"github.com/underbek/datamapper/_test_data/generator/cf_with_pointers_and_errors/cf"
+)
 
 // ConvertFromToTo convert From by tag map to To by tag map
 func ConvertFromToTo(from From) (To, error) {
 	fromID, err := cf.ConvertIntToDecimalPtr(from.ID)
 	if err != nil {
-		return To{}, err
+		return To{}, fmt.Errorf("convert From.ID -> To.UUID failed: %w", err)
 	}
 
 	fromAge, err := cf.ConvertIntPtrToDecimal(from.Age)
 	if err != nil {
-		return To{}, err
+		return To{}, fmt.Errorf("convert From.Age -> To.Age failed: %w", err)
 	}
 
 	fromCount, err := cf.ConvertIntPtrToDecimalPtr(from.Count)
 	if err != nil {
-		return To{}, err
+		return To{}, fmt.Errorf("convert From.Count -> To.Count failed: %w", err)
 	}
 
 	fromOrig, err := cf.ConvertIntToDecimal(from.Orig)
 	if err != nil {
-		return To{}, err
+		return To{}, fmt.Errorf("convert From.Orig -> To.Orig failed: %w", err)
 	}
 
 	return To{

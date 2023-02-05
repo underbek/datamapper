@@ -5,6 +5,8 @@
 package cf_with_slice_and_errors
 
 import (
+	"fmt"
+
 	"github.com/shopspring/decimal"
 	"github.com/underbek/datamapper/_test_data/generator/cf_with_slice_and_errors/cf"
 )
@@ -15,7 +17,7 @@ func ConvertFromToTo(from From) (To, error) {
 	for _, item := range from.IDs {
 		res, err := cf.ConvertStringToDecimal(item)
 		if err != nil {
-			return To{}, err
+			return To{}, fmt.Errorf("convert From.IDs -> To.UUIDs failed: %w", err)
 		}
 
 		fromIDs = append(fromIDs, res)
