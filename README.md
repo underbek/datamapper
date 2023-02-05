@@ -3,7 +3,7 @@
 ### Install
 
 ```shell
-go install github.com/underbek/datamapper@v0.0.4
+go install github.com/underbek/datamapper@v0.0.6
 ```
 
 ### Usage
