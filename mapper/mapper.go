@@ -139,8 +139,12 @@ func MapModels(lg logger.Logger, opts options.Options) error {
 		lg.Infof("generated convertor source: \"%s\"", opt.Destination)
 
 		// parse generated functions
-		res, err := parser.ParseConversionFunctionsByPackage(lg, opt.Destination)
-		for key, function := range res {
+		var parsedFunctions models.Functions
+		parsedFunctions, err = parser.ParseConversionFunctionsByPackage(lg, opt.Destination)
+		if err != nil {
+			return fmt.Errorf("parse generated conversion functions error: %w", err)
+		}
+		for key, function := range parsedFunctions {
 			userFuncs[key] = function
 		}
 	}

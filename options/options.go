@@ -2,12 +2,15 @@ package options
 
 import (
 	"os"
+	"path/filepath"
 	"strings"
 
 	"github.com/creasty/defaults"
 	"github.com/jessevdk/go-flags"
 	"gopkg.in/yaml.v3"
 )
+
+const defaultFilePerm = 0600
 
 //nolint:lll
 type Config struct {
@@ -53,7 +56,9 @@ type ConversionFunction struct {
 }
 
 func (m *Model) UnmarshalYAML(unmarshal func(interface{}) error) error {
-	defaults.Set(m)
+	if err := defaults.Set(m); err != nil {
+		return err
+	}
 
 	type model Model
 	if err := unmarshal((*model)(m)); err != nil {
@@ -65,7 +70,7 @@ func (m *Model) UnmarshalYAML(unmarshal func(interface{}) error) error {
 
 func parseConfig(path string) (Options, error) {
 	var opts Options
-	file, err := os.Open(path)
+	file, err := os.OpenFile(filepath.Clean(path), os.O_RDONLY, defaultFilePerm)
 	if err != nil {
 		return Options{}, err
 	}
