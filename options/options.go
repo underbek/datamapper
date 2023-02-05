@@ -1,6 +1,8 @@
 package options
 
 import (
+	"strings"
+
 	"github.com/jessevdk/go-flags"
 )
 
@@ -22,20 +24,28 @@ type Flags struct {
 	Invert        bool     `short:"i" long:"inverse" description:"Create direct and inverse conversions" required:"false"`
 }
 
+type Model struct {
+	Name   string `yaml:"name"`
+	Tag    string `yaml:"tag"`
+	Source string `yaml:"source"`
+	Alias  string `yaml:"alias"`
+}
+
 type Option struct {
-	Destination string
-	FromName    string
-	FromTag     string
-	FromSource  string
-	ToName      string
-	ToTag       string
-	ToSource    string
-	Invert      bool
+	From        Model  `yaml:"from"`
+	To          Model  `yaml:"to"`
+	Invert      bool   `yaml:"invert"`
+	Destination string `yaml:"dest"`
 }
 
 type Options struct {
-	CFSources []string
-	Options   []Option
+	ConversionFunctions []ConversionFunction `yaml:"cf"`
+	Options             []Option             `yaml:"options"`
+}
+
+type ConversionFunction struct {
+	Source string `yaml:"source"`
+	Alias  string `yaml:"alias"`
 }
 
 func parseConfig() (string, error) {
@@ -51,18 +61,36 @@ func parseOptions() (Options, error) {
 		return Options{}, err
 	}
 
+	functions := make([]ConversionFunction, 0, len(params.UserCFSources))
+	for _, opt := range params.UserCFSources {
+		source, alias := parseSourceOption(opt)
+		functions = append(functions, ConversionFunction{
+			Source: source,
+			Alias:  alias,
+		})
+	}
+
+	fromSource, fromAlias := parseSourceOption(params.FromSource)
+	toSource, toAlias := parseSourceOption(params.ToSource)
+
 	return Options{
-		CFSources: params.UserCFSources,
+		ConversionFunctions: functions,
 		Options: []Option{
 			{
 				Destination: params.Destination,
-				FromName:    params.FromName,
-				FromTag:     params.FromTag,
-				FromSource:  params.FromSource,
-				ToName:      params.ToName,
-				ToTag:       params.ToTag,
-				ToSource:    params.ToSource,
-				Invert:      params.Invert,
+				From: Model{
+					Name:   params.FromName,
+					Tag:    params.FromTag,
+					Source: fromSource,
+					Alias:  fromAlias,
+				},
+				To: Model{
+					Name:   params.ToName,
+					Tag:    params.ToTag,
+					Source: toSource,
+					Alias:  toAlias,
+				},
+				Invert: params.Invert,
 			},
 		},
 	}, nil
@@ -70,4 +98,17 @@ func parseOptions() (Options, error) {
 
 func ParseOptions() (Options, error) {
 	return parseOptions()
+}
+
+func parseSourceOption(optSource string) (string, string) {
+	res := strings.Split(optSource, ":")
+	if len(res) == 0 {
+		return "", ""
+	}
+
+	if len(res) == 1 {
+		return res[0], ""
+	}
+
+	return res[0], res[1]
 }

@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/underbek/datamapper/generator"
+	"github.com/underbek/datamapper/logger"
 	"github.com/underbek/datamapper/models"
 	"github.com/underbek/datamapper/options"
 	"github.com/underbek/datamapper/parser"
@@ -21,9 +22,9 @@ var (
 	ErrNotFoundTag    = errors.New("not found tag error")
 )
 
-func MapModels(opts options.Options) error {
+func MapModels(lg logger.Logger, opts options.Options) error {
 	//TODO: parse or copy embed sources
-	funcs, err := parser.ParseConversionFunctionsByPackage(internalConvertsPackagePath)
+	funcs, err := parser.ParseConversionFunctionsByPackage(lg, internalConvertsPackagePath)
 	if err != nil {
 		return fmt.Errorf("parse internal conversion functions error: %w", err)
 	}
@@ -31,67 +32,63 @@ func MapModels(opts options.Options) error {
 	cfAliases := map[string]string{}
 	userFuncs := make(models.Functions)
 
-	if len(opts.CFSources) != 0 {
-		for _, optSource := range opts.CFSources {
-			source, cfAlias := parseSourceOption(optSource)
-			res, err := parser.ParseConversionFunctionsByPackage(source)
+	if len(opts.ConversionFunctions) != 0 {
+		for _, cf := range opts.ConversionFunctions {
+			res, err := parser.ParseConversionFunctionsByPackage(lg, cf.Source)
 			if err != nil {
 				return fmt.Errorf("parse user conversion functions error: %w", err)
 			}
 
 			for key, function := range res {
-				cfAliases[function.Package.Path] = cfAlias
+				cfAliases[function.Package.Path] = cf.Alias
 				userFuncs[key] = function
 			}
 		}
 	}
 
 	for _, opt := range opts.Options {
-		fromSource, fromAlias := parseSourceOption(opt.FromSource)
-
-		structs, err := parser.ParseModelsByPackage(fromSource)
+		structs, err := parser.ParseModelsByPackage(lg, opt.From.Source)
 		if err != nil {
 			return fmt.Errorf("parse models error: %w", err)
 		}
 
-		fromName, isFromPointer := parseModelName(opt.FromName)
+		fromName, isFromPointer := parseModelName(opt.From.Name)
 		from, ok := structs[fromName]
 		if !ok {
-			return fmt.Errorf(" %w: source model %s from %s", ErrNotFoundStruct, opt.FromName, opt.FromSource)
+			return fmt.Errorf(" %w: source model %s from %s", ErrNotFoundStruct, opt.From.Name, opt.From.Source)
 		}
 		from.Type.Pointer = isFromPointer
 
-		toSource, toAlias := parseSourceOption(opt.ToSource)
-		structs, err = parser.ParseModelsByPackage(toSource)
+		structs, err = parser.ParseModelsByPackage(lg, opt.To.Source)
 		if err != nil {
 			return fmt.Errorf("parse models error: %w", err)
 		}
 
-		toName, isToPointer := parseModelName(opt.ToName)
+		toName, isToPointer := parseModelName(opt.To.Name)
 		to, ok := structs[toName]
 		if !ok {
-			return fmt.Errorf("%w: to model %s from %s", ErrNotFoundStruct, opt.ToName, opt.ToSource)
+			return fmt.Errorf("%w: to model %s from %s", ErrNotFoundStruct, opt.To.Name, opt.To.Source)
 		}
 		to.Type.Pointer = isToPointer
 
 		aliases := map[string]string{
-			from.Type.Package.Path: fromAlias,
-			to.Type.Package.Path:   toAlias,
+			from.Type.Package.Path: opt.From.Alias,
+			to.Type.Package.Path:   opt.To.Alias,
 		}
 
-		from.Fields = utils.FilterFields(opt.FromTag, from.Fields)
+		from.Fields = utils.FilterFields(opt.From.Tag, from.Fields)
 		if len(from.Fields) == 0 {
 			return fmt.Errorf(
 				"%w: source model %s does not contain tag %s",
 				ErrNotFoundTag,
-				opt.FromName,
-				opt.FromTag,
+				opt.From.Name,
+				opt.From.Tag,
 			)
 		}
 
-		to.Fields = utils.FilterFields(opt.ToTag, to.Fields)
+		to.Fields = utils.FilterFields(opt.To.Tag, to.Fields)
 		if len(to.Fields) == 0 {
-			return fmt.Errorf("%w: to model %s does not contain tag %s", ErrNotFoundTag, opt.ToName, opt.ToTag)
+			return fmt.Errorf("%w: to model %s does not contain tag %s", ErrNotFoundTag, opt.To.Name, opt.To.Tag)
 		}
 
 		for cfPath, alias := range cfAliases {
@@ -111,7 +108,7 @@ func MapModels(opts options.Options) error {
 			return fmt.Errorf("create destination dir %s error: %w", path.Dir(opt.Destination), err)
 		}
 
-		pkg, err := parser.ParseDestinationPackage(opt.Destination)
+		pkg, err := parser.ParseDestinationPackage(lg, opt.Destination)
 		if err != nil {
 			return fmt.Errorf("parse destination package %s error: %w", opt.Destination, err)
 		}
@@ -182,19 +179,6 @@ func setPackageAliasToFunctions(funcs models.Functions, aliases map[string]strin
 		res[setPackageAliasToCfKey(key, aliases)] = setPackageAliasToCf(cf, aliases)
 	}
 	return res
-}
-
-func parseSourceOption(optSource string) (string, string) {
-	res := strings.Split(optSource, ":")
-	if len(res) == 0 {
-		return "", ""
-	}
-
-	if len(res) == 1 {
-		return res[0], ""
-	}
-
-	return res[0], res[1]
 }
 
 func parseModelName(modelName string) (string, bool) {
