@@ -1,21 +1,20 @@
 package main
 
 import (
-	"log"
-	"os"
-
+	"github.com/underbek/datamapper/logger"
 	"github.com/underbek/datamapper/mapper"
 	"github.com/underbek/datamapper/options"
 )
 
 func main() {
+	lg := logger.New()
 	opts, err := options.ParseOptions()
 	if err != nil {
-		os.Exit(1)
+		lg.Fatal(err)
 	}
 
-	err = mapper.MapModels(opts)
+	err = mapper.MapModels(lg, opts)
 	if err != nil {
-		log.Fatal(err)
+		lg.Fatal(err)
 	}
 }

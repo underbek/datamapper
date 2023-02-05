@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/underbek/datamapper/logger"
 	"github.com/underbek/datamapper/models"
 	"github.com/underbek/datamapper/utils"
 	"golang.org/x/tools/go/packages"
@@ -12,8 +13,8 @@ import (
 
 var ErrParseError = errors.New("parse error")
 
-func ParseDestinationPackage(destination string) (models.Package, error) {
-	pkg, err := utils.LoadPackage(destination)
+func ParseDestinationPackage(lg logger.Logger, destination string) (models.Package, error) {
+	pkg, err := utils.LoadPackage(lg, destination)
 	if err != nil {
 		return models.Package{}, err
 	}

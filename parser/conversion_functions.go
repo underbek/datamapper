@@ -9,6 +9,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/underbek/datamapper/logger"
 	"github.com/underbek/datamapper/models"
 	"github.com/underbek/datamapper/utils"
 	"golang.org/x/tools/go/packages"
@@ -20,10 +21,10 @@ var (
 	ErrUndefinedType = errors.New("undefined type error")
 )
 
-func ParseConversionFunctionsByPackage(source string) (models.Functions, error) {
+func ParseConversionFunctionsByPackage(lg logger.Logger, source string) (models.Functions, error) {
 	_, err := os.Stat(source)
 	if err == nil {
-		return ParseConversionFunctions(source)
+		return ParseConversionFunctions(lg, source)
 	}
 
 	if !os.IsNotExist(err) {
@@ -40,16 +41,16 @@ func ParseConversionFunctionsByPackage(source string) (models.Functions, error) 
 		return nil, err
 	}
 
-	return ParseConversionFunctions(p.Dir)
+	return ParseConversionFunctions(lg, p.Dir)
 }
-func ParseConversionFunctions(source string) (models.Functions, error) {
+func ParseConversionFunctions(lg logger.Logger, source string) (models.Functions, error) {
 
 	absSourcePath, err := filepath.Abs(source)
 	if err != nil {
 		return nil, err
 	}
 
-	pkg, err := utils.LoadPackage(source)
+	pkg, err := utils.LoadPackage(lg, source)
 	if err != nil {
 		return nil, err
 	}

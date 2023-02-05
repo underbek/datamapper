@@ -6,12 +6,13 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"github.com/underbek/datamapper/logger"
 	"github.com/underbek/datamapper/models"
 )
 
 func Test_CFIncorrectFile(t *testing.T) {
-	_, err := ParseConversionFunctions("incorrect name")
-	require.Error(t, err)
+	_, err := ParseConversionFunctions(logger.New(), "incorrect name")
+	require.NoError(t, err)
 }
 
 func Test_CFParseEmptyFile(t *testing.T) {
@@ -31,7 +32,7 @@ func Test_CFParseEmptyFile(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			res, err := ParseConversionFunctions(testPath + tt.fileName)
+			res, err := ParseConversionFunctions(logger.New(), testPath+tt.fileName)
 			assert.NoError(t, err)
 			assert.Empty(t, res)
 		})
@@ -39,7 +40,7 @@ func Test_CFParseEmptyFile(t *testing.T) {
 }
 
 func Test_CFParseSimpleFunctions(t *testing.T) {
-	res, err := ParseConversionFunctions(testPath + "simple_conversions.go")
+	res, err := ParseConversionFunctions(logger.New(), testPath+"simple_conversions.go")
 	require.NoError(t, err)
 	require.Len(t, res, 2)
 
@@ -71,7 +72,7 @@ func Test_CFParseSimpleFunctions(t *testing.T) {
 }
 
 func Test_CFParseGenericFrom(t *testing.T) {
-	res, err := ParseConversionFunctions(testPath + "generic_from.go")
+	res, err := ParseConversionFunctions(logger.New(), testPath+"generic_from.go")
 	require.NoError(t, err)
 	assert.Len(t, res, 8)
 
@@ -124,7 +125,7 @@ func Test_CFParseGenericFrom(t *testing.T) {
 }
 
 func Test_CFParseGenericTo(t *testing.T) {
-	res, err := ParseConversionFunctions(testPath + "generic_to.go")
+	res, err := ParseConversionFunctions(logger.New(), testPath+"generic_to.go")
 	require.NoError(t, err)
 	assert.Len(t, res, 8)
 
@@ -177,7 +178,7 @@ func Test_CFParseGenericTo(t *testing.T) {
 }
 
 func Test_CFParseGenericFromTo(t *testing.T) {
-	res, err := ParseConversionFunctions(testPath + "generic_from_to.go")
+	res, err := ParseConversionFunctions(logger.New(), testPath+"generic_from_to.go")
 	require.NoError(t, err)
 	assert.Len(t, res, 4)
 
@@ -226,7 +227,7 @@ func Test_CFParseGenericFromTo(t *testing.T) {
 }
 
 func Test_CFParseGenericStruct(t *testing.T) {
-	res, err := ParseConversionFunctions(testPath + "generic_struct.go")
+	res, err := ParseConversionFunctions(logger.New(), testPath+"generic_struct.go")
 	require.NoError(t, err)
 	assert.Len(t, res, 2)
 
@@ -274,7 +275,7 @@ func Test_CFParseGenericStruct(t *testing.T) {
 }
 
 func Test_CFParseWithStruct(t *testing.T) {
-	res, err := ParseConversionFunctions(testPath + "with_struct.go")
+	res, err := ParseConversionFunctions(logger.New(), testPath+"with_struct.go")
 	require.NoError(t, err)
 	assert.Len(t, res, 2)
 
@@ -334,7 +335,7 @@ func Test_CFParseWithStruct(t *testing.T) {
 }
 
 func Test_CFParseWithError(t *testing.T) {
-	res, err := ParseConversionFunctions(testPath + "with_error.go")
+	res, err := ParseConversionFunctions(logger.New(), testPath+"with_error.go")
 	require.NoError(t, err)
 	assert.Len(t, res, 6)
 
@@ -390,7 +391,7 @@ func Test_CFParseWithError(t *testing.T) {
 }
 
 func Test_CFParseWithPointers(t *testing.T) {
-	res, err := ParseConversionFunctions(testPath + "with_pointers.go")
+	res, err := ParseConversionFunctions(logger.New(), testPath+"with_pointers.go")
 	require.NoError(t, err)
 	assert.Len(t, res, 5)
 
@@ -504,11 +505,43 @@ func Test_CFParseByPackage(t *testing.T) {
 		},
 	}
 
+	lg := logger.New()
+
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			res, err := ParseConversionFunctionsByPackage(tt.source)
+			res, err := ParseConversionFunctionsByPackage(lg, tt.source)
 			require.NoError(t, err)
 			assert.Len(t, res, 22)
+		})
+	}
+}
+
+func Test_CFParseBrokenSources(t *testing.T) {
+	tests := []struct {
+		name   string
+		source string
+	}{
+		{
+			name:   "Parse by package path",
+			source: "github.com/underbek/datamapper/_test_data/mapper/convertors_with_broken",
+		},
+		{
+			name:   "Parse by sources path",
+			source: "../_test_data/mapper/convertors_with_broken",
+		},
+		{
+			name:   "Parse by one source path",
+			source: "../_test_data/mapper/convertors_with_broken/user_conversion_functions.go",
+		},
+	}
+
+	lg := logger.New()
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			res, err := ParseConversionFunctionsByPackage(lg, tt.source)
+			require.NoError(t, err)
+			assert.Len(t, res, 23)
 		})
 	}
 }
