@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/underbek/datamapper/generator"
+	"github.com/underbek/datamapper/logger"
 	"github.com/underbek/datamapper/models"
 	"github.com/underbek/datamapper/options"
 	"github.com/underbek/datamapper/parser"
@@ -21,10 +22,10 @@ var (
 	ErrNotFoundTag    = errors.New("not found tag error")
 )
 
-func MapModels(opts options.Options) error {
+func MapModels(lg logger.Logger, opts options.Options) error {
 	fromSource, fromAlias := parseSourceOption(opts.FromSource)
 
-	structs, err := parser.ParseModelsByPackage(fromSource)
+	structs, err := parser.ParseModelsByPackage(lg, fromSource)
 	if err != nil {
 		return fmt.Errorf("parse models error: %w", err)
 	}
@@ -37,7 +38,7 @@ func MapModels(opts options.Options) error {
 	from.Type.Pointer = isFromPointer
 
 	toSource, toAlias := parseSourceOption(opts.ToSource)
-	structs, err = parser.ParseModelsByPackage(toSource)
+	structs, err = parser.ParseModelsByPackage(lg, toSource)
 	if err != nil {
 		return fmt.Errorf("parse models error: %w", err)
 	}
@@ -70,7 +71,7 @@ func MapModels(opts options.Options) error {
 	}
 
 	//TODO: parse or copy embed sources
-	funcs, err := parser.ParseConversionFunctionsByPackage(internalConvertsPackagePath)
+	funcs, err := parser.ParseConversionFunctionsByPackage(lg, internalConvertsPackagePath)
 	if err != nil {
 		return fmt.Errorf("parse internal conversion functions error: %w", err)
 	}
@@ -80,7 +81,7 @@ func MapModels(opts options.Options) error {
 	if len(opts.UserCFSources) != 0 {
 		for _, optSource := range opts.UserCFSources {
 			source, cfAlias := parseSourceOption(optSource)
-			res, err := parser.ParseConversionFunctionsByPackage(source)
+			res, err := parser.ParseConversionFunctionsByPackage(lg, source)
 			if err != nil {
 				return fmt.Errorf("parse user conversion functions error: %w", err)
 			}
@@ -105,7 +106,7 @@ func MapModels(opts options.Options) error {
 		return fmt.Errorf("create destination dir %s error: %w", path.Dir(opts.Destination), err)
 	}
 
-	pkg, err := parser.ParseDestinationPackage(opts.Destination)
+	pkg, err := parser.ParseDestinationPackage(lg, opts.Destination)
 	if err != nil {
 		return fmt.Errorf("parse destination package %s error: %w", opts.Destination, err)
 	}

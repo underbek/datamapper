@@ -1,17 +1,14 @@
 package utils
 
 import (
-	"errors"
-	"fmt"
 	"path/filepath"
 	"strings"
 
+	"github.com/underbek/datamapper/logger"
 	"golang.org/x/tools/go/packages"
 )
 
-var ErrParseError = errors.New("parse error")
-
-func LoadPackage(source string) (*packages.Package, error) {
+func LoadPackage(lg logger.Logger, source string) (*packages.Package, error) {
 	cfg := &packages.Config{
 		Mode: packages.NeedName | packages.NeedTypes | packages.NeedDeps | packages.NeedImports,
 	}
@@ -38,16 +35,8 @@ func LoadPackage(source string) (*packages.Package, error) {
 
 	pkg := pkgs[0]
 
-	if len(pkg.Errors) != 0 {
-		errs := make([]string, 0, len(pkg.Errors))
-		for _, err := range pkg.Errors {
-			if !strings.Contains(err.Error(), fmt.Sprintf("no Go files in %s", absSourcePath)) {
-				errs = append(errs, err.Error())
-			}
-		}
-		if len(errs) != 0 {
-			return nil, fmt.Errorf("%w: %s", ErrParseError, strings.Join(errs, "; "))
-		}
+	for _, err := range pkg.Errors {
+		lg.Warn(err)
 	}
 
 	return pkg, nil
