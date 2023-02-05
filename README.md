@@ -3,7 +3,7 @@
 ### Install
 
 ```shell
-go install github.com/underbek/datamapper@v0.0.6
+go install github.com/underbek/datamapper@v0.0.7
 ```
 
 ### Usage
@@ -137,10 +137,9 @@ func ConvertStringToDecimal(from string) (decimal.Decimal, error) {
 * [x] Generate convertor with from/to pointer
 * [x] Fix error by parsing function as member
 * [x] Wrap errors
-* [ ] Parse packages with broken sources
+* [x] Parse packages with broken sources
 * [ ] Update readme
 * [ ] Map field without tag
-* [ ] Use in my projects
 * [ ] Generate convertors with map fields
 * [ ] Generate convertors with array fields
 * [ ] Recursive convert by option if not found conversions

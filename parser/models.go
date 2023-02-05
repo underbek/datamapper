@@ -7,14 +7,15 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/underbek/datamapper/logger"
 	"github.com/underbek/datamapper/models"
 	"github.com/underbek/datamapper/utils"
 )
 
-func ParseModelsByPackage(source string) (map[string]models.Struct, error) {
+func ParseModelsByPackage(lg logger.Logger, source string) (map[string]models.Struct, error) {
 	_, err := os.Stat(source)
 	if err == nil {
-		return ParseModels(source)
+		return ParseModels(lg, source)
 	}
 
 	if !os.IsNotExist(err) {
@@ -31,16 +32,16 @@ func ParseModelsByPackage(source string) (map[string]models.Struct, error) {
 		return nil, err
 	}
 
-	return ParseModels(p.Dir)
+	return ParseModels(lg, p.Dir)
 }
 
-func ParseModels(source string) (map[string]models.Struct, error) {
+func ParseModels(lg logger.Logger, source string) (map[string]models.Struct, error) {
 	absSourcePath, err := filepath.Abs(source)
 	if err != nil {
 		return nil, err
 	}
 
-	pkg, err := utils.LoadPackage(source)
+	pkg, err := utils.LoadPackage(lg, source)
 	if err != nil {
 		return nil, err
 	}

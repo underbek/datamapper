@@ -8,6 +8,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/underbek/datamapper/_test_data"
+	"github.com/underbek/datamapper/logger"
 	"github.com/underbek/datamapper/options"
 )
 
@@ -130,9 +131,11 @@ func Test_IncorrectOptions(t *testing.T) {
 		},
 	}
 
+	lg := logger.New()
+
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			err := MapModels(tt.opts)
+			err := MapModels(lg, tt.opts)
 			require.Error(t, err)
 		})
 	}
@@ -241,9 +244,11 @@ func Test_MapModels(t *testing.T) {
 		},
 	}
 
+	lg := logger.New()
+
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			err := MapModels(tt.opts)
+			err := MapModels(lg, tt.opts)
 			require.NoError(t, err)
 
 			actual := readActual(t)

@@ -5,14 +5,15 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"github.com/underbek/datamapper/logger"
 	"github.com/underbek/datamapper/models"
 )
 
 const testPath = "../_test_data/parser/"
 
 func Test_IncorrectFile(t *testing.T) {
-	_, err := ParseModels("incorrect name")
-	require.Error(t, err)
+	_, err := ParseModels(logger.New(), "incorrect name")
+	require.NoError(t, err)
 }
 
 func Test_ParseEmptyFile(t *testing.T) {
@@ -30,9 +31,11 @@ func Test_ParseEmptyFile(t *testing.T) {
 		},
 	}
 
+	lg := logger.New()
+
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			res, err := ParseModels(testPath + tt.fileName)
+			res, err := ParseModels(lg, testPath+tt.fileName)
 			assert.NoError(t, err)
 			assert.Empty(t, res)
 		})
@@ -61,9 +64,11 @@ func Test_ParseModelsWithFunc(t *testing.T) {
 		},
 	}
 
+	lg := logger.New()
+
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			res, err := ParseModels(testPath + tt.fileName)
+			res, err := ParseModels(lg, testPath+tt.fileName)
 			assert.NoError(t, err)
 			assert.Equal(t, tt.expected, res)
 		})
@@ -71,7 +76,7 @@ func Test_ParseModelsWithFunc(t *testing.T) {
 }
 
 func Test_ParseModels(t *testing.T) {
-	res, err := ParseModels(testPath + "models.go")
+	res, err := ParseModels(logger.New(), testPath+"models.go")
 	assert.NoError(t, err)
 	assert.Len(t, res, 3)
 	expected := map[string]models.Struct{
@@ -122,7 +127,7 @@ func Test_ParseModels(t *testing.T) {
 }
 
 func Test_ParseComplexModel(t *testing.T) {
-	res, err := ParseModels(testPath + "complex_model.go")
+	res, err := ParseModels(logger.New(), testPath+"complex_model.go")
 	assert.NoError(t, err)
 	assert.Len(t, res, 1)
 	expected := map[string]models.Struct{
@@ -169,7 +174,7 @@ func Test_ParseComplexModel(t *testing.T) {
 }
 
 func Test_ParseModelWithPointerField(t *testing.T) {
-	res, err := ParseModels(testPath + "pointer_model.go")
+	res, err := ParseModels(logger.New(), testPath+"pointer_model.go")
 	assert.NoError(t, err)
 	assert.Len(t, res, 1)
 	expected := map[string]models.Struct{
@@ -227,9 +232,11 @@ func Test_ParseModelByPackage(t *testing.T) {
 		},
 	}
 
+	lg := logger.New()
+
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			res, err := ParseModelsByPackage(tt.source)
+			res, err := ParseModelsByPackage(lg, tt.source)
 			require.NoError(t, err)
 			_, ok := res["User"]
 			assert.True(t, ok)
@@ -238,7 +245,7 @@ func Test_ParseModelByPackage(t *testing.T) {
 }
 
 func Test_ParseModelWithAlias(t *testing.T) {
-	res, err := ParseModels(testPath + "alias_model.go")
+	res, err := ParseModels(logger.New(), testPath+"alias_model.go")
 	require.NoError(t, err)
 	assert.Len(t, res, 2)
 
@@ -345,7 +352,7 @@ func Test_ParseModelWithAlias(t *testing.T) {
 }
 
 func Test_ParseModelWithCollections(t *testing.T) {
-	res, err := ParseModels(testPath + "model_with_collections.go")
+	res, err := ParseModels(logger.New(), testPath+"model_with_collections.go")
 	require.NoError(t, err)
 	assert.Len(t, res, 1)
 
@@ -535,4 +542,36 @@ func Test_ParseModelWithCollections(t *testing.T) {
 	}
 
 	assert.Equal(t, expected, res["ModelWithCollections"])
+}
+
+func Test_ParseModelByBrokenPackage(t *testing.T) {
+	tests := []struct {
+		name   string
+		source string
+	}{
+		{
+			name:   "Parse by package path",
+			source: "github.com/underbek/datamapper/_test_data/mapper/broken",
+		},
+		{
+			name:   "Parse by sources path",
+			source: "../_test_data/mapper/broken",
+		},
+		{
+			name:   "Parse by one source path",
+			source: "../_test_data/mapper/broken/models.go",
+		},
+	}
+
+	lg := logger.New()
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			res, err := ParseModelsByPackage(lg, tt.source)
+			require.NoError(t, err)
+			_, ok := res["User"]
+			assert.True(t, ok)
+			assert.Len(t, res, 2)
+		})
+	}
 }

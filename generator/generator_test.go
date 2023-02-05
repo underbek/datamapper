@@ -6,6 +6,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/underbek/datamapper/_test_data"
+	"github.com/underbek/datamapper/logger"
 	"github.com/underbek/datamapper/models"
 	"github.com/underbek/datamapper/parser"
 )
@@ -20,7 +21,7 @@ const (
 )
 
 func parseFunctions(t *testing.T, source string) models.Functions {
-	funcs, err := parser.ParseConversionFunctions(source)
+	funcs, err := parser.ParseConversionFunctions(logger.New(), source)
 	require.NoError(t, err)
 	return funcs
 }
@@ -250,17 +251,19 @@ func Test_GenerateConvertor(t *testing.T) {
 		},
 	}
 
+	lg := logger.New()
+
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			modelsFrom, err := parser.ParseModels(testGeneratorPath + tt.pathFrom + "/models.go")
+			modelsFrom, err := parser.ParseModels(lg, testGeneratorPath+tt.pathFrom+"/models.go")
 			require.NoError(t, err)
 
-			modelsTo, err := parser.ParseModels(testGeneratorPath + tt.pathTo + "/models.go")
+			modelsTo, err := parser.ParseModels(lg, testGeneratorPath+tt.pathTo+"/models.go")
 			require.NoError(t, err)
 
 			funcs := parseFunctions(t, tt.cfPath)
 
-			pkg, err := parser.ParseDestinationPackage(testGeneratorPath + tt.generatePath)
+			pkg, err := parser.ParseDestinationPackage(lg, testGeneratorPath+tt.generatePath)
 			require.NoError(t, err)
 
 			from := modelsFrom["From"]
@@ -282,10 +285,12 @@ func Test_GenerateConvertor(t *testing.T) {
 }
 
 func Test_GenerateConvertorWithAliases(t *testing.T) {
-	modelsFrom, err := parser.ParseModels(testGeneratorPath + "with_aliases/from")
+	lg := logger.New()
+
+	modelsFrom, err := parser.ParseModels(lg, testGeneratorPath+"with_aliases/from")
 	require.NoError(t, err)
 
-	modelsTo, err := parser.ParseModels(testGeneratorPath + "with_aliases/to")
+	modelsTo, err := parser.ParseModels(lg, testGeneratorPath+"with_aliases/to")
 	require.NoError(t, err)
 
 	funcs := parseFunctions(t, testGeneratorPath+"with_aliases/cf")
@@ -300,7 +305,7 @@ func Test_GenerateConvertorWithAliases(t *testing.T) {
 	to := modelsTo["To"]
 	to.Type.Package.Alias = "toalias"
 
-	pkg, err := parser.ParseDestinationPackage(testGeneratorPath + "with_aliases")
+	pkg, err := parser.ParseDestinationPackage(lg, testGeneratorPath+"with_aliases")
 	require.NoError(t, err)
 
 	pkgs, convertor, err := GenerateConvertor(from, to, pkg, funcs)
