@@ -3,16 +3,16 @@
 ### Install
 
 ```shell
-go install github.com/underbek/datamapper@v0.0.7
+go install github.com/underbek/datamapper@v0.0.8
 ```
 
 ### Usage
-
 ```text
 Usage:
   datamapper [OPTIONS]
 
 Application Options:
+  -c, --config=      Yaml config path
   -d, --destination= Destination file path
       --cf=          User conversion functions sources/packages. Can add package alias like {package_path}:{alias)
       --from=        Model from name
@@ -25,6 +25,54 @@ Application Options:
 
 Help Options:
   -h, --help         Show this help message
+```
+
+### Config:
+datamapper can read configuration file by `config` flag.
+
+Config example:
+```yaml
+# array of conversion functions
+conversion-functions:
+  ## source path or full package name
+  - source: github.com/underbek/datamapper/_test_data/mapper/convertors
+    ## optional package alias
+    alias: cf
+  - source: github.com/underbek/datamapper/_test_data/mapper/other_convertors
+
+# array of conversion mapping
+options:
+  ## From model
+  - from:
+      ## name of model (can use with pointer)
+      name: "*User"
+      ## mapping tag (optional|default = map)
+      tag : map
+      ## source path or full package name
+      source: github.com/underbek/datamapper/_test_data/mapper/domain
+      ## optional package alias
+      alias: domain
+    ## From model like a from model
+    to:
+      name: "User"
+      source: github.com/underbek/datamapper/_test_data/mapper/transport
+    ## Destination file path
+    destination: _test_data/local_test/domain_to_dto_user_converter.go
+    ## If you need to crate inverse conversions
+    inverse: true
+
+  - from:
+      name: "User"
+      source: github.com/underbek/datamapper/_test_data/mapper/broken
+      alias: bk
+      tag: map
+    to:
+      name: "*User"
+      source: github.com/underbek/datamapper/_test_data/mapper/domain
+      alias: dm
+      tag: map
+    destination: _test_data/local_test/broken_to_domain_user_converter.go
+    inverse: true
 ```
 
 ### go generate

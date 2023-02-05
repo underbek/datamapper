@@ -265,7 +265,7 @@ func Test_MapModels(t *testing.T) {
 							Name:   "User",
 							Tag:    toModelTag,
 						},
-						Invert: true,
+						Inverse: true,
 					},
 				},
 			},

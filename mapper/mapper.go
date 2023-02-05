@@ -120,7 +120,7 @@ func MapModels(lg logger.Logger, opts options.Options) error {
 		}
 		convertors = append(convertors, convertor)
 
-		if opt.Invert {
+		if opt.Inverse {
 			invertPkgs, convertor, err := generator.GenerateConvertor(to, from, pkg, funcs)
 			if err != nil {
 				return fmt.Errorf("generate convertor error: %w", err)

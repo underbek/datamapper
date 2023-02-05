@@ -1,14 +1,18 @@
 package options
 
 import (
+	"os"
 	"strings"
 
+	"github.com/creasty/defaults"
 	"github.com/jessevdk/go-flags"
+	"gopkg.in/yaml.v3"
 )
 
 //nolint:lll
 type Config struct {
-	Config string `short:"c" long:"config" description:"Yaml config path" required:"false"`
+	ConfigPath string `short:"c" long:"config" description:"Yaml config path" required:"false"`
+	Flags
 }
 
 //nolint:lll
@@ -21,25 +25,25 @@ type Flags struct {
 	ToName        string   `long:"to" description:"Model to name" required:"true"`
 	ToTag         string   `long:"to-tag" description:"Model to tag" default:"map" required:"false"`
 	ToSource      string   `long:"to-source" description:"To model source/package. Can add package alias like {package_path}:{alias)" default:"." required:"false"`
-	Invert        bool     `short:"i" long:"inverse" description:"Create direct and inverse conversions" required:"false"`
+	Inverse       bool     `short:"i" long:"inverse" description:"Create direct and inverse conversions" required:"false"`
 }
 
 type Model struct {
 	Name   string `yaml:"name"`
-	Tag    string `yaml:"tag"`
-	Source string `yaml:"source"`
+	Tag    string `yaml:"tag" default:"map"`
+	Source string `yaml:"source" default:"."`
 	Alias  string `yaml:"alias"`
 }
 
 type Option struct {
 	From        Model  `yaml:"from"`
 	To          Model  `yaml:"to"`
-	Invert      bool   `yaml:"invert"`
-	Destination string `yaml:"dest"`
+	Inverse     bool   `yaml:"inverse"`
+	Destination string `yaml:"destination"`
 }
 
 type Options struct {
-	ConversionFunctions []ConversionFunction `yaml:"cf"`
+	ConversionFunctions []ConversionFunction `yaml:"conversion-functions"`
 	Options             []Option             `yaml:"options"`
 }
 
@@ -48,19 +52,33 @@ type ConversionFunction struct {
 	Alias  string `yaml:"alias"`
 }
 
-func parseConfig() (string, error) {
-	var config Config
-	_, err := flags.Parse(&config)
-	return config.Config, err
+func (m *Model) UnmarshalYAML(unmarshal func(interface{}) error) error {
+	defaults.Set(m)
+
+	type model Model
+	if err := unmarshal((*model)(m)); err != nil {
+		return err
+	}
+
+	return nil
 }
 
-func parseOptions() (Options, error) {
-	var params Flags
-	_, err := flags.Parse(&params)
+func parseConfig(path string) (Options, error) {
+	var opts Options
+	file, err := os.Open(path)
 	if err != nil {
 		return Options{}, err
 	}
 
+	err = yaml.NewDecoder(file).Decode(&opts)
+	if err != nil {
+		return Options{}, err
+	}
+
+	return opts, nil
+}
+
+func parseFlags(params Flags) (Options, error) {
 	functions := make([]ConversionFunction, 0, len(params.UserCFSources))
 	for _, opt := range params.UserCFSources {
 		source, alias := parseSourceOption(opt)
@@ -90,14 +108,24 @@ func parseOptions() (Options, error) {
 					Source: toSource,
 					Alias:  toAlias,
 				},
-				Invert: params.Invert,
+				Inverse: params.Inverse,
 			},
 		},
 	}, nil
 }
 
 func ParseOptions() (Options, error) {
-	return parseOptions()
+	var config Config
+	_, err := flags.NewParser(&config, flags.HelpFlag|flags.PassDoubleDash).Parse()
+	if config.ConfigPath != "" {
+		return parseConfig(config.ConfigPath)
+	}
+
+	if err != nil {
+		return Options{}, err
+	}
+
+	return parseFlags(config.Flags)
 }
 
 func parseSourceOption(optSource string) (string, string) {

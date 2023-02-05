@@ -24,6 +24,8 @@ local-test: build
 
 	$(GOENV) go generate ./_test_data/mapper/domain
 
+	./bin/datamapper -c _test_data/config/config.yaml
+
 .PHONY: help
 help: build
 	./bin/datamapper --help
