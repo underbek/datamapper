@@ -10,3 +10,7 @@ type User struct {
 	ChildCount *int            `map:"children"`
 	Empty      string
 }
+
+type Order struct {
+	User *User `map:"user"`
+}

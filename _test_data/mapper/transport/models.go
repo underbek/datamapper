@@ -8,3 +8,7 @@ type User struct {
 	Age        string    `map:"age"`
 	ChildCount *string   `map:"children"`
 }
+
+type Order struct {
+	User *User `map:"user"`
+}

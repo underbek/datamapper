@@ -136,6 +136,12 @@ func MapModels(lg logger.Logger, opts options.Options) error {
 		if err != nil {
 			return fmt.Errorf("create convertor source error: %w", err)
 		}
+
+		// parse generated functions
+		res, err := parser.ParseConversionFunctionsByPackage(lg, opt.Destination)
+		for key, function := range res {
+			userFuncs[key] = function
+		}
 	}
 
 	return nil

@@ -295,6 +295,43 @@ func Test_MapModels(t *testing.T) {
 			},
 			expectedPath: "with_pointers",
 		},
+		{
+			name: "With generated functions",
+			opts: options.Options{
+				ConversionFunctions: []options.ConversionFunction{
+					{Source: customCFPath},
+				},
+				Options: []options.Option{
+					{
+						Destination: destination,
+						From: options.Model{
+							Source: mapperTransportSource,
+							Name:   "*User",
+							Tag:    modelTag,
+						},
+						To: options.Model{
+							Source: mapperDomainSource,
+							Name:   "*User",
+							Tag:    toModelTag,
+						},
+					},
+					{
+						Destination: destination,
+						From: options.Model{
+							Source: mapperTransportSource,
+							Name:   "Order",
+							Tag:    modelTag,
+						},
+						To: options.Model{
+							Source: mapperDomainSource,
+							Name:   "Order",
+							Tag:    toModelTag,
+						},
+					},
+				},
+			},
+			expectedPath: "with_generated",
+		},
 	}
 
 	lg := logger.New()
