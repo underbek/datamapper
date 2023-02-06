@@ -1,7 +1,6 @@
 package mapper
 
 import (
-	"fmt"
 	"os"
 	"testing"
 
@@ -42,67 +41,115 @@ func Test_IncorrectOptions(t *testing.T) {
 		{
 			name: "Incorrect source",
 			opts: options.Options{
-				FromSource: "incorrect_source",
-				ToSource:   modelsPath,
-				FromName:   modelName,
-				ToName:     toModelName,
-				FromTag:    modelTag,
-				ToTag:      toModelTag,
+				Options: []options.Option{
+					{
+						From: options.Model{
+							Source: "incorrect_source",
+							Name:   modelName,
+							Tag:    modelTag,
+						},
+						To: options.Model{
+							Source: modelsPath,
+							Name:   toModelName,
+							Tag:    toModelTag,
+						},
+					},
+				},
 			},
 		},
 		{
 			name: "Incorrect source",
 			opts: options.Options{
-				FromSource: modelsPath,
-				ToSource:   "incorrect_source",
-				FromName:   modelName,
-				ToName:     toModelName,
-				FromTag:    modelTag,
-				ToTag:      toModelTag,
+				Options: []options.Option{
+					{
+						From: options.Model{
+							Source: modelsPath,
+							Name:   modelName,
+							Tag:    modelTag,
+						},
+						To: options.Model{
+							Source: "incorrect_source",
+							Name:   toModelName,
+							Tag:    toModelTag,
+						},
+					},
+				},
 			},
 		},
 		{
 			name: "Incorrect model name",
 			opts: options.Options{
-				FromSource: modelsPath,
-				ToSource:   modelsPath,
-				FromName:   "IncorrectName",
-				ToName:     toModelName,
-				FromTag:    modelTag,
-				ToTag:      toModelTag,
+				Options: []options.Option{
+					{
+						From: options.Model{
+							Source: modelsPath,
+							Name:   "IncorrectName",
+							Tag:    modelTag,
+						},
+						To: options.Model{
+							Source: modelsPath,
+							Name:   toModelName,
+							Tag:    toModelTag,
+						},
+					},
+				},
 			},
 		},
 		{
 			name: "Incorrect to model name",
 			opts: options.Options{
-				FromSource: modelsPath,
-				ToSource:   modelsPath,
-				FromName:   modelName,
-				ToName:     "IncorrectName",
-				FromTag:    modelTag,
-				ToTag:      toModelTag,
+				Options: []options.Option{
+					{
+						From: options.Model{
+							Source: modelsPath,
+							Name:   modelName,
+							Tag:    modelTag,
+						},
+						To: options.Model{
+							Source: modelsPath,
+							Name:   "IncorrectName",
+							Tag:    toModelTag,
+						},
+					},
+				},
 			},
 		},
 		{
 			name: "Incorrect model tag",
 			opts: options.Options{
-				FromSource: modelsPath,
-				ToSource:   modelsPath,
-				FromName:   modelName,
-				ToName:     toModelName,
-				FromTag:    "incorrect tag",
-				ToTag:      toModelTag,
+				Options: []options.Option{
+					{
+						From: options.Model{
+							Source: modelsPath,
+							Name:   modelName,
+							Tag:    "incorrect tag",
+						},
+						To: options.Model{
+							Source: modelsPath,
+							Name:   toModelName,
+							Tag:    toModelTag,
+						},
+					},
+				},
 			},
 		},
 		{
 			name: "Incorrect to model tag",
 			opts: options.Options{
-				FromSource: modelsPath,
-				ToSource:   modelsPath,
-				FromName:   modelName,
-				ToName:     toModelName,
-				FromTag:    modelTag,
-				ToTag:      "incorrect tag",
+				Options: []options.Option{
+					{
+						From: options.Model{
+							Source: modelsPath,
+							Name:   modelName,
+							Tag:    modelTag,
+						},
+						To: options.Model{
+							Source: modelsPath,
+							Name:   toModelName,
+							Tag:    "incorrect tag",
+						},
+					},
+				},
 			},
 		},
 	}
@@ -126,76 +173,164 @@ func Test_MapModels(t *testing.T) {
 		{
 			name: "Map models",
 			opts: options.Options{
-				Destination:   destination,
-				UserCFSources: []string{customCFPath},
-				FromSource:    mapperTransportSource,
-				ToSource:      mapperDomainSource,
-				FromName:      "User",
-				ToName:        "User",
-				FromTag:       modelTag,
-				ToTag:         toModelTag,
+				ConversionFunctions: []options.ConversionFunction{
+					{Source: customCFPath},
+				},
+				Options: []options.Option{
+					{
+						Destination: destination,
+						From: options.Model{
+							Source: mapperTransportSource,
+							Name:   "User",
+							Tag:    modelTag,
+						},
+						To: options.Model{
+							Source: mapperDomainSource,
+							Name:   "User",
+							Tag:    toModelTag,
+						},
+					},
+				},
 			},
 			expectedPath: "map_models",
 		},
 		{
 			name: "With some cf sources",
 			opts: options.Options{
-				Destination:   destination,
-				UserCFSources: []string{customCFPath, otherCFPath},
-				FromSource:    mapperTransportSource,
-				ToSource:      mapperDomainSource,
-				FromName:      "User",
-				ToName:        "User",
-				FromTag:       modelTag,
-				ToTag:         toModelTag,
+				ConversionFunctions: []options.ConversionFunction{
+					{Source: customCFPath},
+					{Source: otherCFPath},
+				},
+				Options: []options.Option{
+					{
+						Destination: destination,
+						From: options.Model{
+							Source: mapperTransportSource,
+							Name:   "User",
+							Tag:    modelTag,
+						},
+						To: options.Model{
+							Source: mapperDomainSource,
+							Name:   "User",
+							Tag:    toModelTag,
+						},
+					},
+				},
 			},
 			expectedPath: "with_some_cf_sources",
 		},
 		{
 			name: "With aliases",
 			opts: options.Options{
-				Destination: destination,
-				UserCFSources: []string{
-					fmt.Sprintf("%s:%s", customCFPath, "customCf"),
-					fmt.Sprintf("%s:%s", otherCFPath, "otherCf"),
+				ConversionFunctions: []options.ConversionFunction{
+					{Source: customCFPath, Alias: "customCf"},
+					{Source: otherCFPath, Alias: "otherCf"},
 				},
-				FromSource: fmt.Sprintf("%s:%s", mapperTransportSource, "from"),
-				ToSource:   fmt.Sprintf("%s:%s", mapperDomainSource, "to"),
-				FromName:   "User",
-				ToName:     "User",
-				FromTag:    modelTag,
-				ToTag:      toModelTag,
+				Options: []options.Option{
+					{
+						Destination: destination,
+						From: options.Model{
+							Source: mapperTransportSource,
+							Alias:  "from",
+							Name:   "User",
+							Tag:    modelTag,
+						},
+						To: options.Model{
+							Source: mapperDomainSource,
+							Alias:  "to",
+							Name:   "User",
+							Tag:    toModelTag,
+						},
+					},
+				},
 			},
 			expectedPath: "with_aliases",
 		},
 		{
 			name: "With invert",
 			opts: options.Options{
-				Destination:   destination,
-				UserCFSources: []string{customCFPath},
-				FromSource:    mapperTransportSource,
-				ToSource:      mapperDomainSource,
-				FromName:      "User",
-				ToName:        "User",
-				FromTag:       modelTag,
-				ToTag:         toModelTag,
-				Invert:        true,
+				ConversionFunctions: []options.ConversionFunction{
+					{Source: customCFPath},
+				},
+				Options: []options.Option{
+					{
+						Destination: destination,
+						From: options.Model{
+							Source: mapperTransportSource,
+							Name:   "User",
+							Tag:    modelTag,
+						},
+						To: options.Model{
+							Source: mapperDomainSource,
+							Name:   "User",
+							Tag:    toModelTag,
+						},
+						Inverse: true,
+					},
+				},
 			},
 			expectedPath: "with_invert",
 		},
 		{
 			name: "With pointers",
 			opts: options.Options{
-				Destination:   destination,
-				UserCFSources: []string{customCFPath},
-				FromSource:    mapperTransportSource,
-				ToSource:      mapperDomainSource,
-				FromName:      "*User",
-				ToName:        "*User",
-				FromTag:       modelTag,
-				ToTag:         toModelTag,
+				ConversionFunctions: []options.ConversionFunction{
+					{Source: customCFPath},
+				},
+				Options: []options.Option{
+					{
+						Destination: destination,
+						From: options.Model{
+							Source: mapperTransportSource,
+							Name:   "*User",
+							Tag:    modelTag,
+						},
+						To: options.Model{
+							Source: mapperDomainSource,
+							Name:   "*User",
+							Tag:    toModelTag,
+						},
+					},
+				},
 			},
 			expectedPath: "with_pointers",
+		},
+		{
+			name: "With generated functions",
+			opts: options.Options{
+				ConversionFunctions: []options.ConversionFunction{
+					{Source: customCFPath},
+				},
+				Options: []options.Option{
+					{
+						Destination: destination,
+						From: options.Model{
+							Source: mapperTransportSource,
+							Name:   "*User",
+							Tag:    modelTag,
+						},
+						To: options.Model{
+							Source: mapperDomainSource,
+							Name:   "*User",
+							Tag:    toModelTag,
+						},
+					},
+					{
+						Destination: destination,
+						From: options.Model{
+							Source: mapperTransportSource,
+							Name:   "Order",
+							Tag:    modelTag,
+						},
+						To: options.Model{
+							Source: mapperDomainSource,
+							Name:   "Order",
+							Tag:    toModelTag,
+						},
+					},
+				},
+			},
+			expectedPath: "with_generated",
 		},
 	}
 

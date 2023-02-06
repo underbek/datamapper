@@ -10,6 +10,7 @@ const depth = 2
 
 type Logger interface {
 	Info(v ...any)
+	Infof(format string, v ...any)
 	Warn(v ...any)
 	Error(v ...any)
 	Fatal(v ...any)
@@ -31,6 +32,10 @@ func New() Logger {
 
 func (l *logger) Info(v ...any) {
 	_ = l.info.Output(depth, fmt.Sprint(v...))
+}
+
+func (l *logger) Infof(format string, v ...any) {
+	_ = l.info.Output(depth, fmt.Sprintf(format, v...))
 }
 
 func (l *logger) Warn(v ...any) {
