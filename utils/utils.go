@@ -13,15 +13,7 @@ func LoadPackage(lg logger.Logger, source string) (*packages.Package, error) {
 		Mode: packages.NeedName | packages.NeedTypes | packages.NeedDeps | packages.NeedImports,
 	}
 
-	index := strings.LastIndex(source, ".go")
-	if index != -1 && index == len(source)-3 {
-		index = strings.LastIndex(source, "/")
-		if index == -1 {
-			source = ""
-		} else {
-			source = source[:index]
-		}
-	}
+	source = ClearFileName(source)
 
 	absSourcePath, err := filepath.Abs(source)
 	if err != nil {
@@ -40,4 +32,18 @@ func LoadPackage(lg logger.Logger, source string) (*packages.Package, error) {
 	}
 
 	return pkg, nil
+}
+
+func ClearFileName(source string) string {
+	index := strings.LastIndex(source, ".go")
+	if index != -1 && index == len(source)-3 {
+		index = strings.LastIndex(source, "/")
+		if index == -1 {
+			return ""
+		} else {
+			return source[:index]
+		}
+	}
+
+	return source
 }

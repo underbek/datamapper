@@ -20,7 +20,11 @@ func Generator(t *testing.T, fileName string) string {
 }
 
 func MapperExpected(t *testing.T, expectedPath string) string {
-	return readFile(t, mapperExpected, "mapper/expected/"+expectedPath+"/expected.go")
+	return MapperExpectedFile(t, expectedPath, "expected.go")
+}
+
+func MapperExpectedFile(t *testing.T, expectedPath string, fileName string) string {
+	return readFile(t, mapperExpected, "mapper/expected/"+expectedPath+"/"+fileName)
 }
 
 func readFile(t *testing.T, fs fs.FS, path string) string {
