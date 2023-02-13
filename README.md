@@ -194,6 +194,7 @@ func ConvertStringToDecimal(from string) (decimal.Decimal, error) {
 * [x] Parse packages with broken sources
 * [x] Recursive convert by option if not found conversions
 * [ ] Update readme
+* [ ] Generator must be return function model
 * [ ] Use one destination for models convertors by recursive flag
 * [ ] Map field without tag
 * [ ] Generate convertors with map fields
