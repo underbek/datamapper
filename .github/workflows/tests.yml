@@ -1,11 +1,5 @@
 name: test
-on:
-  push:
-    tags:
-      - v*
-    branches:
-      - main
-  pull_request:
+on: [push]
 jobs:
   generate:
     name: generate
@@ -28,13 +22,6 @@ jobs:
           add: "loader/data/converts.yaml"
           message: Updated converts.yaml
           push: true
-  #
-  #      - name: Push changes
-  #        uses: ad-m/github-push-action@v0.6.0
-  #        with:
-  #          github_token: ${{ secrets.GITHUB_TOKEN }}
-  #          branch: ${{ github.ref }}
-
 
   test:
     name: test
