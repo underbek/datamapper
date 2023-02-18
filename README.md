@@ -3,7 +3,7 @@
 ### Install
 
 ```shell
-go install github.com/underbek/datamapper@v0.0.8
+go install github.com/underbek/datamapper@v0.0.9
 ```
 
 ### Usage
@@ -12,19 +12,21 @@ Usage:
   datamapper [OPTIONS]
 
 Application Options:
-  -c, --config=      Yaml config path
-  -d, --destination= Destination file path
-      --cf=          User conversion functions sources/packages. Can add package alias like {package_path}:{alias)
-      --from=        Model from name
-      --from-tag=    Model from tag (default: map)
-      --from-source= From model source/package. Can add package alias like {package_path}:{alias) (default: .)
-      --to=          Model to name
-      --to-tag=      Model to tag (default: map)
-      --to-source=   To model source/package. Can add package alias like {package_path}:{alias) (default: .)
-  -i, --inverse      Create direct and inverse conversions
+  -c, --config=        Yaml config path
+  -d, --destination=   Destination file path
+      --cf=            User conversion functions sources/packages. Can add package alias like {package_path}:{alias)
+      --from=          Model from name
+      --from-tag=      Model from tag (default: map)
+      --from-source=   From model source/package. Can add package alias like {package_path}:{alias) (default: .)
+      --to=            Model to name
+      --to-tag=        Model to tag (default: map)
+      --to-source=     To model source/package. Can add package alias like {package_path}:{alias) (default: .)
+  -i, --inverse        Create direct and inverse conversions
+  -r, --recursive      Parse recursive fields and create conversion if it not exists
+  -p, --with-pointers  If field is pointer and recursive flag enabled then create convertors with pointers
 
 Help Options:
-  -h, --help         Show this help message
+  -h, --help           Show this help message
 ```
 
 ### Config:
@@ -60,6 +62,10 @@ options:
     destination: _test_data/local_test/domain_to_dto_user_converter.go
     ## If you need to crate inverse conversions
     inverse: true
+    ## Parse recursive fields and create conversion if it not exists (default = false)
+    recursive: false
+    ## If field is pointer and recursive flag enabled then create convertors with pointers (default = false)
+    with-pointers: false
 
   - from:
       name: "User"
@@ -186,11 +192,13 @@ func ConvertStringToDecimal(from string) (decimal.Decimal, error) {
 * [x] Fix error by parsing function as member
 * [x] Wrap errors
 * [x] Parse packages with broken sources
+* [x] Recursive convert by option if not found conversions
 * [ ] Update readme
+* [ ] Generator must be return function model
+* [ ] Use one destination for models convertors by recursive flag
 * [ ] Map field without tag
 * [ ] Generate convertors with map fields
 * [ ] Generate convertors with array fields
-* [ ] Recursive convert by option if not found conversions
 * [ ] Parse user struct in struct
 * [ ] Option for default field value if from field is nil
 * [ ] Parse comments

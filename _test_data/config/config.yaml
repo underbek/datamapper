@@ -26,6 +26,10 @@ options:
     destination: _test_data/local_test/domain_to_dto_user_converter.go
     ## If you need to crate inverse conversions
     inverse: true
+    ## Parse recursive fields and create conversion if it not exists (default = false)
+    recursive: false
+    ## If field is pointer and recursive flag enabled then create convertors with pointers (default = false)
+    with-pointers: false
 
   - from:
       name: "User"

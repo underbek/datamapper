@@ -118,13 +118,7 @@ func getConversionFunction(fromType, toType models.Type, fromName string, functi
 		)
 	}
 
-	return models.ConversionFunction{}, fmt.Errorf(
-		"not found convertor function for types %s -> %s by %s field: %w",
-		key.FromType.Name,
-		key.ToType.Name,
-		fromName,
-		ErrNotFound,
-	)
+	return models.ConversionFunction{}, NewFindFieldsPairError(fromType, toType, fromName)
 }
 
 func getPointerSymbol(fromFieldType, cfFromType models.Type) string {

@@ -1,6 +1,7 @@
 package mapper
 
 import (
+	"fmt"
 	"os"
 	"testing"
 
@@ -12,18 +13,22 @@ import (
 )
 
 const (
-	modelsPath  = "test_data/datamapper/models.go"
-	modelName   = "TestModel"
-	modelTag    = "map"
-	toModelName = "TestModelTo"
-	toModelTag  = "map"
+	modelsPath   = "test_data/datamapper/models.go"
+	modelName    = "TestModel"
+	modelTag     = "map"
+	toModelName  = "TestModelTo"
+	toModelTag   = "map"
+	recursiveTag = "recursive"
 
 	mapperDomainSource    = "../_test_data/mapper/domain"
 	mapperTransportSource = "../_test_data/mapper/transport"
 	customCFPath          = "../_test_data/mapper/convertors"
 	otherCFPath           = "../_test_data/mapper/other_convertors"
+	recursiveFrom         = "../_test_data/mapper/recursive/from"
+	recursiveTo           = "../_test_data/mapper/recursive/to"
 
-	destination = "../_test_data/generated/mapper/user_convertor.go"
+	destination     = "../_test_data/generated/mapper/user_convertor.go"
+	destinationPath = "../_test_data/generated/mapper"
 )
 
 func readActual(t *testing.T) string {
@@ -31,6 +36,17 @@ func readActual(t *testing.T) string {
 	require.NoError(t, err)
 
 	return string(data)
+}
+
+func readFile(t *testing.T, fileName string) string {
+	data, err := os.ReadFile(fmt.Sprintf("%s/%s", destinationPath, fileName))
+	require.NoError(t, err)
+
+	return string(data)
+}
+
+func clearDestination(t *testing.T, dest string) {
+	assert.NoError(t, os.RemoveAll(dest))
 }
 
 func Test_IncorrectOptions(t *testing.T) {
@@ -338,12 +354,142 @@ func Test_MapModels(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			defer clearDestination(t, destinationPath)
+
 			err := MapModels(lg, tt.opts)
 			require.NoError(t, err)
 
 			actual := readActual(t)
 			expected := _test_data.MapperExpected(t, tt.expectedPath)
 			assert.Equal(t, expected, actual)
+		})
+	}
+}
+
+func Test_MapRecursiveModels(t *testing.T) {
+	from := options.Model{
+		Source: recursiveFrom,
+		Name:   "Order",
+		Tag:    recursiveTag,
+		Alias:  "f",
+	}
+
+	to := options.Model{
+		Source: recursiveTo,
+		Name:   "Order",
+		Tag:    recursiveTag,
+		Alias:  "t",
+	}
+
+	destination := "../_test_data/generated/mapper/order.go"
+
+	tests := []struct {
+		name         string
+		opts         options.Options
+		isError      bool
+		expectedPath string
+	}{
+		{
+			name:    "without recursive",
+			isError: true,
+			opts: options.Options{
+				Options: []options.Option{
+					{
+						Destination: destination,
+						From:        from,
+						To:          to,
+					},
+				},
+			},
+		},
+		{
+			name:         "recursive",
+			expectedPath: "recursive",
+			opts: options.Options{
+				Options: []options.Option{
+					{
+						Destination: destination,
+						Recursive:   true,
+						From:        from,
+						To:          to,
+					},
+				},
+			},
+		},
+		{
+			name:         "recursive with inverse",
+			expectedPath: "recursive_with_inverse",
+			opts: options.Options{
+				Options: []options.Option{
+					{
+						Destination: destination,
+						Recursive:   true,
+						Inverse:     true,
+						From:        from,
+						To:          to,
+					},
+				},
+			},
+		},
+		{
+			name:         "recursive with pointers",
+			expectedPath: "recursive_with_pointers",
+			opts: options.Options{
+				Options: []options.Option{
+					{
+						Destination:  destination,
+						Recursive:    true,
+						WithPointers: true,
+						From:         from,
+						To:           to,
+					},
+				},
+			},
+		},
+		{
+			name:         "recursive with inverse and pointers",
+			expectedPath: "recursive_with_inverse_and_pointers",
+			opts: options.Options{
+				Options: []options.Option{
+					{
+						Destination:  destination,
+						Recursive:    true,
+						Inverse:      true,
+						WithPointers: true,
+						From:         from,
+						To:           to,
+					},
+				},
+			},
+		},
+	}
+
+	lg := logger.New()
+
+	converters := []string{
+		"account_converter.go",
+		"operation_converter.go",
+		"order.go",
+		"user_converter.go",
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			defer clearDestination(t, destinationPath)
+
+			err := MapModels(lg, tt.opts)
+			if tt.isError {
+				require.Error(t, err)
+				return
+			}
+
+			require.NoError(t, err)
+
+			for _, converterName := range converters {
+				actual := readFile(t, converterName)
+				expected := _test_data.MapperExpectedFile(t, tt.expectedPath, converterName)
+				assert.Equal(t, expected, actual)
+			}
 		})
 	}
 }
