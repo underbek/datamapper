@@ -22,6 +22,8 @@ type Package struct {
 	Alias string
 }
 
+type Packages map[Package]struct{}
+
 // slice -> embed_type
 // array -> size, embed_type
 // map -> key/value

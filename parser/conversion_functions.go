@@ -21,6 +21,10 @@ var (
 	ErrUndefinedType = errors.New("undefined type error")
 )
 
+var (
+	conversionFunctionsCache = make(map[string]models.Functions)
+)
+
 func ParseConversionFunctionsByPackage(lg logger.Logger, source string) (models.Functions, error) {
 	_, err := os.Stat(source)
 	if err == nil {
@@ -43,11 +47,15 @@ func ParseConversionFunctionsByPackage(lg logger.Logger, source string) (models.
 
 	return ParseConversionFunctions(lg, p.Dir)
 }
-func ParseConversionFunctions(lg logger.Logger, source string) (models.Functions, error) {
 
+func ParseConversionFunctions(lg logger.Logger, source string) (models.Functions, error) {
 	absSourcePath, err := filepath.Abs(source)
 	if err != nil {
 		return nil, err
+	}
+
+	if funcs, ok := conversionFunctionsCache[absSourcePath]; ok {
+		return funcs, nil
 	}
 
 	pkg, err := utils.LoadPackage(lg, source)
@@ -88,6 +96,8 @@ func ParseConversionFunctions(lg logger.Logger, source string) (models.Functions
 			funcs[key] = function
 		}
 	}
+
+	conversionFunctionsCache[absSourcePath] = funcs
 
 	return funcs, nil
 }
