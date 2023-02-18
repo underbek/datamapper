@@ -3,7 +3,7 @@ on:
   push:
   pull_request:
 jobs:
-  generate-converters:
+  generate:
     name: generate
     runs-on: ubuntu-latest
     steps:
