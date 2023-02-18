@@ -11,6 +11,8 @@ import (
 const (
 	embedFileName  = "data/converts.yaml"
 	fileNameByRoot = "loader/data/converts.yaml"
+
+	defaultPerm = 0600
 )
 
 //go:embed data
@@ -23,7 +25,7 @@ func Save(funcs models.Functions) error {
 		return err
 	}
 
-	return os.WriteFile(fileNameByRoot, data, 0644)
+	return os.WriteFile(fileNameByRoot, data, defaultPerm)
 }
 
 func Read() (models.Functions, error) {
