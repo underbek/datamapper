@@ -1,5 +1,4 @@
 name: test
-needs: [generator]
 on:
   push:
     tags:
@@ -8,8 +7,34 @@ on:
       - main
   pull_request:
 jobs:
+  generate:
+    name: generate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-go@v3
+        with:
+          go-version: 1.18
+
+      - uses: actions/checkout@v3
+      - run: make generate
+
+  #      - name: Commit changes
+  #          uses: EndBug/add-and-commit@v9
+  #          with:
+  #            author_name: GitHub Actions
+  #            author_email: l.a.r.p@yandex.ru
+  #            message: Updated converts.yaml
+  #
+  #      - name: Push changes
+  #        uses: ad-m/github-push-action@v0.6.0
+  #        with:
+  #          github_token: ${{ secrets.GITHUB_TOKEN }}
+  #          branch: ${{ github.ref }}
+
+
   test:
     name: test
+    needs: [ generate ]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/setup-go@v3
@@ -20,6 +45,7 @@ jobs:
 
   local-test:
     name: local-test
+    needs: [ generate ]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/setup-go@v3
