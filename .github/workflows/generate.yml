@@ -18,7 +18,7 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            git config --global user.name "GitHub Actions
+            git config --global user.name "GitHub Actions"
             git config --global user.email "l.a.r.p@yandex.ru"
             git commit -a -m "Updated converts.yaml"
 
