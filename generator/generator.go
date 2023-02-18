@@ -28,20 +28,17 @@ type FieldsPair struct {
 
 type result struct {
 	convertorName string
-	pkg           models.Package
 	fromName      string
 	toName        string
 	fromTag       string
 	toTag         string
 	fields        []FieldsPair
-	packages      map[models.Package]struct{}
+	packages      models.Packages
 	conversions   []string
 	withError     bool
 }
 
-func CreateConvertorSource(pkg models.Package, packages map[models.Package]struct{}, convertors []string,
-	dest string) error {
-
+func CreateConvertorSource(pkg models.Package, packages models.Packages, convertors []string, dest string) error {
 	content, err := fillConvertorsSource(pkg, packages, convertors)
 	if err != nil {
 		return err
@@ -63,11 +60,11 @@ func CreateConvertorSource(pkg models.Package, packages map[models.Package]struc
 }
 
 func GenerateConvertor(from, to models.Struct, pkg models.Package, functions models.Functions) (
-	map[models.Package]struct{}, string, error) {
+	models.GeneratedConversionFunction, error) {
 
 	res, err := createModelsPair(from, to, pkg.Path, functions)
 	if err != nil {
-		return nil, "", err
+		return models.GeneratedConversionFunction{}, err
 	}
 
 	res.packages[from.Type.Package] = struct{}{}
@@ -85,8 +82,19 @@ func GenerateConvertor(from, to models.Struct, pkg models.Package, functions mod
 
 	convertor, err := fillConvertor(res)
 	if err != nil {
-		return nil, "", err
+		return models.GeneratedConversionFunction{}, err
 	}
 
-	return res.packages, convertor, nil
+	return models.GeneratedConversionFunction{
+		Function: models.ConversionFunction{
+			Name:      res.convertorName,
+			Package:   pkg,
+			FromType:  from.Type,
+			ToType:    to.Type,
+			TypeParam: models.NoTypeParam,
+			WithError: res.withError,
+		},
+		Packages: res.packages,
+		Body:     convertor,
+	}, nil
 }

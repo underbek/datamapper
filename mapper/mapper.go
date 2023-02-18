@@ -13,6 +13,7 @@ import (
 	"github.com/underbek/datamapper/options"
 	"github.com/underbek/datamapper/parser"
 	"github.com/underbek/datamapper/utils"
+	"golang.org/x/exp/maps"
 )
 
 const internalConvertsPackagePath = "github.com/underbek/datamapper/converts"
@@ -30,7 +31,6 @@ func MapModels(lg logger.Logger, opts options.Options) error {
 	}
 
 	cfAliases := map[string]string{}
-	userFuncs := make(models.Functions)
 
 	if len(opts.ConversionFunctions) != 0 {
 		for _, cf := range opts.ConversionFunctions {
@@ -41,7 +41,7 @@ func MapModels(lg logger.Logger, opts options.Options) error {
 
 			for key, function := range res {
 				cfAliases[function.Package.Path] = cf.Alias
-				userFuncs[key] = function
+				funcs[key] = function
 			}
 		}
 	}
@@ -76,11 +76,9 @@ func MapModels(lg logger.Logger, opts options.Options) error {
 			to.Type.Package.Path:   opt.To.Alias,
 		}
 
-		for cfPath, alias := range cfAliases {
-			aliases[cfPath] = alias
-		}
+		maps.Copy(aliases, cfAliases)
 
-		funcs, userFuncs, err = mapModel(
+		funcs, err = mapModel(
 			lg,
 			from,
 			to,
@@ -92,7 +90,6 @@ func MapModels(lg logger.Logger, opts options.Options) error {
 			opt.WithPointers,
 			aliases,
 			funcs,
-			userFuncs,
 			fromStructs,
 			toStructs,
 		)
@@ -161,13 +158,13 @@ func mapModel(
 	recursive bool,
 	withPointers bool,
 	aliases map[string]string,
-	funcs, userFuncs models.Functions,
+	funcs models.Functions,
 	fromStructs, toStructs map[string]models.Struct,
-) (models.Functions, models.Functions, error) {
+) (models.Functions, error) {
 
 	from.Fields = utils.FilterFields(fromTag, from.Fields)
 	if len(from.Fields) == 0 {
-		return nil, nil, fmt.Errorf(
+		return nil, fmt.Errorf(
 			"%w: source model %s does not contain tag %s",
 			ErrNotFoundTag,
 			from.Type.Name,
@@ -177,7 +174,7 @@ func mapModel(
 
 	to.Fields = utils.FilterFields(toTag, to.Fields)
 	if len(to.Fields) == 0 {
-		return nil, nil, fmt.Errorf(
+		return nil, fmt.Errorf(
 			"%w: to model %s does not contain tag %s",
 			ErrNotFoundTag,
 			to.Type.Name,
@@ -191,47 +188,48 @@ func mapModel(
 
 	err := os.MkdirAll(path.Dir(destination), os.ModePerm)
 	if err != nil {
-		return nil, nil, fmt.Errorf("create destination dir %s error: %w", path.Dir(destination), err)
+		return nil, fmt.Errorf("create destination dir %s error: %w", path.Dir(destination), err)
 	}
 
 	pkg, err := parser.ParseDestinationPackage(lg, destination)
 	if err != nil {
-		return nil, nil, fmt.Errorf("parse destination package %s error: %w", destination, err)
+		return nil, fmt.Errorf("parse destination package %s error: %w", destination, err)
 	}
 
 	var convertors []string
-	var pkgs map[models.Package]struct{}
+	pkgs := make(models.Packages)
 	for {
-		userFuncs = setPackageAliasToFunctions(userFuncs, aliases)
-		for key, function := range userFuncs {
-			funcs[key] = function
-		}
-
-		var convertor string
-		pkgs, convertor, err = generator.GenerateConvertor(from, to, pkg, funcs)
+		funcs = setPackageAliasToFunctions(funcs, aliases)
+		var gcf models.GeneratedConversionFunction
+		gcf, err = generator.GenerateConvertor(from, to, pkg, funcs)
 		if err == nil {
-			convertors = append(convertors, convertor)
+			convertors = append(convertors, gcf.Body)
+			funcs[models.ConversionFunctionKey{
+				FromType: gcf.Function.FromType,
+				ToType:   gcf.Function.ToType,
+			}] = gcf.Function
+			maps.Copy(pkgs, gcf.Packages)
 			break
 		}
 
 		if !recursive {
-			return nil, nil, err
+			return nil, err
 		}
 
 		var findError *generator.FindFieldsPairError
 		if !errors.As(err, &findError) {
-			return nil, nil, err
+			return nil, err
 		}
 
 		if findError.From.Package != from.Type.Package || findError.To.Package != to.Type.Package {
-			return nil, nil, err
+			return nil, err
 		}
 
 		fromField, fromOk := fromStructs[findError.From.Name]
 		toField, toOk := toStructs[findError.To.Name]
 
 		if !fromOk || !toOk {
-			return nil, nil, err
+			return nil, err
 		}
 
 		if withPointers {
@@ -239,7 +237,7 @@ func mapModel(
 			toField.Type.Pointer = findError.To.Pointer
 		}
 
-		funcs, userFuncs, err = mapModel(
+		funcs, err = mapModel(
 			lg,
 			fromField,
 			toField,
@@ -251,44 +249,34 @@ func mapModel(
 			withPointers,
 			aliases,
 			funcs,
-			userFuncs,
 			fromStructs,
 			toStructs,
 		)
 		if err != nil {
-			return nil, nil, err
+			return nil, err
 		}
 	}
 
 	if inverse {
-		invertPkgs, convertor, err := generator.GenerateConvertor(to, from, pkg, funcs)
+		gcf, err := generator.GenerateConvertor(to, from, pkg, funcs)
 		if err != nil {
-			return nil, nil, fmt.Errorf("generate convertor error: %w", err)
+			return nil, fmt.Errorf("generate convertor error: %w", err)
 		}
-		convertors = append(convertors, convertor)
-
-		for key := range invertPkgs {
-			pkgs[key] = struct{}{}
-		}
+		convertors = append(convertors, gcf.Body)
+		funcs[models.ConversionFunctionKey{
+			FromType: gcf.Function.FromType,
+			ToType:   gcf.Function.ToType,
+		}] = gcf.Function
+		maps.Copy(pkgs, gcf.Packages)
 	}
 
 	err = generator.CreateConvertorSource(pkg, pkgs, convertors, destination)
 	if err != nil {
-		return nil, nil, fmt.Errorf("create convertor source error: %w", err)
+		return nil, fmt.Errorf("create convertor source error: %w", err)
 	}
 	lg.Infof("generated convertor source: \"%s\"", destination)
 
-	// parse generated functions
-	var parsedFunctions models.Functions
-	parsedFunctions, err = parser.ParseConversionFunctionsByPackage(lg, destination)
-	if err != nil {
-		return nil, nil, fmt.Errorf("parse generated conversion functions error: %w", err)
-	}
-	for key, function := range parsedFunctions {
-		userFuncs[key] = function
-	}
-
-	return funcs, userFuncs, nil
+	return funcs, nil
 }
 
 func generateDestination(typeName, dest string) string {

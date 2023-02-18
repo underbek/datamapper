@@ -9,7 +9,7 @@ import (
 
 func createModelsPair(from, to models.Struct, pkgPath string, functions models.Functions) (result, error) {
 	var fields []FieldsPair
-	packages := make(map[models.Package]struct{})
+	packages := make(models.Packages)
 
 	var conversions []string
 	var withError bool
@@ -77,7 +77,7 @@ func createModelsPair(from, to models.Struct, pkgPath string, functions models.F
 }
 
 func getFieldsPair(from, to models.Field, fromModel, toModel models.Struct, pkgPath string, functions models.Functions,
-) (FieldsPair, map[models.Package]struct{}, error) {
+) (FieldsPair, models.Packages, error) {
 
 	cf, err := getConversionFunction(from.Type, to.Type, from.Name, functions)
 	if err != nil {
@@ -108,8 +108,8 @@ func getAssigmentBySameTypes(fromFieldFullName string, fromType, toType models.T
 }
 
 func fillConversionFunction(pair FieldsPair, fromField, toField models.Field, fromModel, toModel models.Struct,
-	cf models.ConversionFunction, pkgPath string) (FieldsPair, map[models.Package]struct{}, error) {
-	pkgs := make(map[models.Package]struct{})
+	cf models.ConversionFunction, pkgPath string) (FieldsPair, models.Packages, error) {
+	pkgs := make(models.Packages)
 	if cf.Package.Path != "" {
 		pkgs[cf.Package] = struct{}{}
 	}
@@ -265,9 +265,9 @@ func fillConversionFunction(pair FieldsPair, fromField, toField models.Field, fr
 }
 
 func fillConversionFunctionBySlice(pair FieldsPair, fromField, toField models.Field, fromModel, toModel models.Struct,
-	cf models.ConversionFunction, pkgPath string) (FieldsPair, map[models.Package]struct{}, error) {
+	cf models.ConversionFunction, pkgPath string) (FieldsPair, models.Packages, error) {
 
-	pkgs := make(map[models.Package]struct{})
+	pkgs := make(models.Packages)
 
 	cfCall := getConversionFunctionCall(
 		cf,

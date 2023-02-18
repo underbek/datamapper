@@ -84,7 +84,7 @@ func Test_CreateModelsPair(t *testing.T) {
 				Assignment: "converts.ConvertOrderedToOrdered[float64,uint8](from.Age)",
 			},
 		},
-		packages: map[models.Package]struct{}{
+		packages: models.Packages{
 			{
 				Name: "converts",
 				Path: "github.com/underbek/datamapper/converts",
@@ -272,10 +272,10 @@ func Test_GenerateConvertor(t *testing.T) {
 			to := modelsTo["To"]
 			to.Type.Pointer = tt.isToPointer
 
-			pkgs, convertor, err := GenerateConvertor(from, to, pkg, funcs)
+			gcf, err := GenerateConvertor(from, to, pkg, funcs)
 			require.NoError(t, err)
 
-			actual, err := fillConvertorsSource(pkg, pkgs, []string{convertor})
+			actual, err := fillConvertorsSource(pkg, gcf.Packages, []string{gcf.Body})
 			require.NoError(t, err)
 
 			expected := _test_data.Generator(t, tt.generatePath+"/convertor.go")
@@ -308,10 +308,10 @@ func Test_GenerateConvertorWithAliases(t *testing.T) {
 	pkg, err := parser.ParseDestinationPackage(lg, testGeneratorPath+"with_aliases")
 	require.NoError(t, err)
 
-	pkgs, convertor, err := GenerateConvertor(from, to, pkg, funcs)
+	gcf, err := GenerateConvertor(from, to, pkg, funcs)
 	require.NoError(t, err)
 
-	actual, err := fillConvertorsSource(pkg, pkgs, []string{convertor})
+	actual, err := fillConvertorsSource(pkg, gcf.Packages, []string{gcf.Body})
 	require.NoError(t, err)
 
 	expected := _test_data.Generator(t, "with_aliases/convertor.go")

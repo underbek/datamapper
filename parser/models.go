@@ -12,6 +12,10 @@ import (
 	"github.com/underbek/datamapper/utils"
 )
 
+var (
+	modelsCache = make(map[string]map[string]models.Struct)
+)
+
 func ParseModelsByPackage(lg logger.Logger, source string) (map[string]models.Struct, error) {
 	_, err := os.Stat(source)
 	if err == nil {
@@ -39,6 +43,10 @@ func ParseModels(lg logger.Logger, source string) (map[string]models.Struct, err
 	absSourcePath, err := filepath.Abs(source)
 	if err != nil {
 		return nil, err
+	}
+
+	if structs, ok := modelsCache[absSourcePath]; ok {
+		return structs, nil
 	}
 
 	pkg, err := utils.LoadPackage(lg, source)
@@ -106,6 +114,8 @@ func ParseModels(lg logger.Logger, source string) (map[string]models.Struct, err
 			Fields: fields,
 		}
 	}
+
+	modelsCache[absSourcePath] = structs
 
 	return structs, nil
 }

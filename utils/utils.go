@@ -8,6 +8,10 @@ import (
 	"golang.org/x/tools/go/packages"
 )
 
+var (
+	packageCache = make(map[string]*packages.Package)
+)
+
 func LoadPackage(lg logger.Logger, source string) (*packages.Package, error) {
 	cfg := &packages.Config{
 		Mode: packages.NeedName | packages.NeedTypes | packages.NeedDeps | packages.NeedImports,
@@ -20,6 +24,10 @@ func LoadPackage(lg logger.Logger, source string) (*packages.Package, error) {
 		return nil, err
 	}
 
+	if pkg, ok := packageCache[absSourcePath]; ok {
+		return pkg, nil
+	}
+
 	pkgs, err := packages.Load(cfg, absSourcePath)
 	if err != nil {
 		return nil, err
@@ -30,6 +38,8 @@ func LoadPackage(lg logger.Logger, source string) (*packages.Package, error) {
 	for _, err := range pkg.Errors {
 		lg.Warn(err)
 	}
+
+	packageCache[absSourcePath] = pkg
 
 	return pkg, nil
 }

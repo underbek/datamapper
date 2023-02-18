@@ -42,9 +42,7 @@ func fillTemplate[T []byte | string](tempPath string, data map[string]any) (T, e
 	return T(buf.Bytes()), nil
 }
 
-func fillConvertorsSource(pkg models.Package, packages map[models.Package]struct{}, convertors []string,
-) ([]byte, error) {
-
+func fillConvertorsSource(pkg models.Package, packages models.Packages, convertors []string) ([]byte, error) {
 	imps := make([]string, 0, len(packages))
 	for pkg := range packages {
 		imps = append(imps, pkg.Import())
