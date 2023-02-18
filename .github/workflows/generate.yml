@@ -1,6 +1,7 @@
-name: test
+name: generate
 on:
   push:
+  pull_request:
 jobs:
   generate-converters:
     name: local-test
