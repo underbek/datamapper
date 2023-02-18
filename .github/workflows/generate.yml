@@ -1,6 +1,5 @@
 name: generate
 on:
-  push:
   pull_request:
 jobs:
   generate:
