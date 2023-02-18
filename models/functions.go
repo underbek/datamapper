@@ -14,12 +14,12 @@ type ConversionFunctionKey struct {
 }
 
 type ConversionFunction struct {
-	Name      string
-	Package   Package
-	FromType  Type
-	ToType    Type
-	TypeParam TypeParamType
-	WithError bool
+	Name      string        `yaml:"name"`
+	Package   Package       `yaml:"package"`
+	FromType  Type          `yaml:"from_type"`
+	ToType    Type          `yaml:"to_type"`
+	TypeParam TypeParamType `yaml:"type_param"`
+	WithError bool          `yaml:"with_error"`
 }
 
 type Functions = map[ConversionFunctionKey]ConversionFunction

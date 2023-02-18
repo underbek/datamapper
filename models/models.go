@@ -17,8 +17,8 @@ const (
 )
 
 type Package struct {
-	Path  string
-	Name  string
+	Path  string `yaml:"path"`
+	Name  string `yaml:"name"`
 	Alias string
 }
 
@@ -36,10 +36,10 @@ type Packages map[Package]struct{}
 // 4- use kustom map comparable
 
 type Type struct {
-	Name       string
-	Package    Package
-	Pointer    bool
-	Kind       KindOfType
+	Name       string     `yaml:"name"`
+	Package    Package    `yaml:"package"`
+	Pointer    bool       `yaml:"pointer"`
+	Kind       KindOfType `yaml:"kind"`
 	Additional any
 }
 

@@ -29,3 +29,7 @@ local-test: build
 .PHONY: help
 help: build
 	./bin/datamapper --help
+
+.PHONY: generate
+generate:
+	go run ./cmd/loader/main.go

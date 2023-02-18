@@ -14,6 +14,7 @@ type Logger interface {
 	Warn(v ...any)
 	Error(v ...any)
 	Fatal(v ...any)
+	Fatalf(format string, v ...any)
 }
 
 type logger struct {
@@ -48,5 +49,10 @@ func (l *logger) Error(v ...any) {
 
 func (l *logger) Fatal(v ...any) {
 	_ = l.error.Output(depth, fmt.Sprint(v...))
+	os.Exit(1)
+}
+
+func (l *logger) Fatalf(format string, v ...any) {
+	_ = l.error.Output(depth, fmt.Sprintf(format, v...))
 	os.Exit(1)
 }

@@ -3,7 +3,7 @@
 ### Install
 
 ```shell
-go install github.com/underbek/datamapper@v0.0.10
+go install github.com/underbek/datamapper@v0.0.11
 ```
 
 ### Usage
@@ -196,8 +196,8 @@ func ConvertStringToDecimal(from string) (decimal.Decimal, error) {
 * [x] Parse user struct in struct
 * [x] Use generated convertors in convertor like conversion function
 * [x] Generator must be return function model
+* [x] Use conversion functions from datamapper package without parsing
 * [ ] Update readme
-* [ ] Use conversion functions from datamapper package without parsing
 * [ ] Use one destination for models convertors by recursive flag
 * [ ] Map field without tag
 * [ ] Generate convertors with map fields

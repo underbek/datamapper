@@ -6,9 +6,12 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"github.com/underbek/datamapper/loader"
 	"github.com/underbek/datamapper/logger"
 	"github.com/underbek/datamapper/models"
 )
+
+const internalConvertsPackagePath = "github.com/underbek/datamapper/converts"
 
 func Test_CFIncorrectFile(t *testing.T) {
 	_, err := ParseConversionFunctions(logger.New(), "incorrect name")
@@ -543,5 +546,20 @@ func Test_CFParseBrokenSources(t *testing.T) {
 			require.NoError(t, err)
 			assert.Len(t, res, 23)
 		})
+	}
+}
+
+func Test_CFParseByDefaultPackage(t *testing.T) {
+	lg := logger.New()
+	cf, err := ParseConversionFunctionsByPackage(lg, internalConvertsPackagePath)
+	require.NoError(t, err)
+	require.Len(t, cf, 219)
+
+	embedCf, err := loader.Read()
+	require.NoError(t, err)
+	require.Len(t, embedCf, 219)
+
+	for key, value := range cf {
+		require.Equal(t, value, embedCf[key])
 	}
 }
