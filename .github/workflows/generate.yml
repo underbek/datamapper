@@ -14,16 +14,14 @@ jobs:
       - run: make generate
 
       - name: Commit changes
-        uses: actions/github-script@v4
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            git config --global user.name "GitHub Actions"
-            git config --global user.email "l.a.r.p@yandex.ru"
-            git commit -a -m "Updated converts.yaml"
+          uses: EndBug/add-and-commit@v9
+          with:
+            author_name: GitHub Actions
+            author_email: l.a.r.p@yandex.ru
+            message: Updated converts.yaml
 
       - name: Push changes
-        uses: actions/github-script@v4
+        uses: ad-m/github-push-action@v0.6.0
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: git push
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.ref }}
