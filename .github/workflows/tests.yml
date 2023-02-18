@@ -1,4 +1,5 @@
 name: test
+needs: [generate]
 on:
   push:
     tags:
