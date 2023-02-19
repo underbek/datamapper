@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/underbek/datamapper/models"
+	"golang.org/x/exp/slices"
 	"gopkg.in/yaml.v3"
 )
 
@@ -48,6 +49,35 @@ func values(m models.Functions) []models.ConversionFunction {
 	for _, v := range m {
 		r = append(r, v)
 	}
+
+	slices.SortFunc(r, func(i, j models.ConversionFunction) bool {
+		if i.Name < j.Name {
+			return true
+		}
+
+		if i.Name > j.Name {
+			return false
+		}
+
+		if i.FromType.Name < j.FromType.Name {
+			return true
+		}
+
+		if i.FromType.Name > j.FromType.Name {
+			return false
+		}
+
+		if i.ToType.Name < j.ToType.Name {
+			return true
+		}
+
+		if i.ToType.Name > j.ToType.Name {
+			return false
+		}
+
+		return false
+	})
+
 	return r
 }
 

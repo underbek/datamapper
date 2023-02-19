@@ -1,110 +1,10 @@
-- name: ConvertIntegerToDecimal
+- name: ConvertComplexToString
   package:
     path: github.com/underbek/datamapper/converts
     name: converts
     alias: ""
   from_type:
-    name: uint8
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: Decimal
-    package:
-        path: github.com/shopspring/decimal
-        name: decimal
-        alias: ""
-    pointer: false
-    kind: 1
-    additional: null
-  type_param: 1
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: float64
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: uint8
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: uintptr
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: uint32
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: int16
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: uint
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertNumericToString
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: uint16
+    name: complex128
     package:
         path: ""
         name: ""
@@ -122,456 +22,6 @@
     kind: 0
     additional: null
   type_param: 1
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: uint64
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: uint
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: int8
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: float64
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: int8
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: uint8
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: uint8
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: int8
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: int32
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: float32
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: uint32
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: int16
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: uint16
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: int8
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: int8
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: uint64
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertIntegerToDecimal
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: int16
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: Decimal
-    package:
-        path: github.com/shopspring/decimal
-        name: decimal
-        alias: ""
-    pointer: false
-    kind: 1
-    additional: null
-  type_param: 1
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: int16
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: uint16
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: uint64
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: int32
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertStringToSigned
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: string
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: int16
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 2
-  with_error: true
-- name: ConvertFloatToDecimal
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: float64
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: Decimal
-    package:
-        path: github.com/shopspring/decimal
-        name: decimal
-        alias: ""
-    pointer: false
-    kind: 1
-    additional: null
-  type_param: 1
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: int32
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: int16
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: uintptr
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: int16
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: int64
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: uint8
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: uint16
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: uint8
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: int32
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: uint8
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
   with_error: false
 - name: ConvertComplexToString
   package:
@@ -598,22 +48,22 @@
     additional: null
   type_param: 1
   with_error: false
-- name: ConvertNumericToString
+- name: ConvertDecimalToNumeric
   package:
     path: github.com/underbek/datamapper/converts
     name: converts
     alias: ""
   from_type:
-    name: uint
+    name: Decimal
     package:
-        path: ""
-        name: ""
+        path: github.com/shopspring/decimal
+        name: decimal
         alias: ""
     pointer: false
-    kind: 0
+    kind: 1
     additional: null
   to_type:
-    name: string
+    name: float32
     package:
         path: ""
         name: ""
@@ -621,39 +71,23 @@
     pointer: false
     kind: 0
     additional: null
-  type_param: 1
+  type_param: 2
   with_error: false
-- name: ConvertOrderedToOrdered
+- name: ConvertDecimalToNumeric
   package:
     path: github.com/underbek/datamapper/converts
     name: converts
     alias: ""
   from_type:
-    name: int
+    name: Decimal
     package:
-        path: ""
-        name: ""
+        path: github.com/shopspring/decimal
+        name: decimal
         alias: ""
     pointer: false
-    kind: 0
+    kind: 1
     additional: null
   to_type:
-    name: int
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
     name: float64
     package:
         path: ""
@@ -661,6 +95,47 @@
         alias: ""
     pointer: false
     kind: 0
+    additional: null
+  type_param: 2
+  with_error: false
+- name: ConvertDecimalToNumeric
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: Decimal
+    package:
+        path: github.com/shopspring/decimal
+        name: decimal
+        alias: ""
+    pointer: false
+    kind: 1
+    additional: null
+  to_type:
+    name: int
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 2
+  with_error: false
+- name: ConvertDecimalToNumeric
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: Decimal
+    package:
+        path: github.com/shopspring/decimal
+        name: decimal
+        alias: ""
+    pointer: false
+    kind: 1
     additional: null
   to_type:
     name: int16
@@ -671,7 +146,7 @@
     pointer: false
     kind: 0
     additional: null
-  type_param: 3
+  type_param: 2
   with_error: false
 - name: ConvertDecimalToNumeric
   package:
@@ -688,7 +163,7 @@
     kind: 1
     additional: null
   to_type:
-    name: uint
+    name: int32
     package:
         path: ""
         name: ""
@@ -698,144 +173,19 @@
     additional: null
   type_param: 2
   with_error: false
-- name: ConvertNumericToString
+- name: ConvertDecimalToNumeric
   package:
     path: github.com/underbek/datamapper/converts
     name: converts
     alias: ""
   from_type:
-    name: uint64
+    name: Decimal
     package:
-        path: ""
-        name: ""
+        path: github.com/shopspring/decimal
+        name: decimal
         alias: ""
     pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: string
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 1
-  with_error: false
-- name: ConvertNumericToString
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: int32
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: string
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 1
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: uint64
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: float32
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: uint8
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: uintptr
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: int32
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: int8
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: int
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
+    kind: 1
     additional: null
   to_type:
     name: int64
@@ -846,7 +196,7 @@
     pointer: false
     kind: 0
     additional: null
-  type_param: 3
+  type_param: 2
   with_error: false
 - name: ConvertDecimalToNumeric
   package:
@@ -863,7 +213,7 @@
     kind: 1
     additional: null
   to_type:
-    name: float64
+    name: int8
     package:
         path: ""
         name: ""
@@ -872,56 +222,6 @@
     kind: 0
     additional: null
   type_param: 2
-  with_error: false
-- name: ConvertNumericToString
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: uint8
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: string
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 1
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: int8
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: int8
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
   with_error: false
 - name: ConvertDecimalToNumeric
   package:
@@ -938,7 +238,7 @@
     kind: 1
     additional: null
   to_type:
-    name: float32
+    name: uint
     package:
         path: ""
         name: ""
@@ -948,131 +248,6 @@
     additional: null
   type_param: 2
   with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: uintptr
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: int
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: uint8
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: uint64
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: int64
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: uint64
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: uint32
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: int32
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertStringToSigned
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: string
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: int
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 2
-  with_error: true
 - name: ConvertDecimalToNumeric
   package:
     path: github.com/underbek/datamapper/converts
@@ -1086,256 +261,6 @@
         alias: ""
     pointer: false
     kind: 1
-    additional: null
-  to_type:
-    name: uintptr
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 2
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: float64
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: int
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: int32
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: int32
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: uint
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: int32
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: int
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: int8
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: int16
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: uint64
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: uintptr
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: uintptr
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertIntegerToDecimal
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: uint
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: Decimal
-    package:
-        path: github.com/shopspring/decimal
-        name: decimal
-        alias: ""
-    pointer: false
-    kind: 1
-    additional: null
-  type_param: 1
-  with_error: false
-- name: ConvertNumericToString
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: int8
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: string
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 1
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: uint
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: float32
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: float32
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
     additional: null
   to_type:
     name: uint16
@@ -1346,173 +271,14 @@
     pointer: false
     kind: 0
     additional: null
-  type_param: 3
+  type_param: 2
   with_error: false
-- name: ConvertOrderedToOrdered
+- name: ConvertDecimalToNumeric
   package:
     path: github.com/underbek/datamapper/converts
     name: converts
     alias: ""
   from_type:
-    name: uintptr
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: float32
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: int64
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: int8
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertNumericToString
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: int16
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: string
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 1
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: int16
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: int32
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: int64
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: float32
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: int32
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: uint32
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertIntegerToDecimal
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: uint16
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
     name: Decimal
     package:
         path: github.com/shopspring/decimal
@@ -1521,72 +287,6 @@
     pointer: false
     kind: 1
     additional: null
-  type_param: 1
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: uintptr
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: uint
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: float32
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: uint
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: int64
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
   to_type:
     name: uint32
     package:
@@ -1596,21 +296,46 @@
     pointer: false
     kind: 0
     additional: null
-  type_param: 3
+  type_param: 2
   with_error: false
-- name: ConvertOrderedToOrdered
+- name: ConvertDecimalToNumeric
   package:
     path: github.com/underbek/datamapper/converts
     name: converts
     alias: ""
   from_type:
-    name: uintptr
+    name: Decimal
+    package:
+        path: github.com/shopspring/decimal
+        name: decimal
+        alias: ""
+    pointer: false
+    kind: 1
+    additional: null
+  to_type:
+    name: uint64
     package:
         path: ""
         name: ""
         alias: ""
     pointer: false
     kind: 0
+    additional: null
+  type_param: 2
+  with_error: false
+- name: ConvertDecimalToNumeric
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: Decimal
+    package:
+        path: github.com/shopspring/decimal
+        name: decimal
+        alias: ""
+    pointer: false
+    kind: 1
     additional: null
   to_type:
     name: uint8
@@ -1621,21 +346,21 @@
     pointer: false
     kind: 0
     additional: null
-  type_param: 3
+  type_param: 2
   with_error: false
-- name: ConvertOrderedToOrdered
+- name: ConvertDecimalToNumeric
   package:
     path: github.com/underbek/datamapper/converts
     name: converts
     alias: ""
   from_type:
-    name: int16
+    name: Decimal
     package:
-        path: ""
-        name: ""
+        path: github.com/shopspring/decimal
+        name: decimal
         alias: ""
     pointer: false
-    kind: 0
+    kind: 1
     additional: null
   to_type:
     name: uintptr
@@ -1646,32 +371,7 @@
     pointer: false
     kind: 0
     additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertUUIDToString
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: UUID
-    package:
-        path: github.com/google/uuid
-        name: uuid
-        alias: ""
-    pointer: false
-    kind: 3
-    additional: null
-  to_type:
-    name: string
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 0
+  type_param: 2
   with_error: false
 - name: ConvertDecimalToString
   package:
@@ -1698,1731 +398,6 @@
     additional: null
   type_param: 0
   with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: uint32
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: uint16
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: uint32
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: uint32
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: uint8
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: uint8
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: uint16
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: uintptr
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: uint8
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: uint16
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertDecimalToNumeric
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: Decimal
-    package:
-        path: github.com/shopspring/decimal
-        name: decimal
-        alias: ""
-    pointer: false
-    kind: 1
-    additional: null
-  to_type:
-    name: int16
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 2
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: uint16
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: uint
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertComplexToString
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: complex128
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: string
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 1
-  with_error: false
-- name: ConvertIntegerToDecimal
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: int32
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: Decimal
-    package:
-        path: github.com/shopspring/decimal
-        name: decimal
-        alias: ""
-    pointer: false
-    kind: 1
-    additional: null
-  type_param: 1
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: int16
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: uint32
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: uint8
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: uint32
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: uint32
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: uint8
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: uint16
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: int32
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: uint32
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: int
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: int64
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: int16
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: float32
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: int32
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: int32
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: uint64
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: uint8
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: int32
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: int8
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: int16
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: float64
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: int8
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: uint16
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: int
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: int
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: float32
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: uint8
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: int64
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: float32
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: int16
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: float64
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: float32
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: int
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: uint16
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: int32
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: int64
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: uint
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: uint64
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: int64
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: float64
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: int32
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: int
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: uint
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: uint
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: float32
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: int
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: uint8
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: int16
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: float32
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: uint8
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: int
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: uint8
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: int64
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: int64
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: int32
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: uint16
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: float32
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: uintptr
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertDecimalToNumeric
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: Decimal
-    package:
-        path: github.com/shopspring/decimal
-        name: decimal
-        alias: ""
-    pointer: false
-    kind: 1
-    additional: null
-  to_type:
-    name: int
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 2
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: uint64
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: uint32
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: float32
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: int64
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: uint32
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: uintptr
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: int8
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: float32
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: uint64
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: uintptr
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: float64
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: float64
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: int64
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: int
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: uint
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: int8
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: uint
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: uintptr
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertDecimalToNumeric
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: Decimal
-    package:
-        path: github.com/shopspring/decimal
-        name: decimal
-        alias: ""
-    pointer: false
-    kind: 1
-    additional: null
-  to_type:
-    name: uint16
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 2
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: int16
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: int16
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: int16
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: uint8
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertNumericToString
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: uint32
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: string
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 1
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: float64
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: uint64
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: int16
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: float32
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: float32
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: float32
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertDecimalToNumeric
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: Decimal
-    package:
-        path: github.com/shopspring/decimal
-        name: decimal
-        alias: ""
-    pointer: false
-    kind: 1
-    additional: null
-  to_type:
-    name: int32
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 2
-  with_error: false
-- name: ConvertIntegerToDecimal
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: uint64
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: Decimal
-    package:
-        path: github.com/shopspring/decimal
-        name: decimal
-        alias: ""
-    pointer: false
-    kind: 1
-    additional: null
-  type_param: 1
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: int
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: int32
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: uintptr
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: int64
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: float64
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: int32
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: int64
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: uint
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertDecimalToNumeric
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: Decimal
-    package:
-        path: github.com/shopspring/decimal
-        name: decimal
-        alias: ""
-    pointer: false
-    kind: 1
-    additional: null
-  to_type:
-    name: uint64
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 2
-  with_error: false
-- name: ConvertIntegerToDecimal
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: uint32
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: Decimal
-    package:
-        path: github.com/shopspring/decimal
-        name: decimal
-        alias: ""
-    pointer: false
-    kind: 1
-    additional: null
-  type_param: 1
-  with_error: false
-- name: ConvertNumericToString
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: int64
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: string
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 1
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: uint16
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: uint32
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: uint64
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: int16
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertDecimalToNumeric
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: Decimal
-    package:
-        path: github.com/shopspring/decimal
-        name: decimal
-        alias: ""
-    pointer: false
-    kind: 1
-    additional: null
-  to_type:
-    name: uint32
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 2
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: uint32
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: float64
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertDecimalToNumeric
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: Decimal
-    package:
-        path: github.com/shopspring/decimal
-        name: decimal
-        alias: ""
-    pointer: false
-    kind: 1
-    additional: null
-  to_type:
-    name: int8
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 2
-  with_error: false
 - name: ConvertFloatToDecimal
   package:
     path: github.com/underbek/datamapper/converts
@@ -3448,188 +423,13 @@
     additional: null
   type_param: 1
   with_error: false
-- name: ConvertNumericToString
+- name: ConvertFloatToDecimal
   package:
     path: github.com/underbek/datamapper/converts
     name: converts
     alias: ""
   from_type:
-    name: int
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: string
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 1
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: float32
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: int8
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: uint
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: uint32
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: int8
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: int32
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertStringToSigned
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: string
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: int64
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 2
-  with_error: true
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: uintptr
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: int32
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: uintptr
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: uint16
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertIntegerToDecimal
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: uintptr
+    name: float64
     package:
         path: ""
         name: ""
@@ -3648,7 +448,7 @@
     additional: null
   type_param: 1
   with_error: false
-- name: ConvertOrderedToOrdered
+- name: ConvertIntegerToDecimal
   package:
     path: github.com/underbek/datamapper/converts
     name: converts
@@ -3663,31 +463,22 @@
     kind: 0
     additional: null
   to_type:
-    name: uint64
+    name: Decimal
     package:
-        path: ""
-        name: ""
+        path: github.com/shopspring/decimal
+        name: decimal
         alias: ""
     pointer: false
-    kind: 0
+    kind: 1
     additional: null
-  type_param: 3
+  type_param: 1
   with_error: false
-- name: ConvertOrderedToOrdered
+- name: ConvertIntegerToDecimal
   package:
     path: github.com/underbek/datamapper/converts
     name: converts
     alias: ""
   from_type:
-    name: int
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
     name: int16
     package:
         path: ""
@@ -3696,32 +487,16 @@
     pointer: false
     kind: 0
     additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: uint16
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
   to_type:
-    name: uint64
+    name: Decimal
     package:
-        path: ""
-        name: ""
+        path: github.com/shopspring/decimal
+        name: decimal
         alias: ""
     pointer: false
-    kind: 0
+    kind: 1
     additional: null
-  type_param: 3
+  type_param: 1
   with_error: false
 - name: ConvertIntegerToDecimal
   package:
@@ -3729,7 +504,7 @@
     name: converts
     alias: ""
   from_type:
-    name: int
+    name: int32
     package:
         path: ""
         name: ""
@@ -3773,156 +548,6 @@
     additional: null
   type_param: 1
   with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: int32
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: float64
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: uint32
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: uint
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: int8
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: uint
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: uint32
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: uint64
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: int32
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: uintptr
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: uintptr
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: uint64
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
 - name: ConvertIntegerToDecimal
   package:
     path: github.com/underbek/datamapper/converts
@@ -3948,182 +573,7 @@
     additional: null
   type_param: 1
   with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: int8
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: uint16
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: uint64
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: uint16
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: int
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: uintptr
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: float64
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: uintptr
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: uint8
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: int
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: uint8
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: float32
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertNumericToString
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: uintptr
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: string
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 1
-  with_error: false
-- name: ConvertOrderedToOrdered
+- name: ConvertIntegerToDecimal
   package:
     path: github.com/underbek/datamapper/converts
     name: converts
@@ -4138,172 +588,6 @@
     kind: 0
     additional: null
   to_type:
-    name: int64
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: float32
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: float64
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: uintptr
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: float64
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: int8
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: uint32
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertNumericToString
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: float64
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: string
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 1
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: uint16
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: float32
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertStringToUUID
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: string
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: UUID
-    package:
-        path: github.com/google/uuid
-        name: uuid
-        alias: ""
-    pointer: false
-    kind: 3
-    additional: null
-  type_param: 0
-  with_error: true
-- name: ConvertDecimalToNumeric
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
     name: Decimal
     package:
         path: github.com/shopspring/decimal
@@ -4312,8 +596,15 @@
     pointer: false
     kind: 1
     additional: null
-  to_type:
-    name: int64
+  type_param: 1
+  with_error: false
+- name: ConvertIntegerToDecimal
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: uint16
     package:
         path: ""
         name: ""
@@ -4321,14 +612,7 @@
     pointer: false
     kind: 0
     additional: null
-  type_param: 2
-  with_error: false
-- name: ConvertDecimalToNumeric
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
+  to_type:
     name: Decimal
     package:
         path: github.com/shopspring/decimal
@@ -4337,582 +621,14 @@
     pointer: false
     kind: 1
     additional: null
-  to_type:
-    name: uint8
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 2
+  type_param: 1
   with_error: false
-- name: ConvertOrderedToOrdered
+- name: ConvertIntegerToDecimal
   package:
     path: github.com/underbek/datamapper/converts
     name: converts
     alias: ""
   from_type:
-    name: int8
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: int
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: int16
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: float64
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: int64
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: uint16
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: uint
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: uint16
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: uint64
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: int64
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: uint
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: int
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: uint64
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: uint8
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: uint16
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: int64
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: float32
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: uint64
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: float64
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: uint
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: int64
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: int32
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: uint8
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: uint
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: uint64
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: int
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertStringToSigned
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: string
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: int8
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 2
-  with_error: true
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: int
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: float64
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: uint
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: uint8
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: uint
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: int16
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: int16
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: int8
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: uint8
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: float64
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: uint16
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: uint16
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: uint16
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: float64
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: int
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: uint
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: float32
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
     name: uint32
     package:
         path: ""
@@ -4921,9 +637,68 @@
     pointer: false
     kind: 0
     additional: null
-  type_param: 3
+  to_type:
+    name: Decimal
+    package:
+        path: github.com/shopspring/decimal
+        name: decimal
+        alias: ""
+    pointer: false
+    kind: 1
+    additional: null
+  type_param: 1
   with_error: false
-- name: ConvertOrderedToOrdered
+- name: ConvertIntegerToDecimal
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: uint64
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: Decimal
+    package:
+        path: github.com/shopspring/decimal
+        name: decimal
+        alias: ""
+    pointer: false
+    kind: 1
+    additional: null
+  type_param: 1
+  with_error: false
+- name: ConvertIntegerToDecimal
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: uint8
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: Decimal
+    package:
+        path: github.com/shopspring/decimal
+        name: decimal
+        alias: ""
+    pointer: false
+    kind: 1
+    additional: null
+  type_param: 1
+  with_error: false
+- name: ConvertIntegerToDecimal
   package:
     path: github.com/underbek/datamapper/converts
     name: converts
@@ -4938,40 +713,15 @@
     kind: 0
     additional: null
   to_type:
-    name: int8
+    name: Decimal
     package:
-        path: ""
-        name: ""
+        path: github.com/shopspring/decimal
+        name: decimal
         alias: ""
     pointer: false
-    kind: 0
+    kind: 1
     additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: int64
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: uintptr
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
+  type_param: 1
   with_error: false
 - name: ConvertNumericToString
   package:
@@ -4998,7 +748,57 @@
     additional: null
   type_param: 1
   with_error: false
-- name: ConvertOrderedToOrdered
+- name: ConvertNumericToString
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: float64
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: string
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 1
+  with_error: false
+- name: ConvertNumericToString
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: int
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: string
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 1
+  with_error: false
+- name: ConvertNumericToString
   package:
     path: github.com/underbek/datamapper/converts
     name: converts
@@ -5013,7 +813,782 @@
     kind: 0
     additional: null
   to_type:
+    name: string
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 1
+  with_error: false
+- name: ConvertNumericToString
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: int32
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: string
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 1
+  with_error: false
+- name: ConvertNumericToString
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: int64
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: string
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 1
+  with_error: false
+- name: ConvertNumericToString
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: int8
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: string
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 1
+  with_error: false
+- name: ConvertNumericToString
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: uint
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: string
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 1
+  with_error: false
+- name: ConvertNumericToString
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: uint16
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: string
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 1
+  with_error: false
+- name: ConvertNumericToString
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: uint32
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: string
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 1
+  with_error: false
+- name: ConvertNumericToString
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: uint64
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: string
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 1
+  with_error: false
+- name: ConvertNumericToString
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: uint8
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: string
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 1
+  with_error: false
+- name: ConvertNumericToString
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: uintptr
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: string
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 1
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: float32
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: float32
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: float32
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: float64
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: float32
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
     name: int
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: float32
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: int16
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: float32
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: int32
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: float32
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: int64
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: float32
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: int8
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: float32
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: uint
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: float32
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: uint16
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: float32
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: uint32
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: float32
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: uint64
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: float32
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: uint8
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: float32
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: uintptr
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: float64
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: float32
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: float64
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: float64
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: float64
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: int
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: float64
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: int16
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: float64
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: int32
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: float64
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: int64
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: float64
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: int8
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: float64
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: uint
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: float64
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: uint16
     package:
         path: ""
         name: ""
@@ -5054,7 +1629,107 @@
     name: converts
     alias: ""
   from_type:
+    name: float64
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
     name: uint64
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: float64
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: uint8
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: float64
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: uintptr
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: int
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: float32
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: int
     package:
         path: ""
         name: ""
@@ -5064,6 +1739,1556 @@
     additional: null
   to_type:
     name: float64
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: int
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: int
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: int
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: int16
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: int
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: int32
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: int
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: int64
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: int
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: int8
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: int
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: uint
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: int
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: uint16
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: int
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: uint32
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: int
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: uint64
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: int
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: uint8
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: int
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: uintptr
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: int16
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: float32
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: int16
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: float64
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: int16
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: int
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: int16
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: int16
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: int16
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: int32
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: int16
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: int64
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: int16
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: int8
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: int16
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: uint
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: int16
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: uint16
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: int16
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: uint32
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: int16
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: uint64
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: int16
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: uint8
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: int16
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: uintptr
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: int32
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: float32
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: int32
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: float64
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: int32
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: int
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: int32
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: int16
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: int32
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: int32
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: int32
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: int64
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: int32
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: int8
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: int32
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: uint
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: int32
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: uint16
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: int32
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: uint32
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: int32
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: uint64
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: int32
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: uint8
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: int32
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: uintptr
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: int64
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: float32
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: int64
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: float64
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: int64
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: int
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: int64
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: int16
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: int64
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: int32
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: int64
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: int64
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: int64
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: int8
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: int64
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: uint
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: int64
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: uint16
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: int64
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: uint32
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: int64
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: uint64
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: int64
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: uint8
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: int64
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: uintptr
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: int8
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: float32
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: int8
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: float64
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: int8
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: int
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: int8
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: int16
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: int8
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: int32
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: int8
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: int64
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: int8
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: int8
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: int8
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: uint
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: int8
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: uint16
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: int8
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: uint32
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: int8
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: uint64
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: int8
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: uint8
     package:
         path: ""
         name: ""
@@ -5104,7 +3329,207 @@
     name: converts
     alias: ""
   from_type:
+    name: uint
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: float32
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: uint
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
     name: float64
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: uint
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: int
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: uint
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: int16
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: uint
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: int32
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: uint
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: int64
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: uint
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: int8
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: uint
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: uint
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: uint
     package:
         path: ""
         name: ""
@@ -5129,7 +3554,7 @@
     name: converts
     alias: ""
   from_type:
-    name: uint32
+    name: uint
     package:
         path: ""
         name: ""
@@ -5138,7 +3563,7 @@
     kind: 0
     additional: null
   to_type:
-    name: int64
+    name: uint32
     package:
         path: ""
         name: ""
@@ -5148,31 +3573,6 @@
     additional: null
   type_param: 3
   with_error: false
-- name: ConvertStringToSigned
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: string
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: int32
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 2
-  with_error: true
 - name: ConvertOrderedToOrdered
   package:
     path: github.com/underbek/datamapper/converts
@@ -5188,7 +3588,132 @@
     kind: 0
     additional: null
   to_type:
+    name: uint64
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: uint
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: uint8
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: uint
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: uintptr
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: uint16
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: float32
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: uint16
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
     name: float64
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: uint16
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: int
     package:
         path: ""
         name: ""
@@ -5229,7 +3754,7 @@
     name: converts
     alias: ""
   from_type:
-    name: int
+    name: uint16
     package:
         path: ""
         name: ""
@@ -5238,22 +3763,6 @@
     kind: 0
     additional: null
   to_type:
-    name: uint32
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
     name: int32
     package:
         path: ""
@@ -5262,15 +3771,6 @@
     pointer: false
     kind: 0
     additional: null
-  to_type:
-    name: uint
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
   type_param: 3
   with_error: false
 - name: ConvertOrderedToOrdered
@@ -5279,32 +3779,7 @@
     name: converts
     alias: ""
   from_type:
-    name: uint64
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  to_type:
-    name: uint64
-    package:
-        path: ""
-        name: ""
-        alias: ""
-    pointer: false
-    kind: 0
-    additional: null
-  type_param: 3
-  with_error: false
-- name: ConvertOrderedToOrdered
-  package:
-    path: github.com/underbek/datamapper/converts
-    name: converts
-    alias: ""
-  from_type:
-    name: int8
+    name: uint16
     package:
         path: ""
         name: ""
@@ -5329,7 +3804,7 @@
     name: converts
     alias: ""
   from_type:
-    name: uint32
+    name: uint16
     package:
         path: ""
         name: ""
@@ -5339,6 +3814,156 @@
     additional: null
   to_type:
     name: int8
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: uint16
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: uint
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: uint16
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: uint16
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: uint16
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: uint32
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: uint16
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: uint64
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: uint16
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: uint8
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: uint16
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: uintptr
     package:
         path: ""
         name: ""
@@ -5379,6 +4004,456 @@
     name: converts
     alias: ""
   from_type:
+    name: uint32
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: float64
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: uint32
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: int
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: uint32
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: int16
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: uint32
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: int32
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: uint32
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: int64
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: uint32
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: int8
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: uint32
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: uint
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: uint32
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: uint16
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: uint32
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: uint32
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: uint32
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: uint64
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: uint32
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: uint8
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: uint32
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: uintptr
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: uint64
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: float32
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: uint64
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: float64
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: uint64
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: int
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: uint64
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: int16
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: uint64
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: int32
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: uint64
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: int64
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
     name: uint64
     package:
         path: ""
@@ -5404,7 +4479,282 @@
     name: converts
     alias: ""
   from_type:
+    name: uint64
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: uint
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: uint64
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: uint16
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: uint64
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: uint32
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: uint64
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: uint64
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: uint64
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: uint8
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: uint64
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: uintptr
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: uint8
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: float32
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: uint8
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: float64
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: uint8
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: int
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: uint8
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
     name: int16
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: uint8
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: int32
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: uint8
     package:
         path: ""
         name: ""
@@ -5429,7 +4779,307 @@
     name: converts
     alias: ""
   from_type:
+    name: uint8
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: int8
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: uint8
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: uint
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: uint8
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: uint16
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: uint8
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: uint32
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: uint8
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: uint64
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: uint8
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: uint8
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: uint8
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: uintptr
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: uintptr
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: float32
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: uintptr
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
     name: float64
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: uintptr
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: int
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: uintptr
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: int16
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: uintptr
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: int32
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: uintptr
     package:
         path: ""
         name: ""
@@ -5439,6 +5089,181 @@
     additional: null
   to_type:
     name: int64
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: uintptr
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: int8
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: uintptr
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: uint
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: uintptr
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: uint16
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: uintptr
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: uint32
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: uintptr
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: uint64
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: uintptr
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: uint8
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 3
+  with_error: false
+- name: ConvertOrderedToOrdered
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: uintptr
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: uintptr
     package:
         path: ""
         name: ""
@@ -5473,3 +5298,178 @@
     additional: null
   type_param: 0
   with_error: true
+- name: ConvertStringToSigned
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: string
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: int
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 2
+  with_error: true
+- name: ConvertStringToSigned
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: string
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: int16
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 2
+  with_error: true
+- name: ConvertStringToSigned
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: string
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: int32
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 2
+  with_error: true
+- name: ConvertStringToSigned
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: string
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: int64
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 2
+  with_error: true
+- name: ConvertStringToSigned
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: string
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: int8
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 2
+  with_error: true
+- name: ConvertStringToUUID
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: string
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  to_type:
+    name: UUID
+    package:
+        path: github.com/google/uuid
+        name: uuid
+        alias: ""
+    pointer: false
+    kind: 3
+    additional: null
+  type_param: 0
+  with_error: true
+- name: ConvertUUIDToString
+  package:
+    path: github.com/underbek/datamapper/converts
+    name: converts
+    alias: ""
+  from_type:
+    name: UUID
+    package:
+        path: github.com/google/uuid
+        name: uuid
+        alias: ""
+    pointer: false
+    kind: 3
+    additional: null
+  to_type:
+    name: string
+    package:
+        path: ""
+        name: ""
+        alias: ""
+    pointer: false
+    kind: 0
+    additional: null
+  type_param: 0
+  with_error: false
