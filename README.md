@@ -1,6 +1,6 @@
-# datamapper
 [![Latest Release](https://img.shields.io/github/v/release/underbek/datamapper)](https://github.com/underbek/datamapper/releases/latest)
-[Latest Release](https://github.com/underbek/datamapper/releases/latest)
+
+# datamapper
 
 ### Install
 
