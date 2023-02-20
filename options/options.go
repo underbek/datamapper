@@ -1,8 +1,10 @@
 package options
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
+	"runtime/debug"
 	"strings"
 
 	"github.com/creasty/defaults"
@@ -20,6 +22,7 @@ type Config struct {
 
 //nolint:lll
 type Flags struct {
+	Version       bool     `short:"v" long:"version" description:"Current version"`
 	Destination   string   `short:"d" long:"destination" description:"Destination file path" required:"true"`
 	UserCFSources []string `long:"cf" description:"User conversion functions sources/packages. Can add package alias like {package_path}:{alias)" required:"false"`
 	FromName      string   `long:"from" description:"Model from name" required:"true"`
@@ -126,6 +129,16 @@ func parseFlags(params Flags) (Options, error) {
 func ParseOptions() (Options, error) {
 	var config Config
 	_, err := flags.NewParser(&config, flags.HelpFlag|flags.PassDoubleDash).Parse()
+	if config.Version {
+		info, ok := debug.ReadBuildInfo()
+		if ok {
+			fmt.Println(info.Main)
+			fmt.Println(info.Main.Version)
+		}
+
+		os.Exit(0)
+	}
+
 	if config.ConfigPath != "" {
 		return parseConfig(config.ConfigPath)
 	}
