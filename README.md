@@ -13,6 +13,7 @@ Usage:
 
 Application Options:
   -c, --config=        Yaml config path
+  -v, --version        Current version
   -d, --destination=   Destination file path
       --cf=            User conversion functions sources/packages. Can add package alias like {package_path}:{alias)
       --from=          Model from name

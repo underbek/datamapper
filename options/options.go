@@ -1,6 +1,7 @@
 package options
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -132,7 +133,6 @@ func ParseOptions() (Options, error) {
 	if config.Version {
 		info, ok := debug.ReadBuildInfo()
 		if ok {
-			fmt.Println(info.Main)
 			fmt.Println(info.Main.Version)
 		}
 
@@ -144,6 +144,12 @@ func ParseOptions() (Options, error) {
 	}
 
 	if err != nil {
+		var flagsErr *flags.Error
+		if errors.As(err, &flagsErr) || flagsErr.Type == flags.ErrHelp {
+			fmt.Println(flagsErr.Message)
+			os.Exit(0)
+		}
+
 		return Options{}, err
 	}
 
