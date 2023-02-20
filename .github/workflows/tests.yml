@@ -1,29 +1,56 @@
 name: test
-on:
-  push:
-    tags:
-      - v*
-    branches:
-      - master
-      - main
-  pull_request:
+on: [ pull_request ]
 jobs:
-  test:
-    name: test
+  generate:
+    name: generate
     runs-on: ubuntu-latest
     steps:
       - uses: actions/setup-go@v3
         with:
           go-version: 1.18
+
       - uses: actions/checkout@v3
+        with:
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          ref: ${{ github.event.pull_request.head.ref }}
+
+      - run: make generate
+
+      - name: Commit changes
+        uses: EndBug/add-and-commit@v9
+        with:
+          add: "loader/data/converts.yaml"
+          message: Updated converts.yaml
+          push: true
+
+  test:
+    name: test
+    needs: [ generate ]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-go@v3
+        with:
+          go-version: 1.18
+
+      - uses: actions/checkout@v3
+        with:
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          ref: ${{ github.event.pull_request.head.ref }}
+
       - run: make test
 
   local-test:
     name: local-test
+    needs: [ generate ]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/setup-go@v3
         with:
           go-version: 1.18
+
       - uses: actions/checkout@v3
+        with:
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          ref: ${{ github.event.pull_request.head.ref }}
+
       - run: make local-test

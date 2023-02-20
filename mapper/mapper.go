@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/underbek/datamapper/generator"
+	"github.com/underbek/datamapper/loader"
 	"github.com/underbek/datamapper/logger"
 	"github.com/underbek/datamapper/models"
 	"github.com/underbek/datamapper/options"
@@ -16,16 +17,13 @@ import (
 	"golang.org/x/exp/maps"
 )
 
-const internalConvertsPackagePath = "github.com/underbek/datamapper/converts"
-
 var (
 	ErrNotFoundStruct = errors.New("not found struct error")
 	ErrNotFoundTag    = errors.New("not found tag error")
 )
 
 func MapModels(lg logger.Logger, opts options.Options) error {
-	//TODO: parse or copy embed sources
-	funcs, err := parser.ParseConversionFunctionsByPackage(lg, internalConvertsPackagePath)
+	funcs, err := loader.Read()
 	if err != nil {
 		return fmt.Errorf("parse internal conversion functions error: %w", err)
 	}
