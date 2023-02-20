@@ -1,9 +1,11 @@
+[![Latest Release](https://img.shields.io/github/v/release/underbek/datamapper)](https://github.com/underbek/datamapper/releases/latest)
+
 # datamapper
 
 ### Install
 
 ```shell
-go install github.com/underbek/datamapper@v0.0.11
+go install github.com/underbek/datamapper@latest
 ```
 
 ### Usage
@@ -13,6 +15,7 @@ Usage:
 
 Application Options:
   -c, --config=        Yaml config path
+  -v, --version        Current version
   -d, --destination=   Destination file path
       --cf=            User conversion functions sources/packages. Can add package alias like {package_path}:{alias)
       --from=          Model from name
