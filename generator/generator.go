@@ -78,8 +78,6 @@ func GenerateConvertor(from, to models.Struct, pkg models.Package, functions mod
 	res.fromTag = from.Fields[0].Tags[0].Name
 	res.toTag = to.Fields[0].Tags[0].Name
 
-	res.withError = res.withError || isReturnError(res.fields)
-
 	convertor, err := fillConvertor(res)
 	if err != nil {
 		return models.GeneratedConversionFunction{}, err

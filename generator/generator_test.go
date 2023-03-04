@@ -249,6 +249,15 @@ func Test_GenerateConvertor(t *testing.T) {
 			isFromPointer: true,
 			isToPointer:   true,
 		},
+		{
+			name:          "With from and to pointers without errors",
+			pathFrom:      "with_from_and_to_pointers_without_errors",
+			pathTo:        "with_from_and_to_pointers_without_errors",
+			generatePath:  "with_from_and_to_pointers_without_errors",
+			cfPath:        cfPath,
+			isFromPointer: true,
+			isToPointer:   true,
+		},
 	}
 
 	lg := logger.New()
