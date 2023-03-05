@@ -1,3 +1,7 @@
 if {{.fromFullName}} == nil {
+    {{- if .isError -}}
     return {{.resValue}}, {{.error}}
+    {{- else -}}
+    return {{.resValue}}
+    {{- end -}}
 }

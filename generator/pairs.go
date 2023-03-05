@@ -11,40 +11,6 @@ func createModelsPair(from, to models.Struct, pkgPath string, functions models.F
 	var fields []FieldsPair
 	packages := make(models.Packages)
 
-	var conversions []string
-	var withError bool
-	if from.Type.Pointer && !to.Type.Pointer {
-		conversion, err := getPointerCheck(
-			"from",
-			to.Type.FullName(pkgPath),
-			fmt.Sprintf("errors.New(\"%s is nil\")", from.Type.Name),
-		)
-		if err != nil {
-			return result{}, err
-		}
-
-		conversions = append(conversions, conversion)
-		packages[models.Package{
-			Name: "errors",
-			Path: "errors",
-		}] = struct{}{}
-
-		withError = true
-	}
-
-	if from.Type.Pointer && to.Type.Pointer {
-		conversion, err := getPointerCheck(
-			"from",
-			to.Type.FullName(pkgPath),
-			"nil",
-		)
-		if err != nil {
-			return result{}, err
-		}
-
-		conversions = append(conversions, conversion)
-	}
-
 	fromFields := make(map[string]models.Field)
 	for _, field := range from.Fields {
 		fromFields[field.Tags[0].Value] = field
@@ -64,6 +30,43 @@ func createModelsPair(from, to models.Struct, pkgPath string, functions models.F
 
 		maps.Copy(packages, packs)
 		fields = append(fields, pair)
+	}
+
+	withError := isReturnError(fields)
+
+	var conversions []string
+	if from.Type.Pointer && !to.Type.Pointer {
+		withError = true
+
+		conversion, err := getPointerCheck(
+			"from",
+			to.Type.FullName(pkgPath),
+			fmt.Sprintf("errors.New(\"%s is nil\")", from.Type.Name),
+			withError,
+		)
+		if err != nil {
+			return result{}, err
+		}
+
+		conversions = append(conversions, conversion)
+		packages[models.Package{
+			Name: "errors",
+			Path: "errors",
+		}] = struct{}{}
+	}
+
+	if from.Type.Pointer && to.Type.Pointer {
+		conversion, err := getPointerCheck(
+			"from",
+			to.Type.FullName(pkgPath),
+			"nil",
+			withError,
+		)
+		if err != nil {
+			return result{}, err
+		}
+
+		conversions = append(conversions, conversion)
 	}
 
 	conversions = append(conversions, fillConversions(fields)...)
@@ -135,6 +138,7 @@ func fillConversionFunction(pair FieldsPair, fromField, toField models.Field, fr
 				fromField.Name,
 				toField.Name,
 			),
+			true,
 		)
 		if err != nil {
 			return FieldsPair{}, nil, err
@@ -303,6 +307,7 @@ func fillConversionFunctionBySlice(pair FieldsPair, fromField, toField models.Fi
 				fromField.Name,
 				toField.Name,
 			),
+			true,
 		)
 		if err != nil {
 			return FieldsPair{}, nil, err

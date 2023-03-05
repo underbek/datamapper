@@ -83,11 +83,12 @@ func fillConvertor(res result) (string, error) {
 	return fillTemplate[string](convertorFilePath, data)
 }
 
-func getPointerCheck(fromFullName, toModelName, err string) (string, error) {
+func getPointerCheck(fromFullName, toModelName, err string, isError bool) (string, error) {
 	data := map[string]any{
 		"fromFullName": fromFullName,
 		"resValue":     nilOrDefault(toModelName),
 		"error":        err,
+		"isError":      isError,
 	}
 
 	return fillTemplate[string](pointerCheckFilePath, data)
