@@ -33,6 +33,7 @@ type Flags struct {
 	ToTag         string   `long:"to-tag" description:"Model to tag" default:"map" required:"false"`
 	ToSource      string   `long:"to-source" description:"To model source/package. Can add package alias like {package_path}:{alias)" default:"." required:"false"`
 	Inverse       bool     `short:"i" long:"inverse" description:"Create direct and inverse conversions" required:"false"`
+	WithSlice     bool     `short:"s" long:"with-slice" description:"Create convertors with slice" required:"false"`
 	Recursive     bool     `short:"r" long:"recursive" description:"Parse recursive fields and create conversion if it not exists"`
 	WithPointers  bool     `short:"p" long:"with-pointers" description:"If field is pointer and recursive flag enabled then create convertors with pointers"`
 }
@@ -49,6 +50,7 @@ type Option struct {
 	To           Model  `yaml:"to"`
 	Inverse      bool   `yaml:"inverse"`
 	Destination  string `yaml:"destination"`
+	WithSlice    bool   `yaml:"with-slice"`
 	Recursive    bool   `yaml:"recursive"`
 	WithPointers bool   `yaml:"with-pointers"`
 }
@@ -121,7 +123,10 @@ func parseFlags(params Flags) (Options, error) {
 					Source: toSource,
 					Alias:  toAlias,
 				},
-				Inverse: params.Inverse,
+				Inverse:      params.Inverse,
+				WithSlice:    params.WithSlice,
+				Recursive:    params.Recursive,
+				WithPointers: params.WithPointers,
 			},
 		},
 	}, nil

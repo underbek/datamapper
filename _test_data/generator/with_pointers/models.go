@@ -1,4 +1,4 @@
-package cf_with_pointers_and_erros
+package with_pointers
 
 import "github.com/shopspring/decimal"
 
