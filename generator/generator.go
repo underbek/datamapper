@@ -38,6 +38,15 @@ type result struct {
 	withError     bool
 }
 
+type sliceResult struct {
+	convertorName string
+	fromName      string
+	toName        string
+	packages      models.Packages
+	conversion    string
+	withError     bool
+}
+
 func CreateConvertorSource(pkg models.Package, packages models.Packages, convertors []string, dest string) error {
 	content, err := fillConvertorsSource(pkg, packages, convertors)
 	if err != nil {
@@ -60,7 +69,8 @@ func CreateConvertorSource(pkg models.Package, packages models.Packages, convert
 }
 
 func GenerateConvertor(from, to models.Struct, pkg models.Package, functions models.Functions) (
-	models.GeneratedConversionFunction, error) {
+	models.GeneratedConversionFunction, error,
+) {
 
 	res, err := createModelsPair(from, to, pkg.Path, functions)
 	if err != nil {
@@ -70,7 +80,7 @@ func GenerateConvertor(from, to models.Struct, pkg models.Package, functions mod
 	res.packages[from.Type.Package] = struct{}{}
 	res.packages[to.Type.Package] = struct{}{}
 
-	res.convertorName = generateConvertorName(from, to, pkg.Path)
+	res.convertorName = generateConvertorName(from.Type, to.Type, pkg.Path, models.StructType)
 
 	res.fromName = from.Type.FullName(pkg.Path)
 	res.toName = to.Type.FullName(pkg.Path)
@@ -89,6 +99,44 @@ func GenerateConvertor(from, to models.Struct, pkg models.Package, functions mod
 			Package:   pkg,
 			FromType:  from.Type,
 			ToType:    to.Type,
+			TypeParam: models.NoTypeParam,
+			WithError: res.withError,
+		},
+		Packages: res.packages,
+		Body:     convertor,
+	}, nil
+}
+
+func GenerateSliceConvertor(from, to models.Type, pkg models.Package, cf models.ConversionFunction) (
+	models.GeneratedConversionFunction, error,
+) {
+	res := sliceResult{}
+
+	res.packages = make(models.Packages)
+
+	res.packages[from.Package] = struct{}{}
+	res.packages[to.Package] = struct{}{}
+
+	res.convertorName = generateConvertorName(from, to, pkg.Path, models.SliceType)
+
+	res.fromName = from.FullName(pkg.Path)
+	res.toName = to.FullName(pkg.Path)
+
+	res.conversion = getConversionFunctionCall(cf, from, to, pkg.Path, "from")
+
+	res.withError = cf.WithError
+
+	convertor, err := fillSliceConvertor(res)
+	if err != nil {
+		return models.GeneratedConversionFunction{}, err
+	}
+
+	return models.GeneratedConversionFunction{
+		Function: models.ConversionFunction{
+			Name:      res.convertorName,
+			Package:   pkg,
+			FromType:  from,
+			ToType:    to,
 			TypeParam: models.NoTypeParam,
 			WithError: res.withError,
 		},

@@ -14,6 +14,7 @@ import (
 const (
 	convertorSourceFilePath            = "templates/convertor_source.temp"
 	convertorFilePath                  = "templates/convertor.temp"
+	sliceConvertorFilePath             = "templates/slice_convertor.temp"
 	errorConversionFilePath            = "templates/error_conversion.temp"
 	pointerCheckFilePath               = "templates/pointer_check.temp"
 	pointerConversionFilePath          = "templates/pointer_conversion.temp"
@@ -81,6 +82,18 @@ func fillConvertor(res result) (string, error) {
 	}
 
 	return fillTemplate[string](convertorFilePath, data)
+}
+
+func fillSliceConvertor(res sliceResult) (string, error) {
+	data := map[string]any{
+		"fromName":      res.fromName,
+		"toName":        res.toName,
+		"convertorName": res.convertorName,
+		"withError":     res.withError,
+		"conversion":    res.conversion,
+	}
+
+	return fillTemplate[string](sliceConvertorFilePath, data)
 }
 
 func getPointerCheck(fromFullName, toModelName, err string, isError bool) (string, error) {
