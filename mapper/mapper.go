@@ -86,6 +86,7 @@ func MapModels(lg logger.Logger, opts options.Options) error {
 			opt.Inverse,
 			opt.Recursive,
 			opt.WithPointers,
+			opt.WithSlice,
 			aliases,
 			funcs,
 			fromStructs,
@@ -155,6 +156,7 @@ func mapModel(
 	inverse bool,
 	recursive bool,
 	withPointers bool,
+	withSlice bool,
 	aliases map[string]string,
 	funcs models.Functions,
 	fromStructs, toStructs map[string]models.Struct,
@@ -196,9 +198,9 @@ func mapModel(
 
 	var convertors []string
 	pkgs := make(models.Packages)
+	var gcf models.GeneratedConversionFunction
 	for {
 		funcs = setPackageAliasToFunctions(funcs, aliases)
-		var gcf models.GeneratedConversionFunction
 		gcf, err = generator.GenerateConvertor(from, to, pkg, funcs)
 		if err == nil {
 			convertors = append(convertors, gcf.Body)
@@ -245,6 +247,7 @@ func mapModel(
 			inverse,
 			recursive,
 			withPointers,
+			withSlice,
 			aliases,
 			funcs,
 			fromStructs,
@@ -253,6 +256,19 @@ func mapModel(
 		if err != nil {
 			return nil, err
 		}
+	}
+
+	if withSlice {
+		gcf, err := generator.GenerateSliceConvertor(from.Type, to.Type, pkg, gcf.Function)
+		if err != nil {
+			return nil, fmt.Errorf("generate convertor slice error: %w", err)
+		}
+		convertors = append(convertors, gcf.Body)
+		funcs[models.ConversionFunctionKey{
+			FromType: gcf.Function.FromType,
+			ToType:   gcf.Function.ToType,
+		}] = gcf.Function
+		maps.Copy(pkgs, gcf.Packages)
 	}
 
 	if inverse {
@@ -266,6 +282,19 @@ func mapModel(
 			ToType:   gcf.Function.ToType,
 		}] = gcf.Function
 		maps.Copy(pkgs, gcf.Packages)
+
+		if withSlice {
+			gcf, err := generator.GenerateSliceConvertor(to.Type, from.Type, pkg, gcf.Function)
+			if err != nil {
+				return nil, fmt.Errorf("generate convertor slice error: %w", err)
+			}
+			convertors = append(convertors, gcf.Body)
+			funcs[models.ConversionFunctionKey{
+				FromType: gcf.Function.FromType,
+				ToType:   gcf.Function.ToType,
+			}] = gcf.Function
+			maps.Copy(pkgs, gcf.Packages)
+		}
 	}
 
 	err = generator.CreateConvertorSource(pkg, pkgs, convertors, destination)

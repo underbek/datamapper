@@ -30,6 +30,8 @@ options:
     recursive: false
     ## If field is pointer and recursive flag enabled then create convertors with pointers (default = false)
     with-pointers: false
+    ## Create convertors for slices (default = false)
+    with-slice: true
 
   - from:
       name: "User"

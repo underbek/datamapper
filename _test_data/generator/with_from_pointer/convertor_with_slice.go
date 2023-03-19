@@ -4,6 +4,8 @@
 // Package with_from_pointer is a generated datamapper package.
 package with_from_pointer
 
+import "fmt"
+
 // ConvertFromSliceToToSlice convert []*From to []To
 func ConvertFromSliceToToSlice(fromSlice []*From) ([]To, error) {
 	if fromSlice == nil {
@@ -14,7 +16,7 @@ func ConvertFromSliceToToSlice(fromSlice []*From) ([]To, error) {
 	for _, from := range fromSlice {
 		to, err := ConvertFromToTo(from)
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("convert []*From to []To failed: %w", err)
 		}
 		toSlice = append(toSlice, to)
 	}

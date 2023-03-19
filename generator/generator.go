@@ -133,10 +133,20 @@ func GenerateSliceConvertor(from, to models.Type, pkg models.Package, cf models.
 
 	return models.GeneratedConversionFunction{
 		Function: models.ConversionFunction{
-			Name:      res.convertorName,
-			Package:   pkg,
-			FromType:  from,
-			ToType:    to,
+			Name:    res.convertorName,
+			Package: pkg,
+			FromType: models.Type{
+				Kind: models.SliceType,
+				Additional: models.SliceAdditional{
+					InType: from,
+				},
+			},
+			ToType: models.Type{
+				Kind: models.SliceType,
+				Additional: models.SliceAdditional{
+					InType: to,
+				},
+			},
 			TypeParam: models.NoTypeParam,
 			WithError: res.withError,
 		},

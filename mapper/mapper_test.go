@@ -348,6 +348,58 @@ func Test_MapModels(t *testing.T) {
 			},
 			expectedPath: "with_generated",
 		},
+		{
+			name: "With slice",
+			opts: options.Options{
+				ConversionFunctions: []options.ConversionFunction{
+					{Source: customCFPath},
+				},
+				Options: []options.Option{
+					{
+						Destination: destination,
+						From: options.Model{
+							Source: mapperTransportSource,
+							Name:   "User",
+							Tag:    modelTag,
+						},
+						To: options.Model{
+							Source: mapperDomainSource,
+							Name:   "User",
+							Tag:    toModelTag,
+						},
+						WithSlice: true,
+					},
+				},
+			},
+			expectedPath: "with_slice",
+		},
+		{
+			name: "With invert and slice",
+			opts: options.Options{
+				ConversionFunctions: []options.ConversionFunction{
+					{Source: customCFPath},
+				},
+				Options: []options.Option{
+					{
+						Destination: destination,
+						From: options.Model{
+							Source: mapperTransportSource,
+							Name:   "*User",
+							Tag:    modelTag,
+							Alias:  "api",
+						},
+						To: options.Model{
+							Source: mapperDomainSource,
+							Name:   "User",
+							Tag:    toModelTag,
+						},
+						WithSlice: true,
+						Inverse:   true,
+					},
+				},
+			},
+			expectedPath: "with_invert_and_slice",
+		},
 	}
 
 	lg := logger.New()

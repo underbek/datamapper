@@ -13,7 +13,7 @@ func {{.convertorName}}(fromSlice []{{.fromName}}) []{{.toName}} {
   {{ if .withError -}}
     to, err := {{.conversion}}
     if err != nil {
-      return nil, err
+      return nil, fmt.Errorf("convert []{{.fromName}} to []{{.toName}} failed: %w", err)
     }
     toSlice = append(toSlice, to)
   {{else -}}
