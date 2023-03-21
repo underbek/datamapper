@@ -1,13 +1,11 @@
-package cf_with_slice
+package with_field_slice_and_errors
 
 import "github.com/shopspring/decimal"
 
 type From struct {
-	IDs  []int    `map:"ids"`
-	Ages []string `map:"ages"`
+	IDs []string `map:"ids"`
 }
 
 type To struct {
 	UUIDs []decimal.Decimal `map:"ids"`
-	Ages  []decimal.Decimal `map:"ages"`
 }

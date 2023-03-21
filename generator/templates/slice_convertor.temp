@@ -1,0 +1,25 @@
+// {{.convertorName}} convert []{{.fromName}} to []{{.toName}}
+{{ if .withError -}}
+func {{.convertorName}}(fromSlice []{{.fromName}}) ([]{{.toName}}, error) {
+{{else -}}
+func {{.convertorName}}(fromSlice []{{.fromName}}) []{{.toName}} {
+{{ end -}}
+  if fromSlice == nil {
+    return nil {{ if .withError }}, nil{{end}}
+  }
+
+  toSlice := make([]{{.toName}}, 0, len(fromSlice))
+  for _, from := range fromSlice {
+  {{ if .withError -}}
+    to, err := {{.conversion}}
+    if err != nil {
+      return nil, fmt.Errorf("convert []{{.fromName}} to []{{.toName}} failed: %w", err)
+    }
+    toSlice = append(toSlice, to)
+  {{else -}}
+    toSlice = append(toSlice, {{.conversion}})
+  {{ end -}}
+  }
+
+  return toSlice {{ if .withError }}, nil{{end}}
+}

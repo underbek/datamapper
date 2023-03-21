@@ -30,6 +30,8 @@ options:
     recursive: false
     ## If field is pointer and recursive flag enabled then create convertors with pointers (default = false)
     with-pointers: false
+    ## Create convertors for slices (default = false)
+    with-slice: true
 
   - from:
       name: "User"
@@ -43,3 +45,4 @@ options:
       tag: map
     destination: _test_data/local_test/broken_to_domain_user_converter.go
     inverse: true
+    with-slice: true

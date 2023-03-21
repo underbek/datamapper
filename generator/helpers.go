@@ -55,25 +55,33 @@ func filterAndSortImports(currentPkgPath string, imports []ImportType) []ImportT
 	return res
 }
 
-func generateConvertorName(from, to models.Struct, pkgPath string) string {
-	structNameGenerator := func(model models.Struct, pkgPath string) string {
-		name := model.Type.Name
+func generateConvertorName(from, to models.Type, pkgPath string, kind models.KindOfType) string {
+	structNameGenerator := func(t models.Type, pkgPath string) string {
+		name := t.Name
 
-		if model.Type.Package.Path == pkgPath {
+		if t.Package.Path == pkgPath {
 			return name
 		}
 
-		pkgName := model.Type.Package.Name
-		if model.Type.Package.Alias != "" {
-			pkgName = model.Type.Package.Alias
+		pkgName := t.Package.Name
+		if t.Package.Alias != "" {
+			pkgName = t.Package.Alias
 		}
 		return cases.Title(language.Und, cases.NoLower).String(pkgName) + name
 	}
 
+	prefix := ""
+	switch kind {
+	case models.SliceType:
+		prefix = "Slice"
+	}
+
 	return fmt.Sprintf(
-		"Convert%sTo%s",
+		"Convert%s%sTo%s%s",
 		structNameGenerator(from, pkgPath),
+		prefix,
 		structNameGenerator(to, pkgPath),
+		prefix,
 	)
 }
 
