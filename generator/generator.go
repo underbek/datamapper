@@ -2,6 +2,7 @@ package generator
 
 import (
 	"errors"
+	"fmt"
 	"os"
 
 	"github.com/underbek/datamapper/models"
@@ -24,6 +25,18 @@ type FieldsPair struct {
 	Conversions    []string
 	WithError      bool
 	PointerToValue bool
+	Types          []TypeWithName
+}
+
+type TypeWithName struct {
+	FieldName string
+	Type      models.Type
+}
+
+type ModelWithPairs struct {
+	Type   TypeWithName
+	models []ModelWithPairs
+	fields []FieldsPair
 }
 
 type result struct {
@@ -68,7 +81,7 @@ func CreateConvertorSource(pkg models.Package, packages models.Packages, convert
 	return nil
 }
 
-func GenerateConvertor(from, to models.Struct, pkg models.Package, functions models.Functions) (
+func GenerateConvertor(from, to models.Struct, fromTag, toTag string, pkg models.Package, functions models.Functions) (
 	models.GeneratedConversionFunction, error,
 ) {
 
@@ -85,10 +98,28 @@ func GenerateConvertor(from, to models.Struct, pkg models.Package, functions mod
 	res.fromName = from.Type.FullName(pkg.Path)
 	res.toName = to.Type.FullName(pkg.Path)
 
-	res.fromTag = from.Fields[0].Tags[0].Name
-	res.toTag = to.Fields[0].Tags[0].Name
+	res.fromTag = fromTag
+	res.toTag = toTag
 
-	convertor, err := fillConvertor(res)
+	if len(res.fields) == 0 {
+		return models.GeneratedConversionFunction{}, fmt.Errorf(
+			"not fields for convertor %s by tag %s -> %s by tag %s",
+			from.Type.Name,
+			fromTag,
+			to.Type.Name,
+			toTag,
+		)
+	}
+
+	headType := findHead(res.fields)
+	modelWithPairs := createModelWithPairs(res.fields, headType)
+
+	resultStruct, err := createResultConverter(pkg.Path, res.toName, modelWithPairs)
+	if err != nil {
+		return models.GeneratedConversionFunction{}, err
+	}
+
+	convertor, err := fillConvertor(res, resultStruct)
 	if err != nil {
 		return models.GeneratedConversionFunction{}, err
 	}

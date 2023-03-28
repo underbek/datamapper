@@ -13,6 +13,7 @@ type Logger interface {
 	Infof(format string, v ...any)
 	Warn(v ...any)
 	Error(v ...any)
+	Errorf(format string, v ...any)
 	Fatal(v ...any)
 	Fatalf(format string, v ...any)
 }
@@ -45,6 +46,10 @@ func (l *logger) Warn(v ...any) {
 
 func (l *logger) Error(v ...any) {
 	_ = l.error.Output(depth, fmt.Sprint(v...))
+}
+
+func (l *logger) Errorf(format string, v ...any) {
+	_ = l.error.Output(depth, fmt.Sprintf(format, v...))
 }
 
 func (l *logger) Fatal(v ...any) {

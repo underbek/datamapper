@@ -1,0 +1,4 @@
+{{.name}}{ {{range $field := .fields}}
+    {{$field.ToName}}: {{$field.Assignment}},
+  {{- end}}
+}

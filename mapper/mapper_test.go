@@ -545,3 +545,51 @@ func Test_MapRecursiveModels(t *testing.T) {
 		})
 	}
 }
+
+func Test_MapWithDash(t *testing.T) {
+	tests := []struct {
+		name         string
+		opts         options.Options
+		expectedPath string
+	}{
+		{
+			name: "With dash",
+			opts: options.Options{
+				ConversionFunctions: []options.ConversionFunction{
+					{Source: customCFPath},
+				},
+				Options: []options.Option{
+					{
+						Destination: destination,
+						From: options.Model{
+							Source: "../_test_data/mapper/with_dash/simple/from",
+							Name:   "UserData",
+							Tag:    modelTag,
+						},
+						To: options.Model{
+							Source: "../_test_data/mapper/with_dash/simple/to",
+							Name:   "UserData",
+							Tag:    toModelTag,
+						},
+					},
+				},
+			},
+			expectedPath: "with_dash",
+		},
+	}
+
+	lg := logger.New()
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			defer clearDestination(t, destinationPath)
+
+			err := MapModels(lg, tt.opts)
+			require.NoError(t, err)
+
+			actual := readActual(t)
+			expected := _test_data.MapperExpected(t, tt.expectedPath)
+			assert.Equal(t, expected, actual)
+		})
+	}
+}

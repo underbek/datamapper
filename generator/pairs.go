@@ -12,24 +12,46 @@ func createModelsPair(from, to models.Struct, pkgPath string, functions models.F
 	packages := make(models.Packages)
 
 	fromFields := make(map[string]models.Field)
-	for _, field := range from.Fields {
+	from.Fields.Range(func(field models.Field) {
 		fromFields[field.Tags[0].Value] = field
-	}
+	})
 
-	for _, toField := range to.Fields {
-		fromField, ok := fromFields[toField.Tags[0].Value]
+	err := to.Fields.Each(func(field *models.Field) error {
+		fromField, ok := fromFields[field.Tags[0].Value]
 		if !ok {
 			//TODO: warning or error politics
-			continue
+			return nil
 		}
 
-		pair, packs, err := getFieldsPair(fromField, toField, from, to, pkgPath, functions)
+		pair, packs, err := getFieldsPair(fromField, *field, from, to, pkgPath, functions)
 		if err != nil {
-			return result{}, err
+			return err
 		}
+
+		head := field.Head
+		for head != nil {
+			pair.Types = append([]TypeWithName{
+				{
+					FieldName: head.Name,
+					Type:      head.Type,
+				},
+			}, pair.Types...)
+			packs[head.Type.Package] = struct{}{}
+			head = head.Head
+		}
+		pair.Types = append([]TypeWithName{
+			{
+				Type: to.Type,
+			},
+		}, pair.Types...)
+		fields = append(fields, pair)
 
 		maps.Copy(packages, packs)
-		fields = append(fields, pair)
+
+		return nil
+	})
+	if err != nil {
+		return result{}, err
 	}
 
 	withError := isReturnError(fields)
@@ -110,6 +132,38 @@ func getAssigmentBySameTypes(fromFieldFullName string, fromType, toType models.T
 	return fmt.Sprintf("*%s", fromFieldFullName)
 }
 
+func createAssignment(field models.Field) string {
+	assignment := field.Name
+	for field.Head != nil {
+		field = *field.Head
+		assignment = field.Name + assignment
+	}
+
+	return assignment
+}
+
+func createFieldPath(field models.Field) string {
+	path := field.Name
+	for field.Head != nil {
+		field = *field.Head
+		path = field.Name + "." + path
+	}
+
+	return path
+}
+
+func createFieldPathWithPrefix(field models.Field) string {
+	path := field.Name
+	for field.Head != nil {
+		field = *field.Head
+		path = field.Name + "." + path
+	}
+
+	path = "from." + path
+
+	return path
+}
+
 func fillConversionFunction(pair FieldsPair, fromField, toField models.Field, fromModel, toModel models.Struct,
 	cf models.ConversionFunction, pkgPath string) (FieldsPair, models.Packages, error) {
 	pkgs := make(models.Packages)
@@ -122,15 +176,15 @@ func fillConversionFunction(pair FieldsPair, fromField, toField models.Field, fr
 		fromField.Type,
 		toField.Type,
 		pkgPath,
-		fmt.Sprintf("from.%s", fromField.Name),
+		createFieldPathWithPrefix(fromField),
 	)
 
-	refAssignment := fmt.Sprintf("&from%s", fromField.Name)
-	valueAssignment := fmt.Sprintf("from%s", fromField.Name)
+	refAssignment := fmt.Sprintf("&from%s", createAssignment(fromField))
+	valueAssignment := fmt.Sprintf("from%s", createAssignment(fromField))
 
 	if isNeedPointerCheckAndReturnError(fromField.Type, toField.Type, cf) {
 		conversion, err := getPointerCheck(
-			fmt.Sprintf("from.%s", fromField.Name),
+			createFieldPathWithPrefix(fromField),
 			toModel.Type.FullName(pkgPath),
 			getFieldPointerCheckError(
 				fromModel.Type.FullName(pkgPath),
@@ -156,7 +210,7 @@ func fillConversionFunction(pair FieldsPair, fromField, toField models.Field, fr
 	switch getConversionRule(fromField.Type, toField.Type, cf) {
 	case NeedOnlyAssigmentRule:
 		pair.Assignment = getAssigmentBySameTypes(
-			fmt.Sprintf("from.%s", fromField.Name),
+			createFieldPathWithPrefix(fromField),
 			fromField.Type,
 			toField.Type,
 		)
@@ -169,7 +223,7 @@ func fillConversionFunction(pair FieldsPair, fromField, toField models.Field, fr
 
 	case NeedCallConversionFunctionSeparatelyRule:
 		conversion, err := getPointerConversion(
-			fmt.Sprintf("from%s", fromField.Name),
+			valueAssignment,
 			cfCall,
 		)
 		if err != nil {
@@ -182,9 +236,9 @@ func fillConversionFunction(pair FieldsPair, fromField, toField models.Field, fr
 	case PointerPoPointerConversionFunctionsRule:
 		errString, err := getConvertError(
 			fromModel.Type.Name,
-			fromField.Name,
+			createFieldPath(fromField),
 			toModel.Type.Name,
-			toField.Name,
+			createFieldPath(toField),
 		)
 		if err != nil {
 			return FieldsPair{}, nil, err
@@ -196,8 +250,8 @@ func fillConversionFunction(pair FieldsPair, fromField, toField models.Field, fr
 		}] = struct{}{}
 
 		conversion, err := getPointerToPointerConversion(
-			fmt.Sprintf("from%s", fromField.Name),
-			fmt.Sprintf("from.%s", fromField.Name),
+			valueAssignment,
+			createFieldPathWithPrefix(fromField),
 			toModel.Type.FullName(pkgPath),
 			toField.Type.FullName(pkgPath),
 			cfCall,
@@ -218,9 +272,9 @@ func fillConversionFunction(pair FieldsPair, fromField, toField models.Field, fr
 	case NeedCallConversionFunctionWithErrorRule:
 		errString, err := getConvertError(
 			fromModel.Type.Name,
-			fromField.Name,
+			createFieldPath(fromField),
 			toModel.Type.Name,
-			toField.Name,
+			createFieldPath(toField),
 		)
 		if err != nil {
 			return FieldsPair{}, nil, err
@@ -232,7 +286,7 @@ func fillConversionFunction(pair FieldsPair, fromField, toField models.Field, fr
 		}] = struct{}{}
 
 		conversion, err := getErrorConversion(
-			fmt.Sprintf("from%s", fromField.Name),
+			valueAssignment,
 			toModel.Type.FullName(pkgPath),
 			cfCall,
 			errString,
@@ -345,9 +399,9 @@ func fillConversionFunctionBySlice(pair FieldsPair, fromField, toField models.Fi
 	case NeedCallConversionFunctionWithErrorRule:
 		errString, err := getConvertError(
 			fromModel.Type.Name,
-			fromField.Name,
+			createFieldPath(fromField),
 			toModel.Type.Name,
-			toField.Name,
+			createFieldPath(toField),
 		)
 		if err != nil {
 			return FieldsPair{}, nil, err
@@ -389,9 +443,9 @@ func fillConversionFunctionBySlice(pair FieldsPair, fromField, toField models.Fi
 	case PointerPoPointerConversionFunctionsRule:
 		errString, err := getConvertError(
 			fromModel.Type.Name,
-			fromField.Name,
+			createFieldPath(fromField),
 			toModel.Type.Name,
-			toField.Name,
+			createFieldPath(toField),
 		)
 		if err != nil {
 			return FieldsPair{}, nil, err

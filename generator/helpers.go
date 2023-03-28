@@ -2,6 +2,7 @@ package generator
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/underbek/datamapper/models"
 	"golang.org/x/exp/maps"
@@ -162,4 +163,92 @@ func getFieldPointerCheckError(fromModelName, toModelName, fromFieldName, toFiel
 		toModelName,
 		toFieldName,
 	)
+}
+
+func findHead(fields []FieldsPair) TypeWithName {
+	return fields[0].Types[0]
+}
+
+func createModelWithPairs(fields []FieldsPair, modelType TypeWithName) ModelWithPairs {
+	return createModelWithPairsByLvl(fields, modelType, 0)
+}
+
+func createModelWithPairsByLvl(fields []FieldsPair, modelType TypeWithName, lvl int) ModelWithPairs {
+	res := ModelWithPairs{
+		Type: modelType,
+	}
+
+	var otherFields []FieldsPair
+	var internalTypes []TypeWithName
+	internalTypeMap := make(map[TypeWithName]struct{})
+
+	for _, field := range fields {
+		if field.Types[lvl] != modelType {
+			continue
+		}
+
+		if len(field.Types) == lvl+1 {
+			res.fields = append(res.fields, field)
+			continue
+		}
+
+		if len(field.Types) == lvl+2 {
+			currentType := field.Types[lvl+1]
+			if _, ok := internalTypeMap[currentType]; !ok {
+				internalTypes = append(internalTypes, currentType)
+				internalTypeMap[currentType] = struct{}{}
+			}
+		}
+
+		otherFields = append(otherFields, field)
+	}
+
+	if internalTypes == nil {
+		return res
+	}
+
+	for _, internalType := range internalTypes {
+		res.models = append(res.models, createModelWithPairsByLvl(otherFields, internalType, lvl+1))
+	}
+
+	return res
+}
+
+func makeFieldsPairByModel(pkg string, model ModelWithPairs) (FieldsPair, error) {
+	for _, m := range model.models {
+		field, err := makeFieldsPairByModel(pkg, m)
+		if err != nil {
+			return FieldsPair{}, err
+		}
+
+		model.fields = append(model.fields, field)
+	}
+
+	converter, err := fillResultStruct(model.Type.Type.FullName(pkg), model.fields)
+	if err != nil {
+		return FieldsPair{}, err
+	}
+
+	return FieldsPair{
+		Assignment: converter,
+		ToName:     model.Type.FieldName,
+	}, nil
+}
+
+func createResultConverter(pkg string, toName string, model ModelWithPairs) (string, error) {
+	for _, m := range model.models {
+		field, err := makeFieldsPairByModel(pkg, m)
+		if err != nil {
+			return "", err
+		}
+
+		model.fields = append(model.fields, field)
+	}
+
+	res, err := fillResultStruct(strings.Replace(toName, "*", "&", 1), model.fields)
+	if err != nil {
+		return "", err
+	}
+
+	return res, nil
 }

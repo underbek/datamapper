@@ -111,7 +111,7 @@ func ParseModels(lg logger.Logger, source string) (map[string]models.Struct, err
 				},
 				Kind: models.StructType,
 			},
-			Fields: fields,
+			Fields: models.NewFields(fields),
 		}
 	}
 

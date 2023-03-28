@@ -1,4 +1,4 @@
-package utils
+package mapper
 
 import (
 	"testing"
@@ -20,16 +20,16 @@ func Test_Filter(t *testing.T) {
 		{Name: "Empty", Type: models.Type{Name: "string"}},
 	}
 
-	res := FilterFields("map", fields)
-	assert.Len(t, res, 2)
+	res := filterFields("map", models.NewFields(fields))
+	assert.Equal(t, res.Len(), 2)
 
-	expected := []models.Field{
+	expected := models.NewFields([]models.Field{
 		{Name: "ID", Type: models.Type{Name: "int"}, Tags: []models.Tag{
 			{Name: "map", Value: "id"},
 		}},
 		{Name: "Name", Type: models.Type{Name: "string"}, Tags: []models.Tag{
 			{Name: "map", Value: "name"},
 		}},
-	}
+	})
 	assert.Equal(t, expected, res)
 }
