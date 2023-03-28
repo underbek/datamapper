@@ -10,7 +10,10 @@ import (
 
 const dash = "-"
 
-func TransformAndFilterFields(lg logger.Logger, tagName string, structure models.Struct, head *models.Field) (models.Struct, error) {
+var ErrNotFoundInPackage = fmt.Errorf("not found in package")
+
+func TransformAndFilterFields(lg logger.Logger, tagName string, structure models.Struct, head *models.Field,
+) (models.Struct, error) {
 	structure.Fields = filterFields(tagName, structure.Fields)
 	newStruct := models.Struct{
 		Type: structure.Type,
@@ -76,7 +79,12 @@ func transformAndFilterField(lg logger.Logger, field models.Field) (models.Field
 
 	fieldStruct, ok := structs[field.Type.Name]
 	if !ok {
-		return models.Field{}, fmt.Errorf("struct %s not found in package %s", field.Type.Name, field.Type.Package.Path)
+		return models.Field{}, fmt.Errorf(
+			"struct %s %w %s",
+			field.Type.Name,
+			ErrNotFoundInPackage,
+			field.Type.Package.Path,
+		)
 	}
 
 	newStruct, err := TransformAndFilterFields(lg, field.Tags[0].Name, fieldStruct, &field)

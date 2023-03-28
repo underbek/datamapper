@@ -30,20 +30,14 @@ func createModelsPair(from, to models.Struct, pkgPath string, functions models.F
 
 		head := field.Head
 		for head != nil {
-			pair.Types = append([]TypeWithName{
-				{
-					FieldName: head.Name,
-					Type:      head.Type,
-				},
-			}, pair.Types...)
+			pair.Types = append([]TypeWithName{{
+				FieldName: head.Name,
+				Type:      head.Type,
+			}}, pair.Types...)
 			packs[head.Type.Package] = struct{}{}
 			head = head.Head
 		}
-		pair.Types = append([]TypeWithName{
-			{
-				Type: to.Type,
-			},
-		}, pair.Types...)
+		pair.Types = append([]TypeWithName{{Type: to.Type}}, pair.Types...)
 		fields = append(fields, pair)
 
 		maps.Copy(packages, packs)
@@ -182,6 +176,25 @@ func fillConversionFunction(pair FieldsPair, fromField, toField models.Field, fr
 	refAssignment := fmt.Sprintf("&from%s", createAssignment(fromField))
 	valueAssignment := fmt.Sprintf("from%s", createAssignment(fromField))
 
+	if isNeedPointerCheckSkippedFields(fromField) {
+		conversions, err := getSkippedFieldsPointerCheckError(
+			fromField,
+			toModel.Type.FullName(pkgPath),
+			fromModel.Type.Name,
+		)
+		if err != nil {
+			return FieldsPair{}, nil, err
+		}
+
+		pkgs[models.Package{
+			Name: "errors",
+			Path: "errors",
+		}] = struct{}{}
+
+		pair.WithError = true
+		pair.Conversions = append(pair.Conversions, conversions...)
+	}
+
 	if isNeedPointerCheckAndReturnError(fromField.Type, toField.Type, cf) {
 		conversion, err := getPointerCheck(
 			createFieldPathWithPrefix(fromField),
@@ -189,8 +202,8 @@ func fillConversionFunction(pair FieldsPair, fromField, toField models.Field, fr
 			getFieldPointerCheckError(
 				fromModel.Type.FullName(pkgPath),
 				toModel.Type.FullName(pkgPath),
-				fromField.Name,
-				toField.Name,
+				createFieldPath(fromField),
+				createFieldPath(toField),
 			),
 			true,
 		)
@@ -204,7 +217,7 @@ func fillConversionFunction(pair FieldsPair, fromField, toField models.Field, fr
 		}] = struct{}{}
 
 		pair.PointerToValue = true
-		pair.Conversions = []string{conversion}
+		pair.Conversions = append(pair.Conversions, conversion)
 	}
 
 	switch getConversionRule(fromField.Type, toField.Type, cf) {
@@ -265,7 +278,7 @@ func fillConversionFunction(pair FieldsPair, fromField, toField models.Field, fr
 		pkgs[toField.Type.Package] = struct{}{}
 
 		// not use pointer check
-		pair.Conversions = []string{conversion}
+		pair.Conversions = append(pair.Conversions, conversion)
 		pair.Assignment = valueAssignment
 		return pair, pkgs, nil
 
@@ -358,8 +371,8 @@ func fillConversionFunctionBySlice(pair FieldsPair, fromField, toField models.Fi
 			getFieldPointerCheckError(
 				fromModel.Type.FullName(pkgPath),
 				toModel.Type.FullName(pkgPath),
-				fromField.Name,
-				toField.Name,
+				createFieldPath(fromField),
+				createFieldPath(toField),
 			),
 			true,
 		)

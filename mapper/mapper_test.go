@@ -561,20 +561,48 @@ func Test_MapWithDash(t *testing.T) {
 				Options: []options.Option{
 					{
 						Destination: destination,
+						Inverse:     true,
 						From: options.Model{
-							Source: "../_test_data/mapper/with_dash/simple/from",
-							Name:   "UserData",
+							Source: "../_test_data/mapper/with_dash/domain",
+							Name:   "Order",
 							Tag:    modelTag,
 						},
 						To: options.Model{
-							Source: "../_test_data/mapper/with_dash/simple/to",
-							Name:   "UserData",
-							Tag:    toModelTag,
+							Source: "../_test_data/mapper/with_dash/dao",
+							Name:   "OrderData",
+							Tag:    "db",
+							Alias:  "db",
 						},
 					},
 				},
 			},
 			expectedPath: "with_dash",
+		},
+		{
+			name: "With dash and pointers",
+			opts: options.Options{
+				ConversionFunctions: []options.ConversionFunction{
+					{Source: customCFPath},
+				},
+				Options: []options.Option{
+					{
+						Destination: destination,
+						Inverse:     true,
+						From: options.Model{
+							Source: "../_test_data/mapper/with_dash_and_pointers/domain",
+							Name:   "*Order",
+							Tag:    modelTag,
+						},
+						To: options.Model{
+							Source: "../_test_data/mapper/with_dash_and_pointers/dao",
+							Name:   "OrderData",
+							Tag:    "db",
+							Alias:  "db",
+						},
+					},
+				},
+			},
+			expectedPath: "with_dash_and_pointers",
 		},
 	}
 

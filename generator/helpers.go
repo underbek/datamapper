@@ -24,9 +24,15 @@ func getTypeParams(cf models.ConversionFunction, fromType, toType models.Type) s
 }
 
 func fillConversions(fields []FieldsPair) []string {
+	uniqConversions := make(map[string]struct{})
 	var res []string
 	for _, field := range fields {
-		res = append(res, field.Conversions...)
+		for _, conv := range field.Conversions {
+			if _, ok := uniqConversions[conv]; !ok {
+				uniqConversions[conv] = struct{}{}
+				res = append(res, conv)
+			}
+		}
 	}
 
 	return res
@@ -165,6 +171,31 @@ func getFieldPointerCheckError(fromModelName, toModelName, fromFieldName, toFiel
 	)
 }
 
+func getSkippedFieldsPointerCheckError(field models.Field, toTypeFullName, fromTypeName string) ([]string, error) {
+	var res []string
+
+	head := field.Head
+	for head != nil {
+		if head.Type.Pointer {
+			conversion, err := getPointerCheck(
+				createFieldPathWithPrefix(*head),
+				toTypeFullName,
+				fmt.Sprintf("errors.New(\"%s.%s is nil\")", fromTypeName, createFieldPath(*head)),
+				true,
+			)
+			if err != nil {
+				return nil, err
+			}
+
+			res = append(res, conversion)
+		}
+
+		head = head.Head
+	}
+
+	return res, nil
+}
+
 func findHead(fields []FieldsPair) TypeWithName {
 	return fields[0].Types[0]
 }
@@ -224,7 +255,10 @@ func makeFieldsPairByModel(pkg string, model ModelWithPairs) (FieldsPair, error)
 		model.fields = append(model.fields, field)
 	}
 
-	converter, err := fillResultStruct(model.Type.Type.FullName(pkg), model.fields)
+	converter, err := fillResultStruct(
+		strings.Replace(model.Type.Type.FullName(pkg), "*", "&", 1),
+		model.fields,
+	)
 	if err != nil {
 		return FieldsPair{}, err
 	}

@@ -106,7 +106,7 @@ func setPackageAlias(p *models.Package, aliases map[string]string) {
 
 func setPackageAliasToStruct(m *models.Struct, aliases map[string]string) {
 	setPackageAlias(&m.Type.Package, aliases)
-	m.Fields.Each(func(field *models.Field) error {
+	_ = m.Fields.Each(func(field *models.Field) error {
 		setPackageAlias(&field.Type.Package, aliases)
 
 		head := field.Head

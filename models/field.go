@@ -74,8 +74,9 @@ func (f Fields) Filter(fn FilterFunc) Fields {
 			continue
 		}
 
-		if fn(&field) {
-			res = append(res, field)
+		currentField := field
+		if fn(&currentField) {
+			res = append(res, currentField)
 		}
 	}
 

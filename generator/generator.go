@@ -10,6 +10,7 @@ import (
 
 var (
 	ErrNotFound                = errors.New("not found error")
+	ErrNothingToConvert        = errors.New("nothing to convert error")
 	ErrUndefinedConversionRule = errors.New("undefined conversion rule error")
 )
 
@@ -103,7 +104,8 @@ func GenerateConvertor(from, to models.Struct, fromTag, toTag string, pkg models
 
 	if len(res.fields) == 0 {
 		return models.GeneratedConversionFunction{}, fmt.Errorf(
-			"not fields for convertor %s by tag %s -> %s by tag %s",
+			"%w %s by tag %s -> %s by tag %s",
+			ErrNothingToConvert,
 			from.Type.Name,
 			fromTag,
 			to.Type.Name,

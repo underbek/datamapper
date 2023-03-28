@@ -5,21 +5,53 @@
 package mapper
 
 import (
-	"github.com/underbek/datamapper/_test_data/mapper/with_dash/simple/from"
-	"github.com/underbek/datamapper/_test_data/mapper/with_dash/simple/to"
-	"github.com/underbek/datamapper/_test_data/mapper/with_dash/simple/to/to_meta"
+	"fmt"
+
+	db "github.com/underbek/datamapper/_test_data/mapper/with_dash/dao"
+	"github.com/underbek/datamapper/_test_data/mapper/with_dash/domain"
+	"github.com/underbek/datamapper/_test_data/mapper/with_dash/domain/user"
 	"github.com/underbek/datamapper/converts"
 )
 
-// ConvertFromUserDataToToUserData convert from.UserData by tag map to to.UserData by tag map
-func ConvertFromUserDataToToUserData(from from.UserData) to.UserData {
-	return to.UserData{
-		Age: converts.ConvertFloatToDecimal(from.Meta.Age),
-		User: to.User{
-			UUID: converts.ConvertNumericToString(from.User.ID),
-			Name: from.User.Name,
-			MetaData: to_meta.Meta{
-				Count: converts.ConvertIntegerToDecimal(from.Meta.Count),
+// ConvertDomainOrderToDbOrderData convert domain.Order by tag map to db.OrderData by tag db
+func ConvertDomainOrderToDbOrderData(from domain.Order) (db.OrderData, error) {
+	fromOrderID, err := converts.ConvertStringToSigned[int64](from.OrderID)
+	if err != nil {
+		return db.OrderData{}, fmt.Errorf("convert Order.OrderID -> OrderData.Order.ID failed: %w", err)
+	}
+
+	fromUserID, err := converts.ConvertStringToSigned[int64](from.User.ID)
+	if err != nil {
+		return db.OrderData{}, fmt.Errorf("convert Order.User.ID -> OrderData.UserData.ID failed: %w", err)
+	}
+
+	return db.OrderData{
+		Order: db.Order{
+			ID:   fromOrderID,
+			UUID: from.OrderUUID,
+		},
+		UserData: db.User{
+			ID:        fromUserID,
+			CreatedAt: from.User.UserTimes.CreatedAt,
+		},
+		Urls: db.OrderUrls{
+			SiteUrl:     from.SiteUrl,
+			RedirectUrl: from.RedirectUrl,
+		},
+	}, nil
+}
+
+// ConvertDbOrderDataToDomainOrder convert db.OrderData by tag db to domain.Order by tag map
+func ConvertDbOrderDataToDomainOrder(from db.OrderData) domain.Order {
+	return domain.Order{
+		OrderID:     converts.ConvertNumericToString(from.Order.ID),
+		OrderUUID:   from.Order.UUID,
+		SiteUrl:     from.Urls.SiteUrl,
+		RedirectUrl: from.Urls.RedirectUrl,
+		User: user.User{
+			ID: converts.ConvertNumericToString(from.UserData.ID),
+			UserTimes: user.Times{
+				CreatedAt: from.UserData.CreatedAt,
 			},
 		},
 	}
