@@ -14,6 +14,7 @@ import (
 const (
 	convertorSourceFilePath            = "templates/convertor_source.temp"
 	convertorFilePath                  = "templates/convertor.temp"
+	resultStructPath                   = "templates/result_struct.temp"
 	sliceConvertorFilePath             = "templates/slice_convertor.temp"
 	errorConversionFilePath            = "templates/error_conversion.temp"
 	pointerCheckFilePath               = "templates/pointer_check.temp"
@@ -68,20 +69,28 @@ func fillConvertorsSource(pkg models.Package, packages models.Packages, converto
 	return content, nil
 }
 
-func fillConvertor(res result) (string, error) {
+func fillConvertor(res result, resultStruct string) (string, error) {
 	data := map[string]any{
 		"fromName":      res.fromName,
 		"toName":        res.toName,
 		"fromTag":       res.fromTag,
 		"toTag":         res.toTag,
 		"convertorName": res.convertorName,
-		"fields":        res.fields,
 		"withError":     res.withError,
 		"conversions":   res.conversions,
-		"resName":       strings.Replace(res.toName, "*", "&", 1),
+		"resultStruct":  resultStruct,
 	}
 
 	return fillTemplate[string](convertorFilePath, data)
+}
+
+func fillResultStruct(name string, fields []FieldsPair) (string, error) {
+	data := map[string]any{
+		"name":   name,
+		"fields": fields,
+	}
+
+	return fillTemplate[string](resultStructPath, data)
 }
 
 func fillSliceConvertor(res sliceResult) (string, error) {

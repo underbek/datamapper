@@ -106,15 +106,23 @@ func setPackageAlias(p *models.Package, aliases map[string]string) {
 
 func setPackageAliasToStruct(m *models.Struct, aliases map[string]string) {
 	setPackageAlias(&m.Type.Package, aliases)
-	for i := range m.Fields {
-		setPackageAlias(&m.Fields[i].Type.Package, aliases)
-		switch m.Fields[i].Type.Kind {
-		case models.SliceType:
-			additional := m.Fields[i].Type.Additional.(models.SliceAdditional)
-			setPackageAlias(&additional.InType.Package, aliases)
-			m.Fields[i].Type.Additional = additional
+	_ = m.Fields.Each(func(field *models.Field) error {
+		setPackageAlias(&field.Type.Package, aliases)
+
+		head := field.Head
+		for head != nil {
+			setPackageAlias(&head.Type.Package, aliases)
+			head = head.Head
 		}
-	}
+
+		switch field.Type.Kind {
+		case models.SliceType:
+			additional := field.Type.Additional.(models.SliceAdditional)
+			setPackageAlias(&additional.InType.Package, aliases)
+			field.Type.Additional = additional
+		}
+		return nil
+	})
 }
 
 func setPackageAliasToCfKey(key models.ConversionFunctionKey, aliases map[string]string) models.ConversionFunctionKey {
@@ -162,8 +170,13 @@ func mapModel(
 	fromStructs, toStructs map[string]models.Struct,
 ) (models.Functions, error) {
 
-	from.Fields = utils.FilterFields(fromTag, from.Fields)
-	if len(from.Fields) == 0 {
+	var err error
+	from, err = TransformAndFilterFields(lg, fromTag, from, nil)
+	if err != nil {
+		return nil, fmt.Errorf("transform and filter fields error: %w", err)
+	}
+
+	if from.Fields.Len() == 0 {
 		return nil, fmt.Errorf(
 			"%w: source model %s does not contain tag %s",
 			ErrNotFoundTag,
@@ -172,8 +185,12 @@ func mapModel(
 		)
 	}
 
-	to.Fields = utils.FilterFields(toTag, to.Fields)
-	if len(to.Fields) == 0 {
+	to, err = TransformAndFilterFields(lg, toTag, to, nil)
+	if err != nil {
+		return nil, fmt.Errorf("transform and filter fields error: %w", err)
+	}
+
+	if to.Fields.Len() == 0 {
 		return nil, fmt.Errorf(
 			"%w: to model %s does not contain tag %s",
 			ErrNotFoundTag,
@@ -186,7 +203,7 @@ func mapModel(
 	setPackageAliasToStruct(&from, aliases)
 	setPackageAliasToStruct(&to, aliases)
 
-	err := os.MkdirAll(path.Dir(destination), os.ModePerm)
+	err = os.MkdirAll(path.Dir(destination), os.ModePerm)
 	if err != nil {
 		return nil, fmt.Errorf("create destination dir %s error: %w", path.Dir(destination), err)
 	}
@@ -201,7 +218,7 @@ func mapModel(
 	var gcf models.GeneratedConversionFunction
 	for {
 		funcs = setPackageAliasToFunctions(funcs, aliases)
-		gcf, err = generator.GenerateConvertor(from, to, pkg, funcs)
+		gcf, err = generator.GenerateConvertor(from, to, fromTag, toTag, pkg, funcs)
 		if err == nil {
 			convertors = append(convertors, gcf.Body)
 			funcs[models.ConversionFunctionKey{
@@ -272,7 +289,7 @@ func mapModel(
 	}
 
 	if inverse {
-		gcf, err := generator.GenerateConvertor(to, from, pkg, funcs)
+		gcf, err := generator.GenerateConvertor(to, from, toTag, fromTag, pkg, funcs)
 		if err != nil {
 			return nil, fmt.Errorf("generate convertor error: %w", err)
 		}

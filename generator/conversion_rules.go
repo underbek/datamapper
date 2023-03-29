@@ -116,3 +116,16 @@ func isNeedRangeBySlice(fromType, toType models.Type, cf models.ConversionFuncti
 
 	return true
 }
+
+func isNeedPointerCheckSkippedFields(field models.Field) bool {
+	head := field.Head
+	for head != nil {
+		if head.Type.Pointer {
+			return true
+		}
+
+		head = head.Head
+	}
+
+	return false
+}

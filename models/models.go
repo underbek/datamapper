@@ -33,7 +33,7 @@ type Packages map[Package]struct{}
 // 1- global map
 // 2- write info into string
 // 3- difference types from cf key and type
-// 4- use kustom map comparable
+// 4- use custom map comparable
 
 type Type struct {
 	Name       string     `yaml:"name"`
@@ -62,15 +62,9 @@ type Tag struct {
 	Value string
 }
 
-type Field struct {
-	Name string
-	Type Type
-	Tags []Tag
-}
-
 type Struct struct {
 	Type   Type
-	Fields []Field
+	Fields Fields
 }
 
 func (t Type) FullName(basePackage string) string {

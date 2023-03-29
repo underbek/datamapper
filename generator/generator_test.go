@@ -19,6 +19,8 @@ const (
 
 	generatedPackagePath = "github.com/underbek/datamapper/_test_data/generated/generator"
 	generatedPackageName = "generator"
+
+	defaultTag = "map"
 )
 
 func parseFunctions(t *testing.T, source string) models.Functions {
@@ -36,26 +38,29 @@ func Test_CreateModelsPair(t *testing.T) {
 				Path: generatedPackagePath,
 			},
 		},
-		Fields: []models.Field{
+		Fields: models.NewFields([]models.Field{
 			{Name: "ID", Type: models.Type{Name: "int"}, Tags: []models.Tag{{Name: "map", Value: "id"}}},
 			{Name: "Name", Type: models.Type{Name: "string"}, Tags: []models.Tag{{Name: "map", Value: "name"}}},
 			{Name: "Age", Type: models.Type{Name: "float64"}, Tags: []models.Tag{{Name: "map", Value: "age"}}},
+		}),
+	}
+
+	toType := models.Type{
+		Name: "ToName",
+		Package: models.Package{
+			Name: generatedPackageName,
+			Path: generatedPackagePath,
 		},
 	}
+
 	toModel := models.Struct{
-		Type: models.Type{
-			Name: "ToName",
-			Package: models.Package{
-				Name: generatedPackageName,
-				Path: generatedPackagePath,
-			},
-		},
-		Fields: []models.Field{
+		Type: toType,
+		Fields: models.NewFields([]models.Field{
 			{Name: "UUID", Type: models.Type{Name: "string"}, Tags: []models.Tag{{Name: "map", Value: "id"}}},
 			{Name: "Name", Type: models.Type{Name: "string"}, Tags: []models.Tag{{Name: "map", Value: "name"}}},
 			{Name: "Data", Type: models.Type{Name: "string"}, Tags: []models.Tag{{Name: "map", Value: "data"}}},
 			{Name: "Age", Type: models.Type{Name: "uint8"}, Tags: []models.Tag{{Name: "map", Value: "age"}}},
-		},
+		}),
 	}
 
 	res, err := createModelsPair(fromModel, toModel, "", parseFunctions(t, cfPath))
@@ -69,6 +74,7 @@ func Test_CreateModelsPair(t *testing.T) {
 				ToName:     "UUID",
 				ToType:     "string",
 				Assignment: "converts.ConvertNumericToString(from.ID)",
+				Types:      []TypeWithName{{Type: toType}},
 			},
 			{
 				FromName:   "Name",
@@ -76,6 +82,7 @@ func Test_CreateModelsPair(t *testing.T) {
 				ToName:     "Name",
 				ToType:     "string",
 				Assignment: "from.Name",
+				Types:      []TypeWithName{{Type: toType}},
 			},
 			{
 				FromName:   "Age",
@@ -83,6 +90,7 @@ func Test_CreateModelsPair(t *testing.T) {
 				ToName:     "Age",
 				ToType:     "uint8",
 				Assignment: "converts.ConvertOrderedToOrdered[float64,uint8](from.Age)",
+				Types:      []TypeWithName{{Type: toType}},
 			},
 		},
 		packages: models.Packages{
@@ -282,7 +290,7 @@ func Test_GenerateConvertor(t *testing.T) {
 			to := modelsTo["To"]
 			to.Type.Pointer = tt.isToPointer
 
-			gcf, err := GenerateConvertor(from, to, pkg, funcs)
+			gcf, err := GenerateConvertor(from, to, defaultTag, defaultTag, pkg, funcs)
 			require.NoError(t, err)
 
 			actual, err := fillConvertorsSource(pkg, gcf.Packages, []string{gcf.Body})
@@ -318,7 +326,7 @@ func Test_GenerateConvertorWithAliases(t *testing.T) {
 	pkg, err := parser.ParseDestinationPackage(lg, testGeneratorPath+"with_aliases")
 	require.NoError(t, err)
 
-	gcf, err := GenerateConvertor(from, to, pkg, funcs)
+	gcf, err := GenerateConvertor(from, to, defaultTag, defaultTag, pkg, funcs)
 	require.NoError(t, err)
 
 	actual, err := fillConvertorsSource(pkg, gcf.Packages, []string{gcf.Body})

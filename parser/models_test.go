@@ -58,7 +58,7 @@ func Test_ParseModelsWithFunc(t *testing.T) {
 						Package: models.Package{Name: "parser", Path: "github.com/underbek/datamapper/_test_data/parser"},
 						Kind:    models.StructType,
 					},
-					Fields: []models.Field{},
+					Fields: models.NewFields([]models.Field{}),
 				},
 			},
 		},
@@ -86,15 +86,16 @@ func Test_ParseModels(t *testing.T) {
 				Package: models.Package{Name: "parser", Path: "github.com/underbek/datamapper/_test_data/parser"},
 				Kind:    models.StructType,
 			},
-			Fields: []models.Field{
+			Fields: models.NewFields([]models.Field{
 				{Name: "ID", Type: models.Type{Name: "string"}},
-			}},
+			}),
+		},
 		"TestModel": {
 			Type: models.Type{
 				Name:    "TestModel",
 				Package: models.Package{Name: "parser", Path: "github.com/underbek/datamapper/_test_data/parser"},
 				Kind:    models.StructType,
-			}, Fields: []models.Field{
+			}, Fields: models.NewFields([]models.Field{
 				{Name: "ID", Type: models.Type{Name: "int"}, Tags: []models.Tag{
 					{Name: "json", Value: "id"},
 					{Name: "map", Value: "id"},
@@ -104,14 +105,15 @@ func Test_ParseModels(t *testing.T) {
 					{Name: "map", Value: "name"},
 				}},
 				{Name: "Empty", Type: models.Type{Name: "string"}},
-			}},
+			}),
+		},
 		"TestModelTo": {
 			Type: models.Type{
 				Name:    "TestModelTo",
 				Package: models.Package{Name: "parser", Path: "github.com/underbek/datamapper/_test_data/parser"},
 				Kind:    models.StructType,
 			},
-			Fields: []models.Field{
+			Fields: models.NewFields([]models.Field{
 				{Name: "UUID", Type: models.Type{Name: "string"}, Tags: []models.Tag{
 					{Name: "db", Value: "uuid"},
 					{Name: "map", Value: "id"},
@@ -120,7 +122,8 @@ func Test_ParseModels(t *testing.T) {
 					{Name: "db", Value: "name"},
 					{Name: "map", Value: "name"},
 				}},
-			}},
+			}),
+		},
 	}
 
 	assert.Equal(t, expected, res)
@@ -137,7 +140,7 @@ func Test_ParseComplexModel(t *testing.T) {
 				Package: models.Package{Name: "parser", Path: "github.com/underbek/datamapper/_test_data/parser"},
 				Kind:    models.StructType,
 			},
-			Fields: []models.Field{
+			Fields: models.NewFields([]models.Field{
 				{
 					Name: "ID", Type: models.Type{
 						Name: "Model",
@@ -167,7 +170,8 @@ func Test_ParseComplexModel(t *testing.T) {
 						{Name: "map", Value: "age"},
 					},
 				},
-			}},
+			}),
+		},
 	}
 
 	assert.Equal(t, expected, res)
@@ -183,7 +187,7 @@ func Test_ParseModelWithPointerField(t *testing.T) {
 				Name:    "PointerModel",
 				Package: models.Package{Name: "parser", Path: "github.com/underbek/datamapper/_test_data/parser"},
 				Kind:    models.StructType,
-			}, Fields: []models.Field{
+			}, Fields: models.NewFields([]models.Field{
 				{
 					Name: "ID",
 					Type: models.Type{Name: "int", Pointer: true},
@@ -207,7 +211,8 @@ func Test_ParseModelWithPointerField(t *testing.T) {
 					},
 					Tags: []models.Tag{{Name: "map", Value: "age"}},
 				},
-			}},
+			}),
+		},
 	}
 
 	assert.Equal(t, expected, res)
@@ -255,7 +260,7 @@ func Test_ParseModelWithAlias(t *testing.T) {
 			Package: models.Package{Name: "parser", Path: "github.com/underbek/datamapper/_test_data/parser"},
 			Kind:    models.StructType,
 		},
-		Fields: []models.Field{
+		Fields: models.NewFields([]models.Field{
 			{
 				Name: "String",
 				Type: models.Type{
@@ -345,7 +350,7 @@ func Test_ParseModelWithAlias(t *testing.T) {
 					Kind:    models.RedefinedType,
 				},
 			},
-		},
+		}),
 	}
 
 	assert.Equal(t, expected, res["WithAlias"])
@@ -362,7 +367,7 @@ func Test_ParseModelWithCollections(t *testing.T) {
 			Package: models.Package{Name: "parser", Path: "github.com/underbek/datamapper/_test_data/parser"},
 			Kind:    models.StructType,
 		},
-		Fields: []models.Field{
+		Fields: models.NewFields([]models.Field{
 			{
 				Name: "Array",
 				Type: models.Type{
@@ -538,7 +543,7 @@ func Test_ParseModelWithCollections(t *testing.T) {
 					},
 				},
 			},
-		},
+		}),
 	}
 
 	assert.Equal(t, expected, res["ModelWithCollections"])
@@ -574,4 +579,69 @@ func Test_ParseModelByBrokenPackage(t *testing.T) {
 			assert.Len(t, res, 2)
 		})
 	}
+}
+
+func Test_ParseModelWithDash(t *testing.T) {
+	res, err := ParseModels(logger.New(), testPath+"with_dash.go")
+	assert.NoError(t, err)
+	assert.Len(t, res, 2)
+	expected := map[string]models.Struct{
+		"ModelWithDash": {
+			Type: models.Type{
+				Name:    "ModelWithDash",
+				Package: models.Package{Name: "parser", Path: "github.com/underbek/datamapper/_test_data/parser"},
+				Kind:    models.StructType,
+			}, Fields: models.NewFields([]models.Field{
+				{
+					Name: "User",
+					Type: models.Type{
+						Name:    "DashUser",
+						Package: models.Package{Name: "parser", Path: "github.com/underbek/datamapper/_test_data/parser"},
+						Kind:    models.StructType,
+					},
+					Tags: []models.Tag{{Name: "map", Value: "-"}},
+				},
+				{
+					Name: "Count",
+					Type: models.Type{
+						Name: "int",
+					},
+					Tags: []models.Tag{{Name: "map", Value: "count"}},
+				},
+			}),
+		},
+		"DashUser": {
+			Type: models.Type{
+				Name:    "DashUser",
+				Package: models.Package{Name: "parser", Path: "github.com/underbek/datamapper/_test_data/parser"},
+				Kind:    models.StructType,
+			}, Fields: models.NewFields([]models.Field{
+				{
+					Name: "ID",
+					Type: models.Type{
+						Name: "int",
+					},
+					Tags: []models.Tag{{Name: "map", Value: "id"}},
+				},
+				{
+					Name: "Name",
+					Type: models.Type{
+						Name: "string",
+					},
+					Tags: []models.Tag{{Name: "map", Value: "name"}},
+				},
+				{
+					Name: "Meta",
+					Type: models.Type{
+						Name:    "DashUserMeta",
+						Package: models.Package{Name: "other", Path: "github.com/underbek/datamapper/_test_data/parser/other"},
+						Kind:    models.StructType,
+					},
+					Tags: []models.Tag{{Name: "map", Value: "-"}},
+				},
+			}),
+		},
+	}
+
+	assert.Equal(t, expected, res)
 }

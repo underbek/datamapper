@@ -2,6 +2,7 @@ package generator
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/underbek/datamapper/models"
 	"golang.org/x/exp/maps"
@@ -23,9 +24,15 @@ func getTypeParams(cf models.ConversionFunction, fromType, toType models.Type) s
 }
 
 func fillConversions(fields []FieldsPair) []string {
+	uniqConversions := make(map[string]struct{})
 	var res []string
 	for _, field := range fields {
-		res = append(res, field.Conversions...)
+		for _, conv := range field.Conversions {
+			if _, ok := uniqConversions[conv]; !ok {
+				uniqConversions[conv] = struct{}{}
+				res = append(res, conv)
+			}
+		}
 	}
 
 	return res
@@ -162,4 +169,120 @@ func getFieldPointerCheckError(fromModelName, toModelName, fromFieldName, toFiel
 		toModelName,
 		toFieldName,
 	)
+}
+
+func getSkippedFieldsPointerCheckError(field models.Field, toTypeFullName, fromTypeName string) ([]string, error) {
+	var res []string
+
+	head := field.Head
+	for head != nil {
+		if head.Type.Pointer {
+			conversion, err := getPointerCheck(
+				createFieldPathWithPrefix(*head),
+				toTypeFullName,
+				fmt.Sprintf("errors.New(\"%s.%s is nil\")", fromTypeName, createFieldPath(*head)),
+				true,
+			)
+			if err != nil {
+				return nil, err
+			}
+
+			res = append(res, conversion)
+		}
+
+		head = head.Head
+	}
+
+	return res, nil
+}
+
+func findHead(fields []FieldsPair) TypeWithName {
+	return fields[0].Types[0]
+}
+
+func createModelWithPairs(fields []FieldsPair, modelType TypeWithName) ModelWithPairs {
+	return createModelWithPairsByLvl(fields, modelType, 0)
+}
+
+func createModelWithPairsByLvl(fields []FieldsPair, modelType TypeWithName, lvl int) ModelWithPairs {
+	res := ModelWithPairs{
+		Type: modelType,
+	}
+
+	var otherFields []FieldsPair
+	var internalTypes []TypeWithName
+	internalTypeMap := make(map[TypeWithName]struct{})
+
+	for _, field := range fields {
+		if field.Types[lvl] != modelType {
+			continue
+		}
+
+		if len(field.Types) == lvl+1 {
+			res.fields = append(res.fields, field)
+			continue
+		}
+
+		if len(field.Types) == lvl+2 {
+			currentType := field.Types[lvl+1]
+			if _, ok := internalTypeMap[currentType]; !ok {
+				internalTypes = append(internalTypes, currentType)
+				internalTypeMap[currentType] = struct{}{}
+			}
+		}
+
+		otherFields = append(otherFields, field)
+	}
+
+	if internalTypes == nil {
+		return res
+	}
+
+	for _, internalType := range internalTypes {
+		res.models = append(res.models, createModelWithPairsByLvl(otherFields, internalType, lvl+1))
+	}
+
+	return res
+}
+
+func makeFieldsPairByModel(pkg string, model ModelWithPairs) (FieldsPair, error) {
+	for _, m := range model.models {
+		field, err := makeFieldsPairByModel(pkg, m)
+		if err != nil {
+			return FieldsPair{}, err
+		}
+
+		model.fields = append(model.fields, field)
+	}
+
+	converter, err := fillResultStruct(
+		strings.Replace(model.Type.Type.FullName(pkg), "*", "&", 1),
+		model.fields,
+	)
+	if err != nil {
+		return FieldsPair{}, err
+	}
+
+	return FieldsPair{
+		Assignment: converter,
+		ToName:     model.Type.FieldName,
+	}, nil
+}
+
+func createResultConverter(pkg string, toName string, model ModelWithPairs) (string, error) {
+	for _, m := range model.models {
+		field, err := makeFieldsPairByModel(pkg, m)
+		if err != nil {
+			return "", err
+		}
+
+		model.fields = append(model.fields, field)
+	}
+
+	res, err := fillResultStruct(strings.Replace(toName, "*", "&", 1), model.fields)
+	if err != nil {
+		return "", err
+	}
+
+	return res, nil
 }

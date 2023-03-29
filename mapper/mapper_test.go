@@ -545,3 +545,79 @@ func Test_MapRecursiveModels(t *testing.T) {
 		})
 	}
 }
+
+func Test_MapWithDash(t *testing.T) {
+	tests := []struct {
+		name         string
+		opts         options.Options
+		expectedPath string
+	}{
+		{
+			name: "With dash",
+			opts: options.Options{
+				ConversionFunctions: []options.ConversionFunction{
+					{Source: customCFPath},
+				},
+				Options: []options.Option{
+					{
+						Destination: destination,
+						Inverse:     true,
+						From: options.Model{
+							Source: "../_test_data/mapper/with_dash/domain",
+							Name:   "Order",
+							Tag:    modelTag,
+						},
+						To: options.Model{
+							Source: "../_test_data/mapper/with_dash/dao",
+							Name:   "OrderData",
+							Tag:    "db",
+							Alias:  "db",
+						},
+					},
+				},
+			},
+			expectedPath: "with_dash",
+		},
+		{
+			name: "With dash and pointers",
+			opts: options.Options{
+				ConversionFunctions: []options.ConversionFunction{
+					{Source: customCFPath},
+				},
+				Options: []options.Option{
+					{
+						Destination: destination,
+						Inverse:     true,
+						From: options.Model{
+							Source: "../_test_data/mapper/with_dash_and_pointers/domain",
+							Name:   "*Order",
+							Tag:    modelTag,
+						},
+						To: options.Model{
+							Source: "../_test_data/mapper/with_dash_and_pointers/dao",
+							Name:   "OrderData",
+							Tag:    "db",
+							Alias:  "db",
+						},
+					},
+				},
+			},
+			expectedPath: "with_dash_and_pointers",
+		},
+	}
+
+	lg := logger.New()
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			defer clearDestination(t, destinationPath)
+
+			err := MapModels(lg, tt.opts)
+			require.NoError(t, err)
+
+			actual := readActual(t)
+			expected := _test_data.MapperExpected(t, tt.expectedPath)
+			assert.Equal(t, expected, actual)
+		})
+	}
+}

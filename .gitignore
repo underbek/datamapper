@@ -4,3 +4,4 @@
 !/_test_data/generated/generator/convertor_test.go
 !/_test_data/generated/mapper/convertor_test.go
 bin
+/test-example
