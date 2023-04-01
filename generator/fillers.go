@@ -160,12 +160,14 @@ func getPointerToPointerConversion(fromFieldResName, fromFieldFullName, toModelN
 	return fillTemplate[string](pointerToPointerConversionFilePath, data)
 }
 
-func getSliceConversion(fromFieldName, toItemTypeName, assigment string, conversions []string) (string, error) {
+func getSliceConversion(fromFieldFullName, fromFieldPath, toItemTypeName, assigment string, conversions []string,
+) (string, error) {
 	data := map[string]any{
-		"fromFieldName":  fromFieldName,
-		"toItemTypeName": toItemTypeName,
-		"assigment":      assigment,
-		"conversions":    conversions,
+		"fromFieldFullName": fromFieldFullName,
+		"fromFieldPath":     fromFieldPath,
+		"toItemTypeName":    toItemTypeName,
+		"assigment":         assigment,
+		"conversions":       conversions,
 	}
 
 	return fillTemplate[string](sliceConversionFilePath, data)

@@ -3,8 +3,9 @@ package dao
 import "time"
 
 type Order struct {
-	ID   int64  `db:"order_id"`
-	UUID string `db:"order_uuid"`
+	ID        int64        `db:"order_id"`
+	UUID      string       `db:"order_uuid"`
+	Additions []Additional `db:"additions"`
 }
 
 type User struct {
@@ -22,4 +23,9 @@ type OrderData struct {
 	Order    *Order    `db:"-"`
 	UserData *User     `db:"-"`
 	Urls     OrderUrls `db:"-"`
+}
+
+type Additional struct {
+	Key   string `db:"key"`
+	Value string `db:"value"`
 }

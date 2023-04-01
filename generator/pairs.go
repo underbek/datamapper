@@ -496,7 +496,8 @@ func fillConversionFunctionBySlice(pair FieldsPair, fromField, toField models.Fi
 	}
 
 	conversion, err := getSliceConversion(
-		fromField.Name,
+		fmt.Sprintf("from%s", createAssignment(fromField)),
+		createFieldPathWithPrefix(fromField),
 		toField.Type.Additional.(models.SliceAdditional).InType.FullName(pkgPath),
 		assigment,
 		conversions,
