@@ -5,9 +5,15 @@ import (
 )
 
 type Order struct {
-	OrderID     *string    `map:"order_id"`
-	OrderUUID   string     `map:"order_uuid"`
-	User        *user.User `map:"-"`
-	SiteUrl     string     `map:"url"`
-	RedirectUrl string     `map:"redirect_url"`
+	OrderID     *string      `map:"order_id"`
+	OrderUUID   string       `map:"order_uuid"`
+	User        *user.User   `map:"-"`
+	SiteUrl     string       `map:"url"`
+	RedirectUrl string       `map:"redirect_url"`
+	Additions   []Additional `map:"additions"`
+}
+
+type Additional struct {
+	Key   string `map:"key"`
+	Value string `map:"value"`
 }

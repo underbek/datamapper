@@ -104,38 +104,43 @@ func setPackageAlias(p *models.Package, aliases map[string]string) {
 	p.Alias = aliases[p.Path]
 }
 
+func setTypePackageAlias(t *models.Type, aliases map[string]string) {
+	setPackageAlias(&t.Package, aliases)
+
+	switch t.Kind {
+	case models.SliceType:
+		additional := t.Additional.(models.SliceAdditional)
+		setTypePackageAlias(&additional.InType, aliases)
+		t.Additional = additional
+	}
+}
+
 func setPackageAliasToStruct(m *models.Struct, aliases map[string]string) {
-	setPackageAlias(&m.Type.Package, aliases)
+	setTypePackageAlias(&m.Type, aliases)
 	_ = m.Fields.Each(func(field *models.Field) error {
-		setPackageAlias(&field.Type.Package, aliases)
+		setTypePackageAlias(&field.Type, aliases)
 
 		head := field.Head
 		for head != nil {
-			setPackageAlias(&head.Type.Package, aliases)
+			setTypePackageAlias(&head.Type, aliases)
 			head = head.Head
 		}
 
-		switch field.Type.Kind {
-		case models.SliceType:
-			additional := field.Type.Additional.(models.SliceAdditional)
-			setPackageAlias(&additional.InType.Package, aliases)
-			field.Type.Additional = additional
-		}
 		return nil
 	})
 }
 
 func setPackageAliasToCfKey(key models.ConversionFunctionKey, aliases map[string]string) models.ConversionFunctionKey {
-	setPackageAlias(&key.FromType.Package, aliases)
-	setPackageAlias(&key.ToType.Package, aliases)
+	setTypePackageAlias(&key.FromType, aliases)
+	setTypePackageAlias(&key.ToType, aliases)
 
 	return key
 }
 
 func setPackageAliasToCf(cf models.ConversionFunction, aliases map[string]string) models.ConversionFunction {
 	setPackageAlias(&cf.Package, aliases)
-	setPackageAlias(&cf.FromType.Package, aliases)
-	setPackageAlias(&cf.ToType.Package, aliases)
+	setTypePackageAlias(&cf.FromType, aliases)
+	setTypePackageAlias(&cf.ToType, aliases)
 
 	return cf
 }

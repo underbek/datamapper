@@ -583,6 +583,7 @@ func Test_MapWithDash(t *testing.T) {
 			opts: options.Options{
 				ConversionFunctions: []options.ConversionFunction{
 					{Source: customCFPath},
+					{Source: "../_test_data/mapper/with_dash_and_pointers/convertors/additional_convertor.go"},
 				},
 				Options: []options.Option{
 					{
